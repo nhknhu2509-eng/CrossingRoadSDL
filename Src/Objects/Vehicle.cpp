@@ -24,6 +24,10 @@ Vehicle::Vehicle()
     direction = 1;
 
     textureId = "wagon_01";
+
+    laneHeight = Config::LANE_HEIGHT;
+
+    UpdateHitbox();
 }
 
 void Vehicle::Update()
@@ -73,12 +77,9 @@ void Vehicle::Draw(
             &rect);
     }
 
-    // ============================
     // DEBUG HITBOX
-    // ============================
     if (DEBUG_HITBOX)
     {
-        // Màu đỏ
         SDL_SetRenderDrawColor(
             renderer,
             255,
@@ -86,7 +87,6 @@ void Vehicle::Draw(
             0,
             255);
 
-        // Chỉ vẽ viền, không che sprite
         SDL_RenderDrawRect(
             renderer,
             &hitbox);
@@ -128,58 +128,39 @@ SDL_Rect Vehicle::GetRect() const
     return rect;
 }
 
-/* SDL_Rect Vehicle::GetHitbox() const
+SDL_Rect Vehicle::GetHitbox() const
 {
     return hitbox;
-}*/
+}
 
 void Vehicle::UpdateHitbox()
 {
     /*
-        HITBOX
+        Hitbox:
 
-        - Chiều cao = chiều cao lane
-        - Hai bên chừa 5% chiều rộng sprite
-        - Hitbox được căn giữa theo chiều dọc sprite
-
-        Không dùng số pixel cố định.
+        - Chiều cao = chiều cao lane.
+        - Chiều rộng = 90% chiều rộng sprite.
+        - Hitbox nằm ở phần DƯỚI của sprite.
+        - Không dùng số pixel cố định.
     */
 
     constexpr float SIDE_REDUCTION = 0.05f;
 
-    // Chừa 5% mỗi bên
     int sideOffset =
         static_cast<int>(
             rect.w * SIDE_REDUCTION);
 
-    // Vị trí ngang
+    // Chiều ngang
     hitbox.x =
         rect.x + sideOffset;
 
-    // Chiều rộng = 90% chiều rộng sprite
     hitbox.w =
         rect.w - (sideOffset * 2);
 
-    // Chiều cao hitbox = chiều cao lane
+    // Chiều cao bằng chiều cao lane
     hitbox.h = laneHeight;
 
-    // Căn giữa hitbox theo chiều dọc
-    // Hitbox nằm ở phần dưới của sprite,
-// tương ứng với phần xe tiếp xúc với mặt đường.
+    // Đưa hitbox xuống đáy sprite
     hitbox.y =
         rect.y + rect.h - hitbox.h;
-}
-SDL_Rect Vehicle::GetHitbox() const
-{
-    SDL_Rect result;
-
-    result.w = rect.w;
-    result.h = Config::LANE_HEIGHT;
-
-    result.x = rect.x;
-
-    // Hitbox lấy phần dưới của sprite
-    result.y = rect.y + rect.h - result.h;
-
-    return result;
 }

@@ -1,6 +1,7 @@
 #include "World/Lane.h"
 
 #include "Graphics/TextureManager.h"
+#include "Config/GameConfig.h"
 
 Lane::Lane(
     int y,
@@ -16,11 +17,27 @@ Lane::Lane(
     {
         Vehicle vehicle;
 
+        /*
+            y đại diện cho vị trí của LANE.
+
+            Sprite cao hơn lane:
+                VEHICLE_HEIGHT = 150
+                lane height    = 82
+
+            Phần chênh lệch:
+                150 - 82 = 68
+
+            Vì hitbox nằm ở đáy sprite,
+            đưa sprite lên 68 px để hitbox
+            nằm đúng trong lane.
+        */
+        int vehicleY =
+            y - (Config::VEHICLE_HEIGHT - height);
+
         vehicle.SetPosition(
             i * spacing,
-            y);
+            vehicleY);
 
-        // Chiều cao lane
         vehicle.SetLaneHeight(height);
 
         vehicle.SetSpeed(speed);

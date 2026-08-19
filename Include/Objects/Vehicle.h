@@ -21,6 +21,7 @@ public:
     void SetSpeed(int value);
     void SetDirection(int value);
     void SetPosition(int x, int y);
+    void SetLaneHeight(int height);
 
     void SetTexture(const std::string& textureId);
 
@@ -31,16 +32,16 @@ private:
     void UpdateHitbox();
 
 private:
-    // Hình ảnh xe
+    // Kích thước/vị trí sprite
     SDL_Rect rect;
 
     // Hitbox dùng cho collision
     SDL_Rect hitbox;
-    SDL_Rect GetHitbox() const;
+
     int speed;
     int direction;
 
-    // Chiều cao lane
+    // Chiều cao lane mà xe đang chạy
     int laneHeight;
 
     std::string textureId;
