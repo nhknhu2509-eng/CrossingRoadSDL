@@ -2,11 +2,20 @@
 
 VehicleManager::VehicleManager()
 {
-    lanes.emplace_back(180, 1, 3, 3);
+    // Lane 1 - gần đích nhất
+    lanes.emplace_back(185, 1, 3, 3);
 
-    lanes.emplace_back(280, -1, 5, 2);
+    // Lane 2
+    lanes.emplace_back(267, -1, 4, 3);
 
-    lanes.emplace_back(380, 1, 4, 3);
+    // Lane 3
+    lanes.emplace_back(347, 1, 3, 3);
+
+    // Lane 4
+    lanes.emplace_back(434, -1, 5, 3);
+
+    // Lane 5 - gần nhân vật nhất
+    lanes.emplace_back(531, 1, 4, 3);
 }
 
 void VehicleManager::Update()

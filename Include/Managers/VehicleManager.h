@@ -1,8 +1,10 @@
 #pragma once
 
 #include <vector>
+#include <SDL.h>
 
 #include "World/Lane.h"
+
 class VehicleManager
 {
 public:
