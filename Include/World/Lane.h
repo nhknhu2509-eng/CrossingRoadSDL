@@ -13,6 +13,7 @@ class Lane
 public:
     Lane(
         int y,
+        int height,
         int direction,
         int speed,
         int vehicleCount);

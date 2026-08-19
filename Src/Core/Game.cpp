@@ -31,7 +31,7 @@ void Game::Update()
     {
         if (CollisionManager::CheckCollision(
             player.GetRect(),
-            vehicle.GetRect()))
+            vehicle.GetHitbox()))
         {
             player.Reset();
 

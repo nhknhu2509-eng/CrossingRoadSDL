@@ -18,8 +18,8 @@ namespace Config
     constexpr int PLAYER_START_Y = WINDOW_HEIGHT - 80;
 
     // Vehicle
-    constexpr int VEHICLE_WIDTH = 80;
-    constexpr int VEHICLE_HEIGHT = 40;
+    constexpr int VEHICLE_WIDTH = 170;
+    constexpr int VEHICLE_HEIGHT = 150;
     constexpr int VEHICLE_SPEED = 3;
 
     // Colors

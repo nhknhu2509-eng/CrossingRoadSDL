@@ -1,8 +1,10 @@
 #include "World/Lane.h"
+
 #include "Graphics/TextureManager.h"
 
 Lane::Lane(
     int y,
+    int height,
     int direction,
     int speed,
     int vehicleCount)
@@ -17,6 +19,9 @@ Lane::Lane(
         vehicle.SetPosition(
             i * spacing,
             y);
+
+        // Chiều cao lane
+        vehicle.SetLaneHeight(height);
 
         vehicle.SetSpeed(speed);
 
