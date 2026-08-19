@@ -8,9 +8,7 @@
 #include "Objects/Animal.h"
 #include "World/TrafficLight.h"
 
-
 class TextureManager;
-
 
 class Lane
 {

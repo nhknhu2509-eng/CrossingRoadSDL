@@ -6,7 +6,7 @@
 VehicleManager::VehicleManager()
 {
     // ==========================================
-    // Lane 1 - Vehicle / Wagon
+    // LANE 1 - WAGON
     // ==========================================
 
     lanes.emplace_back(
@@ -14,11 +14,13 @@ VehicleManager::VehicleManager()
         82,
         1,
         3,
-        3);
+        3,
+        "wagon",
+        "");
 
 
     // ==========================================
-    // Lane 2 - Vehicle / Wagon
+    // LANE 2 - WAGON
     // ==========================================
 
     lanes.emplace_back(
@@ -26,16 +28,21 @@ VehicleManager::VehicleManager()
         82,
         -1,
         4,
-        3);
+        3,
+        "wagon",
+        "");
 
 
     // ==========================================
-    // Lane 3 - Vehicle / Deer
+    // LANE 3 - DEER
     // ==========================================
     //
-    // Vẫn là Vehicle.
-    // Chỉ thay sprite thành deer.png.
+    // QUAN TRỌNG:
     //
+    // Deer nằm ở animalTexture,
+    // KHÔNG nằm ở vehicleTexture.
+    //
+    // ==========================================
 
     lanes.emplace_back(
         315,
@@ -43,12 +50,12 @@ VehicleManager::VehicleManager()
         1,
         3,
         3,
-        "deer",
-        "");
+        "",
+        "deer");
 
 
     // ==========================================
-    // Lane 4 - Animal / Squirrel
+    // LANE 4 - SQUIRREL
     // ==========================================
 
     lanes.emplace_back(
@@ -62,7 +69,7 @@ VehicleManager::VehicleManager()
 
 
     // ==========================================
-    // Lane 5 - Animal / Rabbit
+    // LANE 5 - RABBIT
     // ==========================================
 
     lanes.emplace_back(
@@ -76,6 +83,10 @@ VehicleManager::VehicleManager()
 }
 
 
+// ==================================================
+// UPDATE
+// ==================================================
+
 void VehicleManager::Update()
 {
     for (Lane& lane : lanes)
@@ -84,6 +95,10 @@ void VehicleManager::Update()
     }
 }
 
+
+// ==================================================
+// DRAW
+// ==================================================
 
 void VehicleManager::Draw(
     SDL_Renderer* renderer,
@@ -98,6 +113,10 @@ void VehicleManager::Draw(
 }
 
 
+// ==================================================
+// GET VEHICLES
+// ==================================================
+
 std::vector<Vehicle>
 VehicleManager::GetVehicles() const
 {
@@ -109,7 +128,8 @@ VehicleManager::GetVehicles() const
         for (const Vehicle& vehicle :
             lane.GetVehicles())
         {
-            result.push_back(vehicle);
+            result.push_back(
+                vehicle);
         }
     }
 
@@ -117,6 +137,10 @@ VehicleManager::GetVehicles() const
     return result;
 }
 
+
+// ==================================================
+// GET ANIMALS
+// ==================================================
 
 std::vector<Animal>
 VehicleManager::GetAnimals() const
@@ -129,7 +153,8 @@ VehicleManager::GetAnimals() const
         for (const Animal& animal :
             lane.GetAnimals())
         {
-            result.push_back(animal);
+            result.push_back(
+                animal);
         }
     }
 
