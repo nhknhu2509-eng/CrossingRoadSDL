@@ -1,10 +1,11 @@
 #pragma once
-#pragma once
 
 #include <SDL.h>
 
 #include "World/Goal.h"
 #include "Managers/VehicleManager.h"
+
+class TextureManager;
 
 class Map
 {
@@ -13,7 +14,9 @@ public:
 
     void Update();
 
-    void Draw(SDL_Renderer* renderer);
+    void Draw(
+        SDL_Renderer* renderer,
+        TextureManager& textureManager);
 
     Goal& GetGoal();
 
@@ -21,6 +24,5 @@ public:
 
 private:
     Goal goal;
-
     VehicleManager vehicleManager;
 };

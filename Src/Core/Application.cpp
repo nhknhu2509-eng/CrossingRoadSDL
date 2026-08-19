@@ -121,7 +121,54 @@ bool Application::Initialize()
 
     std::cout << "Background loaded successfully!"
         << std::endl;
+    // Load vehicle textures
 
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "wagon_01",
+        "Assets/Images/Vehicles/wagon_01.png"))
+    {
+        std::cout << "Cannot load wagon_01!"
+            << std::endl;
+
+        return false;
+    }
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "wagon_02",
+        "Assets/Images/Vehicles/wagon_02.png"))
+    {
+        std::cout << "Cannot load wagon_02!"
+            << std::endl;
+
+        return false;
+    }
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "wagon_03",
+        "Assets/Images/Vehicles/wagon_03.png"))
+    {
+        std::cout << "Cannot load wagon_03!"
+            << std::endl;
+
+        return false;
+    }
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "wagon_04",
+        "Assets/Images/Vehicles/wagon_04.png"))
+    {
+        std::cout << "Cannot load wagon_04!"
+            << std::endl;
+
+        return false;
+    }
+
+    std::cout << "Vehicle textures loaded successfully!"
+        << std::endl;
     return true;
 }
 
@@ -176,7 +223,8 @@ void Application::Run()
         game.Render(
             window.GetRenderer(),
             textRenderer,
-            fontManager);
+            fontManager,
+            textureManager);
 
         // Hiển thị frame
         window.Present();

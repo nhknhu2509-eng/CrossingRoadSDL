@@ -1,4 +1,5 @@
 #include "Managers/VehicleManager.h"
+#include "Graphics/TextureManager.h"
 
 VehicleManager::VehicleManager()
 {
@@ -26,11 +27,15 @@ void VehicleManager::Update()
     }
 }
 
-void VehicleManager::Draw(SDL_Renderer* renderer)
+void VehicleManager::Draw(
+    SDL_Renderer* renderer,
+    TextureManager& textureManager)
 {
     for (Lane& lane : lanes)
     {
-        lane.Draw(renderer);
+        lane.Draw(
+            renderer,
+            textureManager);
     }
 }
 

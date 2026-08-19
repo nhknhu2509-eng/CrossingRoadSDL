@@ -5,6 +5,7 @@
 #include "Core/GameState.h"
 #include "Graphics/FontManager.h"
 #include "Graphics/TextRenderer.h"
+#include "Graphics/TextureManager.h"
 #include "Managers/VehicleManager.h"
 #include "Objects/Player.h"
 #include "World/Goal.h"
@@ -19,7 +20,8 @@ public:
     void Render(
         SDL_Renderer* renderer,
         TextRenderer& textRenderer,
-        FontManager& fontManager);
+        FontManager& fontManager,
+        TextureManager& textureManager);
 
     void SetState(GameState newState);
     GameState GetState() const;

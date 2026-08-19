@@ -5,13 +5,18 @@
 
 #include "World/Lane.h"
 
+class TextureManager;
+
 class VehicleManager
 {
 public:
     VehicleManager();
 
     void Update();
-    void Draw(SDL_Renderer* renderer);
+
+    void Draw(
+        SDL_Renderer* renderer,
+        TextureManager& textureManager);
 
     std::vector<Vehicle> GetVehicles() const;
 

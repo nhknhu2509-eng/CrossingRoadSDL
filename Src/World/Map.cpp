@@ -1,4 +1,5 @@
 #include "World/Map.h"
+#include "Graphics/TextureManager.h"
 
 Map::Map()
 {
@@ -9,11 +10,15 @@ void Map::Update()
     vehicleManager.Update();
 }
 
-void Map::Draw(SDL_Renderer* renderer)
+void Map::Draw(
+    SDL_Renderer* renderer,
+    TextureManager& textureManager)
 {
     goal.Draw(renderer);
 
-    vehicleManager.Draw(renderer);
+    vehicleManager.Draw(
+        renderer,
+        textureManager);
 }
 
 Goal& Map::GetGoal()
@@ -24,4 +29,4 @@ Goal& Map::GetGoal()
 VehicleManager& Map::GetVehicleManager()
 {
     return vehicleManager;
-}   
+}

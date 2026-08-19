@@ -1,4 +1,5 @@
 #include "Objects/Vehicle.h"
+#include "Graphics/TextureManager.h"
 #include "Config/GameConfig.h"
 
 Vehicle::Vehicle()
@@ -11,6 +12,8 @@ Vehicle::Vehicle()
 
     speed = Config::VEHICLE_SPEED;
     direction = 1;
+
+    textureId = "wagon_01";
 }
 
 void Vehicle::Update()
@@ -28,16 +31,35 @@ void Vehicle::Update()
     }
 }
 
-void Vehicle::Draw(SDL_Renderer* renderer)
+void Vehicle::Draw(
+    SDL_Renderer* renderer,
+    TextureManager& textureManager)
 {
-    SDL_SetRenderDrawColor(
-        renderer,
-        Config::VEHICLE_COLOR.r,
-        Config::VEHICLE_COLOR.g,
-        Config::VEHICLE_COLOR.b,
-        Config::VEHICLE_COLOR.a);
+    Texture* texture =
+        textureManager.GetTexture(textureId);
 
-    SDL_RenderFillRect(renderer, &rect);
+    if (texture != nullptr &&
+        texture->GetTexture() != nullptr)
+    {
+        SDL_RenderCopy(
+            renderer,
+            texture->GetTexture(),
+            nullptr,
+            &rect);
+    }
+    else
+    {
+        // Nếu texture không load được,
+        // vẫn vẽ hình chữ nhật để debug.
+        SDL_SetRenderDrawColor(
+            renderer,
+            Config::VEHICLE_COLOR.r,
+            Config::VEHICLE_COLOR.g,
+            Config::VEHICLE_COLOR.b,
+            Config::VEHICLE_COLOR.a);
+
+        SDL_RenderFillRect(renderer, &rect);
+    }
 }
 
 void Vehicle::SetSpeed(int value)
@@ -54,6 +76,11 @@ void Vehicle::SetPosition(int x, int y)
 {
     rect.x = x;
     rect.y = y;
+}
+
+void Vehicle::SetTexture(const std::string& id)
+{
+    textureId = id;
 }
 
 SDL_Rect Vehicle::GetRect() const

@@ -45,11 +45,14 @@ void Game::Update()
 void Game::Render(
     SDL_Renderer* renderer,
     TextRenderer& textRenderer,
-    FontManager& fontManager)
+    FontManager& fontManager,
+    TextureManager& textureManager)
 {
     goal.Draw(renderer);
 
-    vehicleManager.Draw(renderer);
+    vehicleManager.Draw(
+        renderer,
+        textureManager);
 
     player.Draw(renderer);
 

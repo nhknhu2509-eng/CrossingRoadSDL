@@ -6,6 +6,8 @@
 #include "Objects/Vehicle.h"
 #include "World/TrafficLight.h"
 
+class TextureManager;
+
 class Lane
 {
 public:
@@ -17,7 +19,9 @@ public:
 
     void Update();
 
-    void Draw(SDL_Renderer* renderer);
+    void Draw(
+        SDL_Renderer* renderer,
+        TextureManager& textureManager);
 
     const std::vector<Vehicle>& GetVehicles() const;
 
