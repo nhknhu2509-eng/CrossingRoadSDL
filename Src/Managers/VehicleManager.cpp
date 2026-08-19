@@ -1,22 +1,23 @@
 #include "Managers/VehicleManager.h"
+
 #include "Graphics/TextureManager.h"
 
 VehicleManager::VehicleManager()
 {
     // Lane 1 - gần đích nhất
-    lanes.emplace_back(120, 1, 3, 3);
+    lanes.emplace_back(185, 82, 1, 3, 3);
 
     // Lane 2
-    lanes.emplace_back(200, -1, 4, 3);
+    lanes.emplace_back(267, 82, -1, 4, 3);
 
     // Lane 3
-    lanes.emplace_back(280, 1, 3, 3);
+    lanes.emplace_back(347, 82, 1, 3, 3);
 
     // Lane 4
-    lanes.emplace_back(370, -1, 5, 3);
+    lanes.emplace_back(434, 82, -1, 5, 3);
 
     // Lane 5 - gần nhân vật nhất
-    lanes.emplace_back(475, 1, 4, 3);
+    lanes.emplace_back(531, 82, 1, 4, 3);
 }
 
 void VehicleManager::Update()

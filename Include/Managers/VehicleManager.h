@@ -1,56 +1,25 @@
-#include "Managers/VehicleManager.h"
+#pragma once
 
-#include "Graphics/TextureManager.h"
+#include <vector>
+#include <SDL.h>
 
-VehicleManager::VehicleManager()
+#include "World/Lane.h"
+
+class TextureManager;
+
+class VehicleManager
 {
-    // Lane 1 - gần đích nhất
-    lanes.emplace_back(185, 82, 1, 3, 3);
+public:
+    VehicleManager();
 
-    // Lane 2
-    lanes.emplace_back(267, 82, -1, 4, 3);
+    void Update();
 
-    // Lane 3
-    lanes.emplace_back(347, 82, 1, 3, 3);
+    void Draw(
+        SDL_Renderer* renderer,
+        TextureManager& textureManager);
 
-    // Lane 4
-    lanes.emplace_back(434, 82, -1, 5, 3);
+    std::vector<Vehicle> GetVehicles() const;
 
-    // Lane 5 - gần nhân vật nhất
-    lanes.emplace_back(531, 82, 1, 4, 3);
-}
-
-void VehicleManager::Update()
-{
-    for (Lane& lane : lanes)
-    {
-        lane.Update();
-    }
-}
-
-void VehicleManager::Draw(
-    SDL_Renderer* renderer,
-    TextureManager& textureManager)
-{
-    for (Lane& lane : lanes)
-    {
-        lane.Draw(
-            renderer,
-            textureManager);
-    }
-}
-
-std::vector<Vehicle> VehicleManager::GetVehicles() const
-{
-    std::vector<Vehicle> result;
-
-    for (const Lane& lane : lanes)
-    {
-        for (const Vehicle& vehicle : lane.GetVehicles())
-        {
-            result.push_back(vehicle);
-        }
-    }
-
-    return result;
-}
+private:
+    std::vector<Lane> lanes;
+};
