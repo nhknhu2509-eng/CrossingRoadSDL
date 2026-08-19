@@ -43,16 +43,12 @@ public:
         const std::string& textureId);
 
 
+    // ==========================================
+    // Sprite size
+    // ==========================================
+
     void SetSpriteSize(
         int width,
-        int height);
-
-
-    // ==========================================
-    // Set chiều cao phần dưới của hitbox
-    // ==========================================
-
-    void SetHitboxBottomHeight(
         int height);
 
 
@@ -77,7 +73,7 @@ private:
 
 
     // ==========================================
-    // Collision hitbox
+    // Hitbox
     // ==========================================
 
     SDL_Rect hitbox;
@@ -104,14 +100,4 @@ private:
     // ==========================================
 
     std::string textureId;
-
-
-    // ==========================================
-    // Hitbox
-    // ==========================================
-    //
-    // Chỉ lấy phần dưới của sprite.
-    //
-
-    int hitboxBottomHeight;
 };

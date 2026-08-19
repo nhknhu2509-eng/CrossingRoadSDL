@@ -49,9 +49,6 @@ namespace Config
     // Individual Animal Sprite Size
     // ==============================
     //
-    // Bạn chỉ cần chỉnh 6 giá trị này
-    // để thay đổi kích thước từng sprite.
-    //
     // Deer:
     // Lane 3 - Vehicle + deer.png
     //
@@ -70,6 +67,23 @@ namespace Config
 
     constexpr int RABBIT_WIDTH = 75;
     constexpr int RABBIT_HEIGHT = 75;
+
+
+    // ==============================
+    // Deer Hitbox
+    // ==============================
+    //
+    // Deer vẫn dùng Vehicle
+    // nên hitbox có tính chất giống wagon:
+    //
+    // - Không lấy toàn bộ sprite
+    // - Chỉ lấy phần dưới
+    //
+    // Giá trị này có thể chỉnh trực tiếp
+    // nếu muốn hitbox deer cao/thấp hơn.
+    //
+
+    constexpr int DEER_HITBOX_BOTTOM_HEIGHT = 35;
 
 
     // ==============================

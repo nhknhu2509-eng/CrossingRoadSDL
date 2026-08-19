@@ -18,7 +18,7 @@ constexpr bool DEBUG_HITBOX = true;
 Vehicle::Vehicle()
 {
     // ==========================================
-    // Sprite
+    // SPRITE
     // ==========================================
 
     rect.x = 0;
@@ -29,7 +29,7 @@ Vehicle::Vehicle()
 
 
     // ==========================================
-    // Hitbox
+    // HITBOX
     // ==========================================
 
     hitbox.x = 0;
@@ -39,7 +39,7 @@ Vehicle::Vehicle()
 
 
     // ==========================================
-    // Movement
+    // MOVEMENT
     // ==========================================
 
     speed = Config::VEHICLE_SPEED;
@@ -48,28 +48,17 @@ Vehicle::Vehicle()
 
 
     // ==========================================
-    // Texture
+    // TEXTURE
     // ==========================================
 
     textureId = "wagon_01";
 
 
     // ==========================================
-    // Lane
+    // LANE
     // ==========================================
 
     laneHeight = Config::LANE_HEIGHT;
-
-
-    // ==========================================
-    // Default hitbox
-    // ==========================================
-    //
-    // Wagon mặc định lấy phần dưới.
-    //
-
-    hitboxBottomHeight =
-        laneHeight / 2;
 
 
     UpdateHitbox();
@@ -86,7 +75,7 @@ void Vehicle::Update()
 
 
     // ==========================================
-    // Wrap right
+    // WRAP RIGHT
     // ==========================================
 
     if (rect.x > Config::WINDOW_WIDTH)
@@ -96,7 +85,7 @@ void Vehicle::Update()
 
 
     // ==========================================
-    // Wrap left
+    // WRAP LEFT
     // ==========================================
 
     if (rect.x + rect.w < 0)
@@ -104,6 +93,10 @@ void Vehicle::Update()
         rect.x = Config::WINDOW_WIDTH;
     }
 
+
+    // ==========================================
+    // UPDATE HITBOX
+    // ==========================================
 
     UpdateHitbox();
 }
@@ -120,6 +113,10 @@ void Vehicle::Draw(
     Texture* texture =
         textureManager.GetTexture(textureId);
 
+
+    // ==========================================
+    // DRAW SPRITE
+    // ==========================================
 
     if (texture != nullptr &&
         texture->GetTexture() != nullptr)
@@ -254,32 +251,6 @@ void Vehicle::SetSpriteSize(
 
 
 // ==================================================
-// SET HITBOX BOTTOM HEIGHT
-// ==================================================
-//
-// Đây là thông số quan trọng.
-//
-// Ví dụ:
-//
-// Wagon:
-//     41
-//
-// Deer:
-//     35
-//
-// Hitbox luôn nằm sát đáy sprite.
-//
-
-void Vehicle::SetHitboxBottomHeight(
-    int height)
-{
-    hitboxBottomHeight = height;
-
-    UpdateHitbox();
-}
-
-
-// ==================================================
 // GET RECT
 // ==================================================
 
@@ -302,51 +273,81 @@ SDL_Rect Vehicle::GetHitbox() const
 // ==================================================
 // UPDATE HITBOX
 // ==================================================
+//
+// Đây là công thức hitbox cũ của WAGON.
+//
+// Deer cũng là Vehicle nên sẽ dùng chính xác
+// công thức này.
+//
+// 1. Chừa 5% mỗi bên.
+// 2. Hitbox chỉ lấy phần dưới.
+// 3. Chiều cao hitbox = 1/2 chiều cao lane.
+// 4. Đáy hitbox trùng đáy sprite.
+//
+// ==================================================
 
 void Vehicle::UpdateHitbox()
 {
     // ==========================================
-    // Hai bên
+    // CHIỀU NGANG
     // ==========================================
     //
-    // Chừa một chút phần trong suốt bên trái
-    // và bên phải.
+    // Chừa 5% mỗi bên sprite.
+    //
+    // Ví dụ:
+    //
+    // Wagon width = 170
+    //
+    // sideOffset = 170 * 5%
+    //            = 8
+    //
+    // hitbox width ≈ 154
     //
 
-    constexpr int SIDE_MARGIN = 5;
+    constexpr float SIDE_REDUCTION = 0.05f;
+
+
+    int sideOffset =
+        static_cast<int>(
+            rect.w * SIDE_REDUCTION);
 
 
     hitbox.x =
-        rect.x + SIDE_MARGIN;
+        rect.x + sideOffset;
 
 
     hitbox.w =
-        rect.w - SIDE_MARGIN * 2;
+        rect.w - (sideOffset * 2);
 
 
     // ==========================================
-    // Phần dưới
+    // CHIỀU DỌC
     // ==========================================
     //
-    // Đây là điểm khác biệt quan trọng:
+    // Chỉ lấy phần dưới của sprite.
     //
-    // Hitbox KHÔNG bao toàn bộ sprite.
+    // Không lấy toàn bộ sprite vì:
     //
-    // Nó chỉ lấy phần dưới.
+    // - Wagon có phần mui cao.
+    // - Deer có phần đầu/gạc cao.
+    //
+    // Phần phía trên không được tính va chạm.
     //
 
     hitbox.h =
-        hitboxBottomHeight;
+        laneHeight / 2;
 
+
+    // Đáy hitbox trùng đáy sprite.
 
     hitbox.y =
         rect.y
         + rect.h
-        - hitboxBottomHeight;
+        - hitbox.h;
 
 
     // ==========================================
-    // Safety
+    // SAFETY
     // ==========================================
 
     if (hitbox.w < 0)
