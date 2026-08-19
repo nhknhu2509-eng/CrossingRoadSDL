@@ -14,10 +14,11 @@ bool Application::Initialize()
 {
     std::cout << "==================================" << std::endl;
     std::cout << "Current Path: "
-              << std::filesystem::current_path()
-              << std::endl;
+        << std::filesystem::current_path()
+        << std::endl;
 
-    std::ifstream file("Assets/Fonts/NotoSans-VariableFont_wdth,wght.ttf");
+    std::ifstream file(
+        "Assets/Fonts/NotoSans-VariableFont_wdth,wght.ttf");
 
     if (file.is_open())
     {
@@ -34,7 +35,8 @@ bool Application::Initialize()
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
     {
         std::cout << "SDL_Init Error: "
-                  << SDL_GetError() << std::endl;
+            << SDL_GetError()
+            << std::endl;
 
         return false;
     }
@@ -43,9 +45,11 @@ bool Application::Initialize()
     if (TTF_Init() != 0)
     {
         std::cout << "TTF_Init Error: "
-                  << TTF_GetError() << std::endl;
+            << TTF_GetError()
+            << std::endl;
 
         SDL_Quit();
+
         return false;
     }
 
@@ -53,15 +57,20 @@ bool Application::Initialize()
     if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
     {
         std::cout << "IMG_Init Error: "
-                  << IMG_GetError() << std::endl;
+            << IMG_GetError()
+            << std::endl;
 
         TTF_Quit();
         SDL_Quit();
+
         return false;
     }
 
     // Tạo cửa sổ
-    if (!window.Create("Crossing Road SDL", 1280, 720))
+    if (!window.Create(
+        "Crossing Road SDL",
+        1280,
+        720))
     {
         IMG_Quit();
         TTF_Quit();
@@ -72,13 +81,15 @@ bool Application::Initialize()
 
     // Load font
     if (!fontManager.LoadFont(
-            "default",
-            "Assets/Fonts/NotoSans-VariableFont_wdth,wght.ttf",
-            28))
+        "default",
+        "Assets/Fonts/NotoSans-VariableFont_wdth,wght.ttf",
+        28))
     {
-        std::cout << "Cannot load font!" << std::endl;
+        std::cout << "Cannot load font!"
+            << std::endl;
 
         window.Destroy();
+
         IMG_Quit();
         TTF_Quit();
         SDL_Quit();
@@ -86,15 +97,17 @@ bool Application::Initialize()
         return false;
     }
 
-    // Load texture
-    /*
+    // Load background
     if (!textureManager.LoadTexture(
-            window.GetRenderer(),
-            "player",
-            "Assets/Images/Player/player.png"))
+        window.GetRenderer(),
+        "background",
+        "Assets/Images/Background/chapter1_background.png"))
     {
-        std::cout << "Cannot load player texture!" << std::endl;
-        std::cout << IMG_GetError() << std::endl;
+        std::cout << "Cannot load background texture!"
+            << std::endl;
+
+        std::cout << IMG_GetError()
+            << std::endl;
 
         fontManager.Destroy();
         window.Destroy();
@@ -105,7 +118,10 @@ bool Application::Initialize()
 
         return false;
     }
-    */
+
+    std::cout << "Background loaded successfully!"
+        << std::endl;
+
     return true;
 }
 
@@ -126,13 +142,43 @@ void Application::Run()
 
         game.Update();
 
+        // Xóa frame trước
         window.Clear();
+
+        // ==============================
+        // VẼ BACKGROUND
+        // ==============================
+
+        Texture* background =
+            textureManager.GetTexture("background");
+
+        if (background != nullptr &&
+            background->GetTexture() != nullptr)
+        {
+            SDL_Rect destination;
+
+            destination.x = 0;
+            destination.y = 0;
+            destination.w = 1280;
+            destination.h = 720;
+
+            SDL_RenderCopy(
+                window.GetRenderer(),
+                background->GetTexture(),
+                nullptr,
+                &destination);
+        }
+
+        // ==============================
+        // VẼ GAME
+        // ==============================
 
         game.Render(
             window.GetRenderer(),
             textRenderer,
             fontManager);
 
+        // Hiển thị frame
         window.Present();
     }
 }
