@@ -10,41 +10,66 @@
 #include <filesystem>
 #include <fstream>
 
+
 bool Application::Initialize()
 {
-    std::cout << "==================================" << std::endl;
-    std::cout << "Current Path: "
+    std::cout
+        << "=================================="
+        << std::endl;
+
+
+    std::cout
+        << "Current Path: "
         << std::filesystem::current_path()
         << std::endl;
+
 
     std::ifstream file(
         "Assets/Fonts/NotoSans-VariableFont_wdth,wght.ttf");
 
+
     if (file.is_open())
     {
-        std::cout << "Font file exists!" << std::endl;
+        std::cout
+            << "Font file exists!"
+            << std::endl;
     }
     else
     {
-        std::cout << "Font file NOT found!" << std::endl;
+        std::cout
+            << "Font file NOT found!"
+            << std::endl;
     }
 
-    std::cout << "==================================" << std::endl;
 
-    // Khởi tạo SDL
+    std::cout
+        << "=================================="
+        << std::endl;
+
+
+    // ==============================
+    // SDL
+    // ==============================
+
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
     {
-        std::cout << "SDL_Init Error: "
+        std::cout
+            << "SDL_Init Error: "
             << SDL_GetError()
             << std::endl;
 
         return false;
     }
 
-    // Khởi tạo SDL_ttf
+
+    // ==============================
+    // SDL_ttf
+    // ==============================
+
     if (TTF_Init() != 0)
     {
-        std::cout << "TTF_Init Error: "
+        std::cout
+            << "TTF_Init Error: "
             << TTF_GetError()
             << std::endl;
 
@@ -53,161 +78,272 @@ bool Application::Initialize()
         return false;
     }
 
-    // Khởi tạo SDL_image
-    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
+
+    // ==============================
+    // SDL_image
+    // ==============================
+
+    if (!(IMG_Init(IMG_INIT_PNG) &
+        IMG_INIT_PNG))
     {
-        std::cout << "IMG_Init Error: "
+        std::cout
+            << "IMG_Init Error: "
             << IMG_GetError()
             << std::endl;
 
         TTF_Quit();
+
         SDL_Quit();
 
         return false;
     }
 
-    // Tạo cửa sổ
+
+    // ==============================
+    // WINDOW
+    // ==============================
+
     if (!window.Create(
         "Crossing Road SDL",
         1280,
         720))
     {
         IMG_Quit();
+
         TTF_Quit();
+
         SDL_Quit();
 
         return false;
     }
 
-    // Load font
+
+    // ==============================
+    // FONT
+    // ==============================
+
     if (!fontManager.LoadFont(
         "default",
         "Assets/Fonts/NotoSans-VariableFont_wdth,wght.ttf",
         28))
     {
-        std::cout << "Cannot load font!"
+        std::cout
+            << "Cannot load font!"
             << std::endl;
 
         window.Destroy();
 
         IMG_Quit();
+
         TTF_Quit();
+
         SDL_Quit();
 
         return false;
     }
 
-    // Load background
+
+    // ==============================
+    // BACKGROUND
+    // ==============================
+
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "background",
         "Assets/Images/Background/chapter1_background.png"))
     {
-        std::cout << "Cannot load background texture!"
+        std::cout
+            << "Cannot load background texture!"
             << std::endl;
 
-        std::cout << IMG_GetError()
+        std::cout
+            << IMG_GetError()
             << std::endl;
 
         fontManager.Destroy();
+
         window.Destroy();
 
         IMG_Quit();
+
         TTF_Quit();
+
         SDL_Quit();
 
         return false;
     }
 
-    std::cout << "Background loaded successfully!"
+
+    std::cout
+        << "Background loaded successfully!"
         << std::endl;
-    // Load vehicle textures
+
+
+    // ==============================
+    // VEHICLE TEXTURES
+    // ==============================
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "wagon_01",
         "Assets/Images/Vehicles/wagon_01.png"))
     {
-        std::cout << "Cannot load wagon_01!"
+        std::cout
+            << "Cannot load wagon_01!"
             << std::endl;
 
         return false;
     }
+
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "wagon_02",
         "Assets/Images/Vehicles/wagon_02.png"))
     {
-        std::cout << "Cannot load wagon_02!"
+        std::cout
+            << "Cannot load wagon_02!"
             << std::endl;
 
         return false;
     }
+
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "wagon_03",
         "Assets/Images/Vehicles/wagon_03.png"))
     {
-        std::cout << "Cannot load wagon_03!"
+        std::cout
+            << "Cannot load wagon_03!"
             << std::endl;
 
         return false;
     }
+
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "wagon_04",
         "Assets/Images/Vehicles/wagon_04.png"))
     {
-        std::cout << "Cannot load wagon_04!"
+        std::cout
+            << "Cannot load wagon_04!"
             << std::endl;
 
         return false;
     }
 
-    std::cout << "Vehicle textures loaded successfully!"
+
+    std::cout
+        << "Vehicle textures loaded successfully!"
         << std::endl;
+
+
+    // ==============================
+    // ANIMAL TEXTURES
+    // ==============================
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "deer",
+        "Assets/Images/Animals/deer.png"))
+    {
+        std::cout
+            << "Cannot load deer!"
+            << std::endl;
+
+        return false;
+    }
+
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "squirrel",
+        "Assets/Images/Animals/squirrel.png"))
+    {
+        std::cout
+            << "Cannot load squirrel!"
+            << std::endl;
+
+        return false;
+    }
+
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "rabbit",
+        "Assets/Images/Animals/rabbit.png"))
+    {
+        std::cout
+            << "Cannot load rabbit!"
+            << std::endl;
+
+        return false;
+    }
+
+
+    std::cout
+        << "Animal textures loaded successfully!"
+        << std::endl;
+
+
     return true;
 }
+
 
 void Application::Run()
 {
     bool running = true;
 
+
     while (running)
     {
         timer.Tick();
 
+
         InputManager::Update();
+
 
         if (InputManager::QuitRequested())
         {
             running = false;
         }
 
+
         game.Update();
 
-        // Xóa frame trước
-        window.Clear();
 
         // ==============================
-        // VẼ BACKGROUND
+        // CLEAR
+        // ==============================
+
+        window.Clear();
+
+
+        // ==============================
+        // BACKGROUND
         // ==============================
 
         Texture* background =
-            textureManager.GetTexture("background");
+            textureManager.GetTexture(
+                "background");
+
 
         if (background != nullptr &&
             background->GetTexture() != nullptr)
         {
             SDL_Rect destination;
 
+
             destination.x = 0;
+
             destination.y = 0;
+
             destination.w = 1280;
+
             destination.h = 720;
+
 
             SDL_RenderCopy(
                 window.GetRenderer(),
@@ -216,8 +352,9 @@ void Application::Run()
                 &destination);
         }
 
+
         // ==============================
-        // VẼ GAME
+        // GAME
         // ==============================
 
         game.Render(
@@ -226,10 +363,15 @@ void Application::Run()
             fontManager,
             textureManager);
 
-        // Hiển thị frame
+
+        // ==============================
+        // PRESENT
+        // ==============================
+
         window.Present();
     }
 }
+
 
 void Application::Shutdown()
 {

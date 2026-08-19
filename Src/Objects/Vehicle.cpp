@@ -87,11 +87,27 @@ void Vehicle::Draw(
     if (texture != nullptr &&
         texture->GetTexture() != nullptr)
     {
-        SDL_RenderCopy(
-            renderer,
-            texture->GetTexture(),
-            nullptr,
-            &rect);
+        // Xe chạy sang phải
+        if (direction > 0)
+        {
+            SDL_RenderCopy(
+                renderer,
+                texture->GetTexture(),
+                nullptr,
+                &rect);
+        }
+        // Xe chạy sang trái
+        else
+        {
+            SDL_RenderCopyEx(
+                renderer,
+                texture->GetTexture(),
+                nullptr,
+                &rect,
+                0.0,
+                nullptr,
+                SDL_FLIP_HORIZONTAL);
+        }
     }
     else
     {
@@ -126,7 +142,6 @@ void Vehicle::Draw(
             &hitbox);
     }
 }
-
 
 void Vehicle::SetSpeed(int value)
 {
