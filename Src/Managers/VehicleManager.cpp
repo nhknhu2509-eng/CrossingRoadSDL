@@ -38,7 +38,7 @@ VehicleManager::VehicleManager()
     //
 
     lanes.emplace_back(
-        347,
+        315,
         82,
         1,
         3,
@@ -52,7 +52,7 @@ VehicleManager::VehicleManager()
     // ==========================================
 
     lanes.emplace_back(
-        434,
+        420,
         82,
         -1,
         5,
@@ -66,7 +66,7 @@ VehicleManager::VehicleManager()
     // ==========================================
 
     lanes.emplace_back(
-        531,
+        515,
         82,
         1,
         4,
