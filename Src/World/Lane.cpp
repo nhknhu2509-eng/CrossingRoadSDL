@@ -18,25 +18,44 @@ Lane::Lane(
         Vehicle vehicle;
 
         /*
-            y đại diện cho vị trí của LANE.
+            ============================
+            CĂN SPRITE THEO LANE
+            ============================
 
-            Sprite cao hơn lane:
-                VEHICLE_HEIGHT = 150
-                lane height    = 82
+            Sprite cao hơn lane.
 
-            Phần chênh lệch:
-                150 - 82 = 68
+            VEHICLE_HEIGHT = 150
+            LANE_HEIGHT    = 82
 
-            Vì hitbox nằm ở đáy sprite,
-            đưa sprite lên 68 px để hitbox
-            nằm đúng trong lane.
+            Phần chiều cao dư:
+
+            150 - 82 = 68
+
+            Không dùng toàn bộ 68 px
+            để đẩy sprite lên nữa.
+
+            Chỉ dùng 30% phần dư.
         */
+
+        constexpr float SPRITE_VERTICAL_RATIO = 0.30f;
+
+        int spriteOffset =
+            static_cast<int>(
+                (Config::VEHICLE_HEIGHT - height)
+                * SPRITE_VERTICAL_RATIO);
+
         int vehicleY =
-            y - (Config::VEHICLE_HEIGHT - height);
+            y - spriteOffset;
 
         vehicle.SetPosition(
             i * spacing,
             vehicleY);
+
+        /*
+            Hitbox phải biết lane thật sự
+            nằm ở đâu.
+        */
+        vehicle.SetLaneY(y);
 
         vehicle.SetLaneHeight(height);
 
@@ -44,7 +63,10 @@ Lane::Lane(
 
         vehicle.SetDirection(direction);
 
-        // Phân bố nhiều loại xe
+        // ============================
+        // PHÂN BỐ CÁC LOẠI XE
+        // ============================
+
         switch (i % 4)
         {
         case 0:
@@ -61,6 +83,9 @@ Lane::Lane(
 
         case 3:
             vehicle.SetTexture("wagon_04");
+            break;
+
+        default:
             break;
         }
 

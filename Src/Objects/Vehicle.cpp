@@ -4,7 +4,7 @@
 #include "Config/GameConfig.h"
 
 // Bật để nhìn thấy hitbox.
-// Sau khi căn chỉnh xong đổi thành false.
+// Khi căn chỉnh xong có thể đổi thành false.
 constexpr bool DEBUG_HITBOX = true;
 
 Vehicle::Vehicle()
@@ -25,6 +25,7 @@ Vehicle::Vehicle()
 
     textureId = "wagon_01";
 
+    laneY = 0;
     laneHeight = Config::LANE_HEIGHT;
 
     UpdateHitbox();
@@ -77,7 +78,10 @@ void Vehicle::Draw(
             &rect);
     }
 
+    // =========================
     // DEBUG HITBOX
+    // =========================
+
     if (DEBUG_HITBOX)
     {
         SDL_SetRenderDrawColor(
@@ -111,6 +115,13 @@ void Vehicle::SetPosition(int x, int y)
     UpdateHitbox();
 }
 
+void Vehicle::SetLaneY(int y)
+{
+    laneY = y;
+
+    UpdateHitbox();
+}
+
 void Vehicle::SetLaneHeight(int height)
 {
     laneHeight = height;
@@ -136,31 +147,41 @@ SDL_Rect Vehicle::GetHitbox() const
 void Vehicle::UpdateHitbox()
 {
     /*
-        Hitbox:
+        ============================
+        HITBOX
+        ============================
 
-        - Chiều cao = chiều cao lane.
-        - Chiều rộng = 90% chiều rộng sprite.
-        - Hitbox nằm ở phần DƯỚI của sprite.
-        - Không dùng số pixel cố định.
+        Hitbox được xác định độc lập
+        với vị trí sprite.
+
+        Y của hitbox = Y của lane.
+        Chiều cao hitbox = chiều cao lane.
+
+        Như vậy khi sprite thay đổi
+        kích thước hoặc vị trí, hitbox
+        vẫn nằm đúng trong lane.
     */
 
     constexpr float SIDE_REDUCTION = 0.05f;
+
+    // ----------------------------
+    // Chiều ngang
+    // ----------------------------
 
     int sideOffset =
         static_cast<int>(
             rect.w * SIDE_REDUCTION);
 
-    // Chiều ngang
     hitbox.x =
         rect.x + sideOffset;
 
     hitbox.w =
         rect.w - (sideOffset * 2);
 
-    // Chiều cao bằng chiều cao lane
-    hitbox.h = laneHeight;
+    // ----------------------------
+    // Chiều dọc
+    // ----------------------------
 
-    // Đưa hitbox xuống đáy sprite
-    hitbox.y =
-        rect.y + rect.h - hitbox.h;
+    hitbox.y = laneY;
+    hitbox.h = laneHeight;
 }
