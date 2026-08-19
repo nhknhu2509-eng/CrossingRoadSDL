@@ -9,9 +9,7 @@ namespace Config
     // ==============================
 
     constexpr int WINDOW_WIDTH = 1280;
-
     constexpr int WINDOW_HEIGHT = 720;
-
     constexpr int TARGET_FPS = 60;
 
 
@@ -20,16 +18,12 @@ namespace Config
     // ==============================
 
     constexpr int PLAYER_WIDTH = 40;
-
     constexpr int PLAYER_HEIGHT = 40;
-
     constexpr int PLAYER_SPEED = 5;
-
 
     constexpr int PLAYER_START_X =
         WINDOW_WIDTH / 2
         - PLAYER_WIDTH / 2;
-
 
     constexpr int PLAYER_START_Y =
         WINDOW_HEIGHT - 80;
@@ -40,9 +34,7 @@ namespace Config
     // ==============================
 
     constexpr int VEHICLE_WIDTH = 170;
-
     constexpr int VEHICLE_HEIGHT = 150;
-
     constexpr int VEHICLE_SPEED = 3;
 
 
@@ -50,17 +42,17 @@ namespace Config
     // Animal
     // ==============================
     //
-    // Animal nằm gọn trong lane.
+    // Ảnh gốc của Deer / Rabbit /
+    // Squirrel đều là 512x512.
+    //
+    // Giữ tỉ lệ 1:1 khi render.
     //
     // Lane height = 82
     //
-    // Vì vậy sprite Animal được render
-    // trong vùng cao 82 pixel.
+    // => Animal = 82x82
     //
-    // ==============================
 
-    constexpr int ANIMAL_WIDTH = 120;
-
+    constexpr int ANIMAL_WIDTH = 82;
     constexpr int ANIMAL_HEIGHT = 82;
 
     constexpr int ANIMAL_SPEED = 3;

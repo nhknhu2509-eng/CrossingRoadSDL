@@ -4,8 +4,17 @@
 #include "Config/GameConfig.h"
 
 
-// Bật để nhìn thấy hitbox Animal.
-// Khi căn chỉnh xong có thể đổi thành false.
+// ==========================================
+// DEBUG HITBOX
+// ==========================================
+//
+// true  -> hiện hitbox màu xanh
+// false -> ẩn hitbox
+//
+// Trong giai đoạn căn chỉnh nên để true.
+// Sau khi hoàn tất đổi thành false.
+//
+
 constexpr bool DEBUG_ANIMAL_HITBOX = true;
 
 
@@ -49,22 +58,17 @@ Animal::Animal()
 
 
     // ==============================
-    // DEFAULT HITBOX MARGINS
+    // DEFAULT HITBOX
     // ==============================
     //
-    // Đây là giá trị tạm thời.
+    // Giá trị mặc định.
+    // Lane sẽ thay bằng giá trị
+    // chính xác cho từng animal.
     //
-    // Sau khi chạy game, chúng ta sẽ
-    // căn chính xác theo từng PNG.
-    //
-    // ==============================
 
-    hitboxLeft = 8;
-
+    hitboxLeft = 5;
     hitboxTop = 8;
-
-    hitboxRight = 8;
-
+    hitboxRight = 6;
     hitboxBottom = 8;
 
 
@@ -82,7 +86,7 @@ void Animal::Update()
 
 
     // ==============================
-    // RA KHỎI MÀN HÌNH
+    // WRAP SCREEN
     // ==============================
 
     if (rect.x > Config::WINDOW_WIDTH)
@@ -97,7 +101,10 @@ void Animal::Update()
     }
 
 
-    // Hitbox đi theo sprite
+    // ==============================
+    // UPDATE HITBOX
+    // ==============================
+
     UpdateHitbox();
 }
 
@@ -111,7 +118,7 @@ void Animal::Draw(
 
 
     // ==============================
-    // DRAW ANIMAL
+    // DRAW SPRITE
     // ==============================
 
     if (texture != nullptr &&
@@ -125,8 +132,9 @@ void Animal::Draw(
     }
     else
     {
-        // Nếu texture không load được,
-        // vẽ hình xanh để dễ phát hiện lỗi.
+        // ==============================
+        // DEBUG TEXTURE ERROR
+        // ==============================
 
         SDL_SetRenderDrawColor(
             renderer,
@@ -178,7 +186,6 @@ void Animal::SetPosition(
     int y)
 {
     rect.x = x;
-
     rect.y = y;
 
     UpdateHitbox();
@@ -199,11 +206,8 @@ void Animal::SetHitboxMargins(
     int bottom)
 {
     hitboxLeft = left;
-
     hitboxTop = top;
-
     hitboxRight = right;
-
     hitboxBottom = bottom;
 
     UpdateHitbox();

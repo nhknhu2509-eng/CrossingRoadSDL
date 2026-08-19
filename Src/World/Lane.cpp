@@ -30,20 +30,18 @@ Lane::Lane(
 
 
             // ==========================================
-            // Animal nằm gọn trong lane
+            // ANIMAL POSITION
             // ==========================================
             //
-            // Lane:
+            // Animal cao đúng bằng lane.
             //
-            // y
-            // ↓
-            // ┌──────────────────────────┐
-            // │          ANIMAL          │
-            // └──────────────────────────┘
+            // Vì:
             //
-            // Animal height = lane height
+            // ANIMAL_HEIGHT = 82
+            // LANE_HEIGHT   = 82
             //
-            // ==========================================
+            // nên đáy Animal trùng đáy lane.
+            //
 
             int animalY =
                 y + height
@@ -55,11 +53,18 @@ Lane::Lane(
                 animalY);
 
 
-            animal.SetSpeed(speed);
+            // ==========================================
+            // MOVEMENT
+            // ==========================================
 
+            animal.SetSpeed(speed);
 
             animal.SetDirection(direction);
 
+
+            // ==========================================
+            // TEXTURE
+            // ==========================================
 
             animal.SetTexture(
                 animalTexture);
@@ -69,21 +74,68 @@ Lane::Lane(
             // HITBOX
             // ==========================================
             //
-            // Animal nằm hoàn toàn trong lane.
+            // Các PNG đều là 512x512.
             //
-            // Không bỏ phần trên vì góc nhìn
-            // như Vehicle.
+            // Sau khi scale xuống 82x82,
+            // vùng transparent được tính từ
+            // alpha bbox của từng PNG.
             //
-            // Chỉ bỏ phần transparent
-            // ở 4 phía.
+            // ------------------------------------------
+            //
+            // DEER:
+            // left   = 5
+            // top    = 8
+            // right  = 6
+            // bottom = 7
+            //
+            // RABBIT:
+            // left   = 5
+            // top    = 8
+            // right  = 6
+            // bottom = 9
+            //
+            // SQUIRREL:
+            // left   = 5
+            // top    = 8
+            // right  = 6
+            // bottom = 8
             //
             // ==========================================
 
-            animal.SetHitboxMargins(
-                8,      // left
-                8,      // top
-                8,      // right
-                8);     // bottom
+
+            if (animalTexture == "deer")
+            {
+                animal.SetHitboxMargins(
+                    5,      // left
+                    8,      // top
+                    6,      // right
+                    7);     // bottom
+            }
+            else if (animalTexture == "rabbit")
+            {
+                animal.SetHitboxMargins(
+                    5,      // left
+                    8,      // top
+                    6,      // right
+                    9);     // bottom
+            }
+            else if (animalTexture == "squirrel")
+            {
+                animal.SetHitboxMargins(
+                    5,      // left
+                    8,      // top
+                    6,      // right
+                    8);     // bottom
+            }
+            else
+            {
+                // Giá trị mặc định
+                animal.SetHitboxMargins(
+                    5,
+                    8,
+                    6,
+                    8);
+            }
 
 
             animals.push_back(animal);
@@ -106,7 +158,7 @@ Lane::Lane(
 
 
         // ==========================================
-        // CĂN SPRITE XE
+        // VEHICLE POSITION
         // ==========================================
 
         int vehicleY =
@@ -119,20 +171,30 @@ Lane::Lane(
             vehicleY);
 
 
-        // Giữ nguyên cách hitbox
-        // của Vehicle hiện tại.
+        // ==========================================
+        // VEHICLE HITBOX
+        // ==========================================
+        //
+        // GIỮ NGUYÊN LOGIC VEHICLE.
+        //
+        // Không áp dụng hitbox Animal
+        // cho Vehicle.
+        //
 
         vehicle.SetLaneHeight(height);
 
 
-        vehicle.SetSpeed(speed);
+        // ==========================================
+        // MOVEMENT
+        // ==========================================
 
+        vehicle.SetSpeed(speed);
 
         vehicle.SetDirection(direction);
 
 
         // ==========================================
-        // TEXTURE XE
+        // TEXTURE
         // ==========================================
 
         switch (i % 4)
