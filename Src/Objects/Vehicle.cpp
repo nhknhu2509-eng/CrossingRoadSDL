@@ -15,16 +15,15 @@ Vehicle::Vehicle()
     rect.w = Config::VEHICLE_WIDTH;
     rect.h = Config::VEHICLE_HEIGHT;
 
+    hitbox.x = 0;
+    hitbox.y = 0;
+    hitbox.w = 0;
+    hitbox.h = 0;
+
     speed = Config::VEHICLE_SPEED;
     direction = 1;
 
     textureId = "wagon_01";
-
-    // Chiều cao lane mặc định.
-    // Lane sẽ cập nhật lại giá trị này.
-    laneHeight = 82;
-
-    UpdateHitbox();
 }
 
 void Vehicle::Update()
@@ -129,10 +128,10 @@ SDL_Rect Vehicle::GetRect() const
     return rect;
 }
 
-SDL_Rect Vehicle::GetHitbox() const
+/* SDL_Rect Vehicle::GetHitbox() const
 {
     return hitbox;
-}
+}*/
 
 void Vehicle::UpdateHitbox()
 {
@@ -165,6 +164,22 @@ void Vehicle::UpdateHitbox()
     hitbox.h = laneHeight;
 
     // Căn giữa hitbox theo chiều dọc
+    // Hitbox nằm ở phần dưới của sprite,
+// tương ứng với phần xe tiếp xúc với mặt đường.
     hitbox.y =
-        rect.y + (rect.h - hitbox.h) / 2;
+        rect.y + rect.h - hitbox.h;
+}
+SDL_Rect Vehicle::GetHitbox() const
+{
+    SDL_Rect result;
+
+    result.w = rect.w;
+    result.h = Config::LANE_HEIGHT;
+
+    result.x = rect.x;
+
+    // Hitbox lấy phần dưới của sprite
+    result.y = rect.y + rect.h - result.h;
+
+    return result;
 }

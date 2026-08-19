@@ -17,10 +17,14 @@ namespace Config
     constexpr int PLAYER_START_X = WINDOW_WIDTH / 2 - PLAYER_WIDTH / 2;
     constexpr int PLAYER_START_Y = WINDOW_HEIGHT - 80;
 
+ 
     // Vehicle
     constexpr int VEHICLE_WIDTH = 170;
     constexpr int VEHICLE_HEIGHT = 150;
     constexpr int VEHICLE_SPEED = 3;
+
+    // Lane
+    constexpr int LANE_HEIGHT = 82;
 
     // Colors
     constexpr SDL_Color PLAYER_COLOR = { 255, 0, 0, 255 };
