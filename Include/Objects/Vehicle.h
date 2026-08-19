@@ -43,6 +43,11 @@ public:
         const std::string& textureId);
 
 
+    void SetSpriteSize(
+        int width,
+        int height);
+
+
     SDL_Rect GetRect() const;
 
 

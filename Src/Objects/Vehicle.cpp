@@ -1,245 +1,138 @@
-#include "Objects/Vehicle.h"
+#include "Managers/VehicleManager.h"
 
 #include "Graphics/TextureManager.h"
-#include "Config/GameConfig.h"
-
-// Bật để nhìn thấy hitbox.
-// Khi căn chỉnh xong có thể đổi thành false.
-constexpr bool DEBUG_HITBOX = true;
 
 
-Vehicle::Vehicle()
+VehicleManager::VehicleManager()
 {
-    // =========================
-    // SPRITE
-    // =========================
+    // ==========================================
+    // Lane 1 - Vehicle / Wagon
+    // ==========================================
 
-    rect.x = 0;
-    rect.y = 0;
-
-    rect.w = Config::VEHICLE_WIDTH;
-    rect.h = Config::VEHICLE_HEIGHT;
-
-
-    // =========================
-    // HITBOX
-    // =========================
-
-    hitbox.x = 0;
-    hitbox.y = 0;
-    hitbox.w = 0;
-    hitbox.h = 0;
+    lanes.emplace_back(
+        185,
+        82,
+        1,
+        3,
+        3);
 
 
-    // =========================
-    // VEHICLE
-    // =========================
+    // ==========================================
+    // Lane 2 - Vehicle / Wagon
+    // ==========================================
 
-    speed = Config::VEHICLE_SPEED;
-    direction = 1;
+    lanes.emplace_back(
+        267,
+        82,
+        -1,
+        4,
+        3);
 
-    textureId = "wagon_01";
 
-    // Chiều cao lane mặc định
-    laneHeight = Config::LANE_HEIGHT;
+    // ==========================================
+    // Lane 3 - Vehicle / Deer
+    // ==========================================
+    //
+    // Vẫn là Vehicle.
+    // Chỉ thay sprite thành deer.png.
+    //
 
-    UpdateHitbox();
+    lanes.emplace_back(
+        347,
+        82,
+        1,
+        3,
+        3,
+        "deer",
+        "");
+
+
+    // ==========================================
+    // Lane 4 - Animal / Squirrel
+    // ==========================================
+
+    lanes.emplace_back(
+        434,
+        82,
+        -1,
+        5,
+        3,
+        "",
+        "squirrel");
+
+
+    // ==========================================
+    // Lane 5 - Animal / Rabbit
+    // ==========================================
+
+    lanes.emplace_back(
+        531,
+        82,
+        1,
+        4,
+        3,
+        "",
+        "rabbit");
 }
 
 
-void Vehicle::Update()
+void VehicleManager::Update()
 {
-    // Xe chạy ngang
-    rect.x += speed * direction;
-
-
-    // Ra khỏi bên phải
-    if (rect.x > Config::WINDOW_WIDTH)
+    for (Lane& lane : lanes)
     {
-        rect.x = -rect.w;
+        lane.Update();
     }
-
-
-    // Ra khỏi bên trái
-    if (rect.x + rect.w < 0)
-    {
-        rect.x = Config::WINDOW_WIDTH;
-    }
-
-
-    // Cập nhật hitbox theo sprite
-    UpdateHitbox();
 }
 
 
-void Vehicle::Draw(
+void VehicleManager::Draw(
     SDL_Renderer* renderer,
     TextureManager& textureManager)
 {
-    Texture* texture =
-        textureManager.GetTexture(textureId);
-
-
-    // =========================
-    // DRAW SPRITE
-    // =========================
-
-    if (texture != nullptr &&
-        texture->GetTexture() != nullptr)
+    for (Lane& lane : lanes)
     {
-        // Xe chạy sang phải
-        if (direction > 0)
+        lane.Draw(
+            renderer,
+            textureManager);
+    }
+}
+
+
+std::vector<Vehicle>
+VehicleManager::GetVehicles() const
+{
+    std::vector<Vehicle> result;
+
+
+    for (const Lane& lane : lanes)
+    {
+        for (const Vehicle& vehicle :
+             lane.GetVehicles())
         {
-            SDL_RenderCopy(
-                renderer,
-                texture->GetTexture(),
-                nullptr,
-                &rect);
-        }
-        // Xe chạy sang trái
-        else
-        {
-            SDL_RenderCopyEx(
-                renderer,
-                texture->GetTexture(),
-                nullptr,
-                &rect,
-                0.0,
-                nullptr,
-                SDL_FLIP_HORIZONTAL);
+            result.push_back(vehicle);
         }
     }
-    else
-    {
-        SDL_SetRenderDrawColor(
-            renderer,
-            Config::VEHICLE_COLOR.r,
-            Config::VEHICLE_COLOR.g,
-            Config::VEHICLE_COLOR.b,
-            Config::VEHICLE_COLOR.a);
 
-        SDL_RenderFillRect(
-            renderer,
-            &rect);
+
+    return result;
+}
+
+
+std::vector<Animal>
+VehicleManager::GetAnimals() const
+{
+    std::vector<Animal> result;
+
+
+    for (const Lane& lane : lanes)
+    {
+        for (const Animal& animal :
+             lane.GetAnimals())
+        {
+            result.push_back(animal);
+        }
     }
 
 
-    // =========================
-    // DEBUG HITBOX
-    // =========================
-
-    if (DEBUG_HITBOX)
-    {
-        SDL_SetRenderDrawColor(
-            renderer,
-            255,
-            0,
-            0,
-            255);
-
-        SDL_RenderDrawRect(
-            renderer,
-            &hitbox);
-    }
-}
-
-void Vehicle::SetSpeed(int value)
-{
-    speed = value;
-}
-
-
-void Vehicle::SetDirection(int value)
-{
-    direction = value;
-}
-
-
-void Vehicle::SetPosition(int x, int y)
-{
-    rect.x = x;
-    rect.y = y;
-
-    UpdateHitbox();
-}
-
-
-void Vehicle::SetLaneHeight(int height)
-{
-    laneHeight = height;
-
-    UpdateHitbox();
-}
-
-
-void Vehicle::SetTexture(const std::string& id)
-{
-    textureId = id;
-}
-
-
-SDL_Rect Vehicle::GetRect() const
-{
-    return rect;
-}
-
-
-SDL_Rect Vehicle::GetHitbox() const
-{
-    return hitbox;
-}
-
-
-// ============================================================
-// UPDATE HITBOX
-// ============================================================
-//
-// Mục tiêu:
-//
-// 1. Hitbox không bao toàn bộ sprite.
-// 2. Chiều cao hitbox = chiều cao lane.
-// 3. Cạnh dưới hitbox = cạnh dưới sprite.
-// 4. Hitbox chỉ nằm ở phần dưới của xe.
-//
-// ============================================================
-
-void Vehicle::UpdateHitbox()
-{
-    // =========================
-    // CHIỀU NGANG
-    // =========================
-
-    constexpr float SIDE_REDUCTION = 0.05f;
-
-    int sideOffset =
-        static_cast<int>(
-            rect.w * SIDE_REDUCTION);
-
-    hitbox.x =
-        rect.x + sideOffset;
-
-    hitbox.w =
-        rect.w - (sideOffset * 2);
-
-
-    // =========================
-    // CHIỀU DỌC
-    // =========================
-
-    // Cạnh dưới của sprite
-    int spriteBottom =
-        rect.y + rect.h;
-
-
-    // Hitbox cao đúng bằng lane
-    hitbox.h =
-        laneHeight;
-
-
-    // Cạnh dưới hitbox trùng
-    // cạnh dưới sprite
-    hitbox.y =
-        spriteBottom - hitbox.h;
-    hitbox.h =
-        laneHeight/2;
+    return result;
 }

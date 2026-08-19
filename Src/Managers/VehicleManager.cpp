@@ -6,7 +6,7 @@
 VehicleManager::VehicleManager()
 {
     // ==========================================
-    // Lane 1 - VEHICLE
+    // Lane 1 - Vehicle / Wagon
     // ==========================================
 
     lanes.emplace_back(
@@ -18,7 +18,7 @@ VehicleManager::VehicleManager()
 
 
     // ==========================================
-    // Lane 2 - VEHICLE
+    // Lane 2 - Vehicle / Wagon
     // ==========================================
 
     lanes.emplace_back(
@@ -30,8 +30,12 @@ VehicleManager::VehicleManager()
 
 
     // ==========================================
-    // Lane 3 - DEER
+    // Lane 3 - Vehicle / Deer
     // ==========================================
+    //
+    // Vẫn là Vehicle.
+    // Chỉ thay sprite thành deer.png.
+    //
 
     lanes.emplace_back(
         347,
@@ -39,11 +43,12 @@ VehicleManager::VehicleManager()
         1,
         3,
         3,
-        "deer");
+        "deer",
+        "");
 
 
     // ==========================================
-    // Lane 4 - SQUIRREL
+    // Lane 4 - Animal / Squirrel
     // ==========================================
 
     lanes.emplace_back(
@@ -52,11 +57,12 @@ VehicleManager::VehicleManager()
         -1,
         5,
         3,
+        "",
         "squirrel");
 
 
     // ==========================================
-    // Lane 5 - RABBIT
+    // Lane 5 - Animal / Rabbit
     // ==========================================
 
     lanes.emplace_back(
@@ -65,6 +71,7 @@ VehicleManager::VehicleManager()
         1,
         4,
         3,
+        "",
         "rabbit");
 }
 

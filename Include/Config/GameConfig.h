@@ -41,21 +41,35 @@ namespace Config
     // ==============================
     // Animal
     // ==============================
-    //
-    // Ảnh gốc của Deer / Rabbit /
-    // Squirrel đều là 512x512.
-    //
-    // Giữ tỉ lệ 1:1 khi render.
-    //
-    // Lane height = 82
-    //
-    // => Animal = 82x82
-    //
-
-    constexpr int ANIMAL_WIDTH = 82;
-    constexpr int ANIMAL_HEIGHT = 82;
 
     constexpr int ANIMAL_SPEED = 3;
+
+
+    // ==============================
+    // Individual Animal Sprite Size
+    // ==============================
+    //
+    // Bạn chỉ cần chỉnh 6 giá trị này
+    // để thay đổi kích thước từng sprite.
+    //
+    // Deer:
+    // Lane 3 - Vehicle + deer.png
+    //
+    // Squirrel:
+    // Lane 4 - Animal + squirrel.png
+    //
+    // Rabbit:
+    // Lane 5 - Animal + rabbit.png
+    //
+
+    constexpr int DEER_WIDTH = 120;
+    constexpr int DEER_HEIGHT = 100;
+
+    constexpr int SQUIRREL_WIDTH = 70;
+    constexpr int SQUIRREL_HEIGHT = 70;
+
+    constexpr int RABBIT_WIDTH = 75;
+    constexpr int RABBIT_HEIGHT = 75;
 
 
     // ==============================

@@ -11,9 +11,6 @@
 // true  -> hiện hitbox màu xanh
 // false -> ẩn hitbox
 //
-// Trong giai đoạn căn chỉnh nên để true.
-// Sau khi hoàn tất đổi thành false.
-//
 
 constexpr bool DEBUG_ANIMAL_HITBOX = true;
 
@@ -27,8 +24,10 @@ Animal::Animal()
     rect.x = 0;
     rect.y = 0;
 
-    rect.w = Config::ANIMAL_WIDTH;
-    rect.h = Config::ANIMAL_HEIGHT;
+    // Kích thước mặc định.
+    // Sẽ được thay đổi khi SetTexture().
+    rect.w = Config::SQUIRREL_WIDTH;
+    rect.h = Config::SQUIRREL_HEIGHT;
 
 
     // ==============================
@@ -60,11 +59,6 @@ Animal::Animal()
     // ==============================
     // DEFAULT HITBOX
     // ==============================
-    //
-    // Giá trị mặc định.
-    // Lane sẽ thay bằng giá trị
-    // chính xác cho từng animal.
-    //
 
     hitboxLeft = 5;
     hitboxTop = 8;
@@ -76,12 +70,12 @@ Animal::Animal()
 }
 
 
+// ==========================================
+// UPDATE
+// ==========================================
+
 void Animal::Update()
 {
-    // ==============================
-    // DI CHUYỂN
-    // ==============================
-
     rect.x += speed * direction;
 
 
@@ -101,13 +95,13 @@ void Animal::Update()
     }
 
 
-    // ==============================
-    // UPDATE HITBOX
-    // ==============================
-
     UpdateHitbox();
 }
 
+
+// ==========================================
+// DRAW
+// ==========================================
 
 void Animal::Draw(
     SDL_Renderer* renderer,
@@ -116,10 +110,6 @@ void Animal::Draw(
     Texture* texture =
         textureManager.GetTexture(textureId);
 
-
-    // ==============================
-    // DRAW SPRITE
-    // ==============================
 
     if (texture != nullptr &&
         texture->GetTexture() != nullptr)
@@ -132,10 +122,6 @@ void Animal::Draw(
     }
     else
     {
-        // ==============================
-        // DEBUG TEXTURE ERROR
-        // ==============================
-
         SDL_SetRenderDrawColor(
             renderer,
             0,
@@ -169,17 +155,29 @@ void Animal::Draw(
 }
 
 
+// ==========================================
+// SPEED
+// ==========================================
+
 void Animal::SetSpeed(int value)
 {
     speed = value;
 }
 
 
+// ==========================================
+// DIRECTION
+// ==========================================
+
 void Animal::SetDirection(int value)
 {
     direction = value;
 }
 
+
+// ==========================================
+// POSITION
+// ==========================================
 
 void Animal::SetPosition(
     int x,
@@ -192,12 +190,46 @@ void Animal::SetPosition(
 }
 
 
+// ==========================================
+// TEXTURE
+// ==========================================
+
 void Animal::SetTexture(
-    const std::string& textureId)
+    const std::string& id)
 {
-    this->textureId = textureId;
+    textureId = id;
+
+
+    // ==========================================
+    // KÍCH THƯỚC RIÊNG CHO TỪNG SPRITE
+    // ==========================================
+
+    if (textureId == "deer")
+    {
+        rect.w = Config::DEER_WIDTH;
+        rect.h = Config::DEER_HEIGHT;
+    }
+    else if (textureId == "squirrel")
+    {
+        rect.w = Config::SQUIRREL_WIDTH;
+        rect.h = Config::SQUIRREL_HEIGHT;
+    }
+    else if (textureId == "rabbit")
+    {
+        rect.w = Config::RABBIT_WIDTH;
+        rect.h = Config::RABBIT_HEIGHT;
+    }
+
+
+    // Kích thước thay đổi
+    // nên phải cập nhật hitbox.
+    UpdateHitbox();
 }
 
+
+// ==========================================
+// HITBOX MARGINS
+// ==========================================
 
 void Animal::SetHitboxMargins(
     int left,
@@ -214,11 +246,19 @@ void Animal::SetHitboxMargins(
 }
 
 
+// ==========================================
+// GET RECT
+// ==========================================
+
 SDL_Rect Animal::GetRect() const
 {
     return rect;
 }
 
+
+// ==========================================
+// GET HITBOX
+// ==========================================
 
 SDL_Rect Animal::GetHitbox() const
 {
@@ -226,37 +266,25 @@ SDL_Rect Animal::GetHitbox() const
 }
 
 
+// ==========================================
+// UPDATE HITBOX
+// ==========================================
+
 void Animal::UpdateHitbox()
 {
-    // ==============================
-    // LEFT
-    // ==============================
-
     hitbox.x =
         rect.x + hitboxLeft;
 
 
-    // ==============================
-    // TOP
-    // ==============================
-
     hitbox.y =
         rect.y + hitboxTop;
 
-
-    // ==============================
-    // WIDTH
-    // ==============================
 
     hitbox.w =
         rect.w
         - hitboxLeft
         - hitboxRight;
 
-
-    // ==============================
-    // HEIGHT
-    // ==============================
 
     hitbox.h =
         rect.h

@@ -22,6 +22,7 @@ public:
         int direction,
         int speed,
         int vehicleCount,
+        const std::string& vehicleTexture = "",
         const std::string& animalTexture = "");
 
 
@@ -43,23 +44,9 @@ public:
 
 private:
 
-    // ==============================
-    // Vehicles
-    // ==============================
-
     std::vector<Vehicle> vehicles;
 
-
-    // ==============================
-    // Animals
-    // ==============================
-
     std::vector<Animal> animals;
-
-
-    // ==============================
-    // Traffic light
-    // ==============================
 
     TrafficLight trafficLight;
 };

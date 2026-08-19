@@ -10,6 +10,7 @@ Lane::Lane(
     int direction,
     int speed,
     int vehicleCount,
+    const std::string& vehicleTexture,
     const std::string& animalTexture)
     : trafficLight(760, y)
 {
@@ -29,23 +30,21 @@ Lane::Lane(
             Animal animal;
 
 
-            // ==========================================
-            // ANIMAL POSITION
-            // ==========================================
-            //
-            // Animal cao đúng bằng lane.
-            //
-            // Vì:
-            //
-            // ANIMAL_HEIGHT = 82
-            // LANE_HEIGHT   = 82
-            //
-            // nên đáy Animal trùng đáy lane.
-            //
+            // ==============================
+            // TEXTURE
+            // ==============================
+
+            animal.SetTexture(
+                animalTexture);
+
+
+            // ==============================
+            // POSITION
+            // ==============================
 
             int animalY =
                 y + height
-                - Config::ANIMAL_HEIGHT;
+                - animal.GetRect().h;
 
 
             animal.SetPosition(
@@ -53,83 +52,37 @@ Lane::Lane(
                 animalY);
 
 
-            // ==========================================
+            // ==============================
             // MOVEMENT
-            // ==========================================
+            // ==============================
 
             animal.SetSpeed(speed);
 
             animal.SetDirection(direction);
 
 
-            // ==========================================
-            // TEXTURE
-            // ==========================================
-
-            animal.SetTexture(
-                animalTexture);
-
-
-            // ==========================================
+            // ==============================
             // HITBOX
-            // ==========================================
-            //
-            // Các PNG đều là 512x512.
-            //
-            // Sau khi scale xuống 82x82,
-            // vùng transparent được tính từ
-            // alpha bbox của từng PNG.
-            //
-            // ------------------------------------------
-            //
-            // DEER:
-            // left   = 5
-            // top    = 8
-            // right  = 6
-            // bottom = 7
-            //
-            // RABBIT:
-            // left   = 5
-            // top    = 8
-            // right  = 6
-            // bottom = 9
-            //
-            // SQUIRREL:
-            // left   = 5
-            // top    = 8
-            // right  = 6
-            // bottom = 8
-            //
-            // ==========================================
+            // ==============================
 
-
-            if (animalTexture == "deer")
+            if (animalTexture == "squirrel")
             {
                 animal.SetHitboxMargins(
-                    5,      // left
-                    8,      // top
-                    6,      // right
-                    7);     // bottom
+                    5,
+                    8,
+                    6,
+                    8);
             }
             else if (animalTexture == "rabbit")
             {
                 animal.SetHitboxMargins(
-                    5,      // left
-                    8,      // top
-                    6,      // right
-                    9);     // bottom
-            }
-            else if (animalTexture == "squirrel")
-            {
-                animal.SetHitboxMargins(
-                    5,      // left
-                    8,      // top
-                    6,      // right
-                    8);     // bottom
+                    5,
+                    8,
+                    6,
+                    9);
             }
             else
             {
-                // Giá trị mặc định
                 animal.SetHitboxMargins(
                     5,
                     8,
@@ -157,13 +110,61 @@ Lane::Lane(
         Vehicle vehicle;
 
 
-        // ==========================================
-        // VEHICLE POSITION
-        // ==========================================
+        // ==============================
+        // TEXTURE
+        // ==============================
+
+        if (!vehicleTexture.empty())
+        {
+            vehicle.SetTexture(
+                vehicleTexture);
+
+
+            // ==========================================
+            // DEER SPRITE SIZE
+            // ==========================================
+
+            if (vehicleTexture == "deer")
+            {
+                vehicle.SetSpriteSize(
+                    Config::DEER_WIDTH,
+                    Config::DEER_HEIGHT);
+            }
+        }
+        else
+        {
+            switch (i % 4)
+            {
+            case 0:
+                vehicle.SetTexture(
+                    "wagon_01");
+                break;
+
+            case 1:
+                vehicle.SetTexture(
+                    "wagon_02");
+                break;
+
+            case 2:
+                vehicle.SetTexture(
+                    "wagon_03");
+                break;
+
+            case 3:
+                vehicle.SetTexture(
+                    "wagon_04");
+                break;
+            }
+        }
+
+
+        // ==============================
+        // POSITION
+        // ==============================
 
         int vehicleY =
             y + height
-            - Config::VEHICLE_HEIGHT;
+            - vehicle.GetRect().h;
 
 
         vehicle.SetPosition(
@@ -171,76 +172,30 @@ Lane::Lane(
             vehicleY);
 
 
-        // ==========================================
-        // VEHICLE HITBOX
-        // ==========================================
-        //
-        // GIỮ NGUYÊN LOGIC VEHICLE.
-        //
-        // Không áp dụng hitbox Animal
-        // cho Vehicle.
-        //
+        // ==============================
+        // HITBOX
+        // ==============================
 
         vehicle.SetLaneHeight(height);
 
 
-        // ==========================================
+        // ==============================
         // MOVEMENT
-        // ==========================================
+        // ==============================
 
         vehicle.SetSpeed(speed);
 
         vehicle.SetDirection(direction);
 
 
-        // ==========================================
-        // TEXTURE
-        // ==========================================
-
-        switch (i % 4)
-        {
-        case 0:
-
-            vehicle.SetTexture(
-                "wagon_01");
-
-            break;
-
-
-        case 1:
-
-            vehicle.SetTexture(
-                "wagon_02");
-
-            break;
-
-
-        case 2:
-
-            vehicle.SetTexture(
-                "wagon_03");
-
-            break;
-
-
-        case 3:
-
-            vehicle.SetTexture(
-                "wagon_04");
-
-            break;
-
-
-        default:
-
-            break;
-        }
-
-
         vehicles.push_back(vehicle);
     }
 }
 
+
+// ==================================================
+// UPDATE
+// ==================================================
 
 void Lane::Update()
 {
@@ -249,19 +204,11 @@ void Lane::Update()
 
     if (trafficLight.CanMove())
     {
-        // ==============================
-        // VEHICLE
-        // ==============================
-
         for (Vehicle& vehicle : vehicles)
         {
             vehicle.Update();
         }
 
-
-        // ==============================
-        // ANIMAL
-        // ==============================
 
         for (Animal& animal : animals)
         {
@@ -271,14 +218,14 @@ void Lane::Update()
 }
 
 
+// ==================================================
+// DRAW
+// ==================================================
+
 void Lane::Draw(
     SDL_Renderer* renderer,
     TextureManager& textureManager)
 {
-    // ==============================
-    // VEHICLE
-    // ==============================
-
     for (Vehicle& vehicle : vehicles)
     {
         vehicle.Draw(
@@ -286,10 +233,6 @@ void Lane::Draw(
             textureManager);
     }
 
-
-    // ==============================
-    // ANIMAL
-    // ==============================
 
     for (Animal& animal : animals)
     {
@@ -299,13 +242,13 @@ void Lane::Draw(
     }
 
 
-    // ==============================
-    // TRAFFIC LIGHT
-    // ==============================
-
     trafficLight.Draw(renderer);
 }
 
+
+// ==================================================
+// GET VEHICLES
+// ==================================================
 
 const std::vector<Vehicle>&
 Lane::GetVehicles() const
@@ -313,6 +256,10 @@ Lane::GetVehicles() const
     return vehicles;
 }
 
+
+// ==================================================
+// GET ANIMALS
+// ==================================================
 
 const std::vector<Animal>&
 Lane::GetAnimals() const
