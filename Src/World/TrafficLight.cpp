@@ -1,9 +1,11 @@
 #include "World/TrafficLight.h"
 
+
 TrafficLight::TrafficLight(int x, int y)
 {
     rect.x = x;
     rect.y = y;
+
     rect.w = 20;
     rect.h = 50;
 
@@ -12,9 +14,11 @@ TrafficLight::TrafficLight(int x, int y)
     lastSwitchTime = SDL_GetTicks();
 }
 
+
 void TrafficLight::Update()
 {
     Uint32 now = SDL_GetTicks();
+
 
     switch (state)
     {
@@ -25,7 +29,9 @@ void TrafficLight::Update()
             state = LightState::Yellow;
             lastSwitchTime = now;
         }
+
         break;
+
 
     case LightState::Yellow:
 
@@ -34,7 +40,9 @@ void TrafficLight::Update()
             state = LightState::Red;
             lastSwitchTime = now;
         }
+
         break;
+
 
     case LightState::Red:
 
@@ -43,31 +51,68 @@ void TrafficLight::Update()
             state = LightState::Green;
             lastSwitchTime = now;
         }
+
+        break;
+
+
+    default:
         break;
     }
 }
+
 
 bool TrafficLight::CanMove() const
 {
     return state != LightState::Red;
 }
 
+
 void TrafficLight::Draw(SDL_Renderer* renderer)
 {
     switch (state)
     {
     case LightState::Green:
-        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+
+        SDL_SetRenderDrawColor(
+            renderer,
+            0,
+            255,
+            0,
+            255);
+
         break;
+
 
     case LightState::Yellow:
-        SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+
+        SDL_SetRenderDrawColor(
+            renderer,
+            255,
+            255,
+            0,
+            255);
+
         break;
 
+
     case LightState::Red:
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+
+        SDL_SetRenderDrawColor(
+            renderer,
+            255,
+            0,
+            0,
+            255);
+
+        break;
+
+
+    default:
         break;
     }
 
-    SDL_RenderFillRect(renderer, &rect);
+
+    SDL_RenderFillRect(
+        renderer,
+        &rect);
 }

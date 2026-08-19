@@ -22,7 +22,6 @@ public:
     void SetDirection(int value);
     void SetPosition(int x, int y);
 
-    void SetLaneY(int y);
     void SetLaneHeight(int height);
 
     void SetTexture(const std::string& textureId);
@@ -43,10 +42,7 @@ private:
     int speed;
     int direction;
 
-    // Vị trí Y của lane
-    int laneY;
-
-    // Chiều cao của lane
+    // Chiều cao phần đường mà xe chiếm
     int laneHeight;
 
     std::string textureId;

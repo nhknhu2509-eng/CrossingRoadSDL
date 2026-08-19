@@ -3,6 +3,7 @@
 #include "Graphics/TextureManager.h"
 #include "Config/GameConfig.h"
 
+
 Lane::Lane(
     int y,
     int height,
@@ -13,59 +14,64 @@ Lane::Lane(
 {
     int spacing = 250;
 
+
     for (int i = 0; i < vehicleCount; i++)
     {
         Vehicle vehicle;
 
-        /*
-            ============================
-            CĂN SPRITE THEO LANE
-            ============================
 
-            Sprite cao hơn lane.
-
-            VEHICLE_HEIGHT = 150
-            LANE_HEIGHT    = 82
-
-            Phần chiều cao dư:
-
-            150 - 82 = 68
-
-            Không dùng toàn bộ 68 px
-            để đẩy sprite lên nữa.
-
-            Chỉ dùng 30% phần dư.
-        */
-
-        constexpr float SPRITE_VERTICAL_RATIO = 0.30f;
-
-        int spriteOffset =
-            static_cast<int>(
-                (Config::VEHICLE_HEIGHT - height)
-                * SPRITE_VERTICAL_RATIO);
+        // ====================================================
+        // CĂN SPRITE VỚI LANE
+        // ====================================================
+        //
+        // Lane:
+        //
+        //     y
+        //     ↓
+        //     ┌─────────────────────┐
+        //     │                     │
+        //     │        LANE         │  height = 82
+        //     │                     │
+        //     └─────────────────────┘
+        //                         ↑
+        //                     lane bottom
+        //
+        // Sprite cao 150 px.
+        //
+        // Ta đặt cạnh dưới sprite trùng
+        // cạnh dưới lane.
+        //
+        // spriteBottom = y + height
+        //
+        // => spriteY + VEHICLE_HEIGHT
+        //        = y + height
+        //
+        // => spriteY
+        //        = y + height - VEHICLE_HEIGHT
+        //
+        // ====================================================
 
         int vehicleY =
-            y - spriteOffset;
+            y + height - Config::VEHICLE_HEIGHT;
+
 
         vehicle.SetPosition(
             i * spacing,
             vehicleY);
 
-        /*
-            Hitbox phải biết lane thật sự
-            nằm ở đâu.
-        */
-        vehicle.SetLaneY(y);
 
+        // Hitbox cao bằng lane
         vehicle.SetLaneHeight(height);
+
 
         vehicle.SetSpeed(speed);
 
         vehicle.SetDirection(direction);
 
-        // ============================
+
+        // ====================================================
         // PHÂN BỐ CÁC LOẠI XE
-        // ============================
+        // ====================================================
 
         switch (i % 4)
         {
@@ -89,13 +95,16 @@ Lane::Lane(
             break;
         }
 
+
         vehicles.push_back(vehicle);
     }
 }
 
+
 void Lane::Update()
 {
     trafficLight.Update();
+
 
     if (trafficLight.CanMove())
     {
@@ -105,6 +114,7 @@ void Lane::Update()
         }
     }
 }
+
 
 void Lane::Draw(
     SDL_Renderer* renderer,
@@ -117,8 +127,10 @@ void Lane::Draw(
             textureManager);
     }
 
+
     trafficLight.Draw(renderer);
 }
+
 
 const std::vector<Vehicle>& Lane::GetVehicles() const
 {

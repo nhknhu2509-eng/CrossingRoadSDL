@@ -7,46 +7,70 @@
 // Khi căn chỉnh xong có thể đổi thành false.
 constexpr bool DEBUG_HITBOX = true;
 
+
 Vehicle::Vehicle()
 {
+    // =========================
+    // SPRITE
+    // =========================
+
     rect.x = 0;
     rect.y = 0;
 
     rect.w = Config::VEHICLE_WIDTH;
     rect.h = Config::VEHICLE_HEIGHT;
 
+
+    // =========================
+    // HITBOX
+    // =========================
+
     hitbox.x = 0;
     hitbox.y = 0;
     hitbox.w = 0;
     hitbox.h = 0;
+
+
+    // =========================
+    // VEHICLE
+    // =========================
 
     speed = Config::VEHICLE_SPEED;
     direction = 1;
 
     textureId = "wagon_01";
 
-    laneY = 0;
+    // Chiều cao lane mặc định
     laneHeight = Config::LANE_HEIGHT;
 
     UpdateHitbox();
 }
 
+
 void Vehicle::Update()
 {
+    // Xe chạy ngang
     rect.x += speed * direction;
 
+
+    // Ra khỏi bên phải
     if (rect.x > Config::WINDOW_WIDTH)
     {
         rect.x = -rect.w;
     }
 
+
+    // Ra khỏi bên trái
     if (rect.x + rect.w < 0)
     {
         rect.x = Config::WINDOW_WIDTH;
     }
 
+
+    // Cập nhật hitbox theo sprite
     UpdateHitbox();
 }
+
 
 void Vehicle::Draw(
     SDL_Renderer* renderer,
@@ -54,6 +78,11 @@ void Vehicle::Draw(
 {
     Texture* texture =
         textureManager.GetTexture(textureId);
+
+
+    // =========================
+    // DRAW SPRITE
+    // =========================
 
     if (texture != nullptr &&
         texture->GetTexture() != nullptr)
@@ -78,6 +107,7 @@ void Vehicle::Draw(
             &rect);
     }
 
+
     // =========================
     // DEBUG HITBOX
     // =========================
@@ -97,15 +127,18 @@ void Vehicle::Draw(
     }
 }
 
+
 void Vehicle::SetSpeed(int value)
 {
     speed = value;
 }
 
+
 void Vehicle::SetDirection(int value)
 {
     direction = value;
 }
+
 
 void Vehicle::SetPosition(int x, int y)
 {
@@ -115,12 +148,6 @@ void Vehicle::SetPosition(int x, int y)
     UpdateHitbox();
 }
 
-void Vehicle::SetLaneY(int y)
-{
-    laneY = y;
-
-    UpdateHitbox();
-}
 
 void Vehicle::SetLaneHeight(int height)
 {
@@ -129,44 +156,45 @@ void Vehicle::SetLaneHeight(int height)
     UpdateHitbox();
 }
 
+
 void Vehicle::SetTexture(const std::string& id)
 {
     textureId = id;
 }
+
 
 SDL_Rect Vehicle::GetRect() const
 {
     return rect;
 }
 
+
 SDL_Rect Vehicle::GetHitbox() const
 {
     return hitbox;
 }
 
+
+// ============================================================
+// UPDATE HITBOX
+// ============================================================
+//
+// Mục tiêu:
+//
+// 1. Hitbox không bao toàn bộ sprite.
+// 2. Chiều cao hitbox = chiều cao lane.
+// 3. Cạnh dưới hitbox = cạnh dưới sprite.
+// 4. Hitbox chỉ nằm ở phần dưới của xe.
+//
+// ============================================================
+
 void Vehicle::UpdateHitbox()
 {
-    /*
-        ============================
-        HITBOX
-        ============================
-
-        Hitbox được xác định độc lập
-        với vị trí sprite.
-
-        Y của hitbox = Y của lane.
-        Chiều cao hitbox = chiều cao lane.
-
-        Như vậy khi sprite thay đổi
-        kích thước hoặc vị trí, hitbox
-        vẫn nằm đúng trong lane.
-    */
+    // =========================
+    // CHIỀU NGANG
+    // =========================
 
     constexpr float SIDE_REDUCTION = 0.05f;
-
-    // ----------------------------
-    // Chiều ngang
-    // ----------------------------
 
     int sideOffset =
         static_cast<int>(
@@ -178,10 +206,25 @@ void Vehicle::UpdateHitbox()
     hitbox.w =
         rect.w - (sideOffset * 2);
 
-    // ----------------------------
-    // Chiều dọc
-    // ----------------------------
 
-    hitbox.y = laneY;
-    hitbox.h = laneHeight;
+    // =========================
+    // CHIỀU DỌC
+    // =========================
+
+    // Cạnh dưới của sprite
+    int spriteBottom =
+        rect.y + rect.h;
+
+
+    // Hitbox cao đúng bằng lane
+    hitbox.h =
+        laneHeight;
+
+
+    // Cạnh dưới hitbox trùng
+    // cạnh dưới sprite
+    hitbox.y =
+        spriteBottom - hitbox.h;
+    hitbox.h =
+        laneHeight/2;
 }
