@@ -291,30 +291,15 @@ void Vehicle::UpdateHitbox()
     // ==========================================
     // CHIỀU NGANG
     // ==========================================
-    //
-    // Chừa 5% mỗi bên sprite.
-    //
-    // Ví dụ:
-    //
-    // Wagon width = 170
-    //
-    // sideOffset = 170 * 5%
-    //            = 8
-    //
-    // hitbox width ≈ 154
-    //
 
     constexpr float SIDE_REDUCTION = 0.05f;
-
 
     int sideOffset =
         static_cast<int>(
             rect.w * SIDE_REDUCTION);
 
-
     hitbox.x =
         rect.x + sideOffset;
-
 
     hitbox.w =
         rect.w - (sideOffset * 2);
@@ -323,27 +308,31 @@ void Vehicle::UpdateHitbox()
     // ==========================================
     // CHIỀU DỌC
     // ==========================================
+
+    // Cạnh dưới của sprite
+    int spriteBottom =
+        rect.y + rect.h;
+
+
+    // ==================================================
+    // QUAN TRỌNG:
     //
-    // Chỉ lấy phần dưới của sprite.
+    // Đây là CÔNG THỨC CHÍNH XÁC của bản
+    // "Fix hitbox okay".
     //
-    // Không lấy toàn bộ sprite vì:
-    //
-    // - Wagon có phần mui cao.
-    // - Deer có phần đầu/gạc cao.
-    //
-    // Phần phía trên không được tính va chạm.
-    //
+    // Không đổi thứ tự 3 dòng dưới.
+    // ==================================================
+
+    hitbox.h =
+        laneHeight;
+
+
+    hitbox.y =
+        spriteBottom - hitbox.h;
+
 
     hitbox.h =
         laneHeight / 2;
-
-
-    // Đáy hitbox trùng đáy sprite.
-
-    hitbox.y =
-        rect.y
-        + rect.h
-        - hitbox.h;
 
 
     // ==========================================
@@ -354,7 +343,6 @@ void Vehicle::UpdateHitbox()
     {
         hitbox.w = 0;
     }
-
 
     if (hitbox.h < 0)
     {

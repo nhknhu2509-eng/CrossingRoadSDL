@@ -114,11 +114,23 @@ void Animal::Draw(
     if (texture != nullptr &&
         texture->GetTexture() != nullptr)
     {
-        SDL_RenderCopy(
+        SDL_RendererFlip flip = SDL_FLIP_NONE;
+
+        // Chỉ lật Squirrel.
+        // Deer và Rabbit giữ nguyên hướng sprite.
+        if (textureId == "squirrel")
+        {
+            flip = SDL_FLIP_HORIZONTAL;
+        }
+
+        SDL_RenderCopyEx(
             renderer,
             texture->GetTexture(),
             nullptr,
-            &rect);
+            &rect,
+            0.0,
+            nullptr,
+            flip);
     }
     else
     {
