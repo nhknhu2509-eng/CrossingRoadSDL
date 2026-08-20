@@ -10,23 +10,19 @@
 #include <filesystem>
 #include <fstream>
 
-
 bool Application::Initialize()
 {
     std::cout
         << "=================================="
         << std::endl;
 
-
     std::cout
         << "Current Path: "
         << std::filesystem::current_path()
         << std::endl;
 
-
     std::ifstream file(
         "Assets/Fonts/NotoSans-VariableFont_wdth,wght.ttf");
-
 
     if (file.is_open())
     {
@@ -41,15 +37,9 @@ bool Application::Initialize()
             << std::endl;
     }
 
-
     std::cout
         << "=================================="
         << std::endl;
-
-
-    // ==============================
-    // SDL
-    // ==============================
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
     {
@@ -61,11 +51,6 @@ bool Application::Initialize()
         return false;
     }
 
-
-    // ==============================
-    // SDL_ttf
-    // ==============================
-
     if (TTF_Init() != 0)
     {
         std::cout
@@ -74,14 +59,8 @@ bool Application::Initialize()
             << std::endl;
 
         SDL_Quit();
-
         return false;
     }
-
-
-    // ==============================
-    // SDL_image
-    // ==============================
 
     if (!(IMG_Init(IMG_INIT_PNG) &
         IMG_INIT_PNG))
@@ -92,16 +71,9 @@ bool Application::Initialize()
             << std::endl;
 
         TTF_Quit();
-
         SDL_Quit();
-
         return false;
     }
-
-
-    // ==============================
-    // WINDOW
-    // ==============================
 
     if (!window.Create(
         "Crossing Road SDL",
@@ -109,18 +81,10 @@ bool Application::Initialize()
         720))
     {
         IMG_Quit();
-
         TTF_Quit();
-
         SDL_Quit();
-
         return false;
     }
-
-
-    // ==============================
-    // FONT
-    // ==============================
 
     if (!fontManager.LoadFont(
         "default",
@@ -132,16 +96,11 @@ bool Application::Initialize()
             << std::endl;
 
         window.Destroy();
-
         IMG_Quit();
-
         TTF_Quit();
-
         SDL_Quit();
-
         return false;
     }
-
 
     // ==============================
     // BACKGROUND
@@ -161,23 +120,12 @@ bool Application::Initialize()
             << std::endl;
 
         fontManager.Destroy();
-
         window.Destroy();
-
         IMG_Quit();
-
         TTF_Quit();
-
         SDL_Quit();
-
         return false;
     }
-
-
-    std::cout
-        << "Background loaded successfully!"
-        << std::endl;
-
 
     // ==============================
     // VEHICLE TEXTURES
@@ -187,58 +135,25 @@ bool Application::Initialize()
         window.GetRenderer(),
         "wagon_01",
         "Assets/Images/Vehicles/wagon_01.png"))
-    {
-        std::cout
-            << "Cannot load wagon_01!"
-            << std::endl;
-
         return false;
-    }
-
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "wagon_02",
         "Assets/Images/Vehicles/wagon_02.png"))
-    {
-        std::cout
-            << "Cannot load wagon_02!"
-            << std::endl;
-
         return false;
-    }
-
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "wagon_03",
         "Assets/Images/Vehicles/wagon_03.png"))
-    {
-        std::cout
-            << "Cannot load wagon_03!"
-            << std::endl;
-
         return false;
-    }
-
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "wagon_04",
         "Assets/Images/Vehicles/wagon_04.png"))
-    {
-        std::cout
-            << "Cannot load wagon_04!"
-            << std::endl;
-
         return false;
-    }
-
-
-    std::cout
-        << "Vehicle textures loaded successfully!"
-        << std::endl;
-
 
     // ==============================
     // ANIMAL TEXTURES
@@ -248,114 +163,124 @@ bool Application::Initialize()
         window.GetRenderer(),
         "deer",
         "Assets/Images/Animals/deer.png"))
-    {
-        std::cout
-            << "Cannot load deer!"
-            << std::endl;
-
         return false;
-    }
-
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "squirrel",
         "Assets/Images/Animals/squirrel.png"))
-    {
-        std::cout
-            << "Cannot load squirrel!"
-            << std::endl;
-
         return false;
-    }
-
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "rabbit",
         "Assets/Images/Animals/rabbit.png"))
-    {
-        std::cout
-            << "Cannot load rabbit!"
-            << std::endl;
-
         return false;
-    }
 
+    // ==============================
+    // TRAFFIC LIGHT SPRITES
+    // ==============================
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "lantern_green",
+        "Assets/Images/Lantern/lantern_green.png"))
+        return false;
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "lantern_red",
+        "Assets/Images/Lantern/lantern_red.png"))
+        return false;
+
+    // ==============================
+    // PLAYER SPRITE
+    // ==============================
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "player",
+        "Assets/Images/Player/player_idle.png"))
+        return false;
 
     std::cout
-        << "Animal textures loaded successfully!"
+        << "All textures loaded successfully!"
         << std::endl;
-
 
     return true;
 }
-
 
 void Application::Run()
 {
     bool running = true;
 
-
     while (running)
     {
         timer.Tick();
 
-
         InputManager::Update();
-
 
         if (InputManager::QuitRequested())
         {
             running = false;
         }
 
-
         game.Update();
 
-
-        // ==============================
-        // CLEAR
-        // ==============================
-
         window.Clear();
-
-
-        // ==============================
-        // BACKGROUND
-        // ==============================
 
         Texture* background =
             textureManager.GetTexture(
                 "background");
-
 
         if (background != nullptr &&
             background->GetTexture() != nullptr)
         {
             SDL_Rect destination;
 
-
             destination.x = 0;
-
             destination.y = 0;
-
             destination.w = 1280;
-
             destination.h = 720;
-
 
             SDL_RenderCopy(
                 window.GetRenderer(),
                 background->GetTexture(),
                 nullptr,
                 &destination);
+
+            // ==========================================
+            // REMOVE TOP GREEN BANNER FROM BACKGROUND
+            // ==========================================
+            //
+            // chapter1_background.png contains a 60px
+            // green banner at the very top.
+            //
+            // Replace that strip with the clean background
+            // immediately below it. This keeps all lane
+            // coordinates unchanged.
+            //
+
+            constexpr int TOP_BANNER_HEIGHT = 60;
+
+            SDL_Rect cleanSource;
+            cleanSource.x = 0;
+            cleanSource.y = TOP_BANNER_HEIGHT;
+            cleanSource.w = 1280;
+            cleanSource.h = TOP_BANNER_HEIGHT;
+
+            SDL_Rect cleanDestination;
+            cleanDestination.x = 0;
+            cleanDestination.y = 0;
+            cleanDestination.w = 1280;
+            cleanDestination.h = TOP_BANNER_HEIGHT;
+
+            SDL_RenderCopy(
+                window.GetRenderer(),
+                background->GetTexture(),
+                &cleanSource,
+                &cleanDestination);
         }
-
-
-        // ==============================
-        // GAME
-        // ==============================
 
         game.Render(
             window.GetRenderer(),
@@ -363,15 +288,9 @@ void Application::Run()
             fontManager,
             textureManager);
 
-
-        // ==============================
-        // PRESENT
-        // ==============================
-
         window.Present();
     }
 }
-
 
 void Application::Shutdown()
 {

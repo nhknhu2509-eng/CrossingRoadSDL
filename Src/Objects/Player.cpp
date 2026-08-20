@@ -1,5 +1,7 @@
 #include "Objects/Player.h"
+
 #include "Managers/InputManager.h"
+#include "Graphics/TextureManager.h"
 #include "Config/GameConfig.h"
 
 Player::Player()
@@ -52,17 +54,52 @@ void Player::Update()
         rect.y = Config::WINDOW_HEIGHT - rect.h;
 }
 
-void Player::Draw(SDL_Renderer* renderer)
+void Player::Draw(
+    SDL_Renderer* renderer,
+    TextureManager& textureManager)
 {
+    Texture* texture =
+        textureManager.GetTexture("player");
+
+    // =========================
+    // DRAW PLAYER SPRITE
+    // =========================
+    if (texture != nullptr &&
+        texture->GetTexture() != nullptr)
+    {
+        SDL_RenderCopy(
+            renderer,
+            texture->GetTexture(),
+            nullptr,
+            &rect);
+    }
+    else
+    {
+        // Fallback nếu player sprite không load được
+        SDL_SetRenderDrawColor(
+            renderer,
+            Config::PLAYER_COLOR.r,
+            Config::PLAYER_COLOR.g,
+            Config::PLAYER_COLOR.b,
+            Config::PLAYER_COLOR.a);
+
+        SDL_RenderFillRect(renderer, &rect);
+    }
+
+    // =========================
+    // DRAW PLAYER HITBOX
+    // =========================
+    SDL_Rect hitbox = GetHitbox();
+
     SDL_SetRenderDrawColor(
         renderer,
-        Config::PLAYER_COLOR.r,
-        Config::PLAYER_COLOR.g,
-        Config::PLAYER_COLOR.b,
-        Config::PLAYER_COLOR.a);
+        0,
+        0,
+        255,
+        255
+    );
 
-    SDL_RenderFillRect(renderer, &rect);
-}
+    SDL_RenderDrawRect(renderer, &hitbox);
 
 void Player::Reset()
 {
@@ -70,7 +107,9 @@ void Player::Reset()
     rect.y = Config::PLAYER_START_Y;
 }
 
-void Player::SetPosition(int x, int y)
+void Player::SetPosition(
+    int x,
+    int y)
 {
     rect.x = x;
     rect.y = y;

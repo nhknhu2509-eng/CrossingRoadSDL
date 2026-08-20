@@ -1,7 +1,8 @@
 #pragma once
-#pragma once
 
 #include <SDL.h>
+
+class TextureManager;
 
 enum class LightState
 {
@@ -17,7 +18,9 @@ public:
 
     void Update();
 
-    void Draw(SDL_Renderer* renderer);
+    void Draw(
+        SDL_Renderer* renderer,
+        TextureManager& textureManager);
 
     bool CanMove() const;
 

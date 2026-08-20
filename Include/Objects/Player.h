@@ -1,21 +1,28 @@
-#pragma once
+#ifndef PLAYER_H
+#define PLAYER_H
 
 #include <SDL.h>
+#include "TextureManager.h"
 
 class Player
 {
+private:
+    SDL_Rect rect;
+
 public:
     Player();
 
     void Update();
-    void Draw(SDL_Renderer* renderer);
 
-    void Reset();
-    void SetPosition(int x, int y);
+    void Draw(
+        SDL_Renderer* renderer,
+        TextureManager& textureManager
+    );
 
-    SDL_Rect GetRect() const;
+    const SDL_Rect& GetRect() const;
 
-private:
-    SDL_Rect rect;
-    int speed;
+    // Hitbox riêng của Player
+    SDL_Rect GetHitbox() const;
 };
+
+#endif

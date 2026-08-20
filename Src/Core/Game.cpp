@@ -4,12 +4,10 @@
 #include "Objects/Vehicle.h"
 #include "Objects/Animal.h"
 
-
 Game::Game()
 {
     state = GameState::Playing;
 }
-
 
 void Game::Update()
 {
@@ -18,37 +16,16 @@ void Game::Update()
         return;
     }
 
-
-    // ==============================
-    // PLAYER
-    // ==============================
-
     player.Update();
-
-
-    // ==============================
-    // GOAL
-    // ==============================
 
     if (goal.Reached(
         player.GetRect()))
     {
         state = GameState::LevelComplete;
-
         return;
     }
 
-
-    // ==============================
-    // UPDATE LANES
-    // ==============================
-
     vehicleManager.Update();
-
-
-    // ==============================
-    // VEHICLE COLLISION
-    // ==============================
 
     for (const Vehicle& vehicle :
         vehicleManager.GetVehicles())
@@ -58,17 +35,10 @@ void Game::Update()
             vehicle.GetHitbox()))
         {
             player.Reset();
-
             state = GameState::GameOver;
-
             return;
         }
     }
-
-
-    // ==============================
-    // ANIMAL COLLISION
-    // ==============================
 
     for (const Animal& animal :
         vehicleManager.GetAnimals())
@@ -78,14 +48,11 @@ void Game::Update()
             animal.GetHitbox()))
         {
             player.Reset();
-
             state = GameState::GameOver;
-
             return;
         }
     }
 }
-
 
 void Game::Render(
     SDL_Renderer* renderer,
@@ -95,14 +62,13 @@ void Game::Render(
 {
     goal.Draw(renderer);
 
-
     vehicleManager.Draw(
         renderer,
         textureManager);
 
-
-    player.Draw(renderer);
-
+    player.Draw(
+        renderer,
+        textureManager);
 
     switch (state)
     {
@@ -117,7 +83,6 @@ void Game::Render(
 
         break;
 
-
     case GameState::GameOver:
 
         textRenderer.Draw(
@@ -126,7 +91,6 @@ void Game::Render(
             "GAME OVER",
             280,
             220);
-
 
         textRenderer.Draw(
             renderer,
@@ -137,7 +101,6 @@ void Game::Render(
 
         break;
 
-
     case GameState::LevelComplete:
 
         textRenderer.Draw(
@@ -146,7 +109,6 @@ void Game::Render(
             "YOU WIN!",
             300,
             220);
-
 
         textRenderer.Draw(
             renderer,
@@ -157,20 +119,16 @@ void Game::Render(
 
         break;
 
-
     default:
-
         break;
     }
 }
-
 
 void Game::SetState(
     GameState newState)
 {
     state = newState;
 }
-
 
 GameState Game::GetState() const
 {

@@ -17,8 +17,8 @@ namespace Config
     // Player
     // ==============================
 
-    constexpr int PLAYER_WIDTH = 40;
-    constexpr int PLAYER_HEIGHT = 40;
+    constexpr int PLAYER_WIDTH = 70;
+    constexpr int PLAYER_HEIGHT = 70;
     constexpr int PLAYER_SPEED = 5;
 
     constexpr int PLAYER_START_X =
