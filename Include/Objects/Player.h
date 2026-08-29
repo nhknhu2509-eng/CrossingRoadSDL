@@ -8,6 +8,7 @@ class Player
 {
 private:
     SDL_Rect rect;
+    int speed;
 
 public:
     Player();
@@ -23,6 +24,13 @@ public:
 
     // Hitbox riêng của Player
     SDL_Rect GetHitbox() const;
+
+    void Reset();
+
+    void SetPosition(
+        int x,
+        int y
+    );
 };
 
 #endif

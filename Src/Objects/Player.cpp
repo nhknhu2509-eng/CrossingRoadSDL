@@ -41,6 +41,7 @@ void Player::Update()
         rect.x += speed;
     }
 
+    // Giới hạn Player trong màn hình
     if (rect.x < 0)
         rect.x = 0;
 
@@ -61,9 +62,9 @@ void Player::Draw(
     Texture* texture =
         textureManager.GetTexture("player");
 
-    // =========================
+    // =====================================
     // DRAW PLAYER SPRITE
-    // =========================
+    // =====================================
     if (texture != nullptr &&
         texture->GetTexture() != nullptr)
     {
@@ -71,24 +72,29 @@ void Player::Draw(
             renderer,
             texture->GetTexture(),
             nullptr,
-            &rect);
+            &rect
+        );
     }
     else
     {
-        // Fallback nếu player sprite không load được
+        // Fallback nếu không load được sprite
         SDL_SetRenderDrawColor(
             renderer,
             Config::PLAYER_COLOR.r,
             Config::PLAYER_COLOR.g,
             Config::PLAYER_COLOR.b,
-            Config::PLAYER_COLOR.a);
+            Config::PLAYER_COLOR.a
+        );
 
-        SDL_RenderFillRect(renderer, &rect);
+        SDL_RenderFillRect(
+            renderer,
+            &rect
+        );
     }
 
-    // =========================
+    // =====================================
     // DRAW PLAYER HITBOX
-    // =========================
+    // =====================================
     SDL_Rect hitbox = GetHitbox();
 
     SDL_SetRenderDrawColor(
@@ -99,7 +105,11 @@ void Player::Draw(
         255
     );
 
-    SDL_RenderDrawRect(renderer, &hitbox);
+    SDL_RenderDrawRect(
+        renderer,
+        &hitbox
+    );
+}
 
 void Player::Reset()
 {
@@ -115,7 +125,25 @@ void Player::SetPosition(
     rect.y = y;
 }
 
-SDL_Rect Player::GetRect() const
+const SDL_Rect& Player::GetRect() const
 {
     return rect;
+}
+
+SDL_Rect Player::GetHitbox() const
+{
+    SDL_Rect hitbox;
+
+    // =====================================
+    // PLAYER HITBOX
+    // =====================================
+    // Giảm nhiều ở hai bên
+    hitbox.x = rect.x + 15;
+    hitbox.w = rect.w - 30;
+
+    // Giảm nhẹ phía trên và phía dưới
+    hitbox.y = rect.y + 8;
+    hitbox.h = rect.h - 16;
+
+    return hitbox;
 }

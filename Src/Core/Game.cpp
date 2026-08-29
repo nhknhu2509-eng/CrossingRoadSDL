@@ -18,6 +18,10 @@ void Game::Update()
 
     player.Update();
 
+    // =====================================
+    // GOAL CHECK
+    // =====================================
+    // Vẫn dùng rect của Player cho Goal.
     if (goal.Reached(
         player.GetRect()))
     {
@@ -27,11 +31,16 @@ void Game::Update()
 
     vehicleManager.Update();
 
+    // =====================================
+    // WAGON COLLISION
+    // =====================================
+    // Chỉ thay Player rect -> Player hitbox.
+    // Hitbox của Wagon KHÔNG thay đổi.
     for (const Vehicle& vehicle :
         vehicleManager.GetVehicles())
     {
         if (CollisionManager::CheckCollision(
-            player.GetRect(),
+            player.GetHitbox(),
             vehicle.GetHitbox()))
         {
             player.Reset();
@@ -40,11 +49,16 @@ void Game::Update()
         }
     }
 
+    // =====================================
+    // DEER COLLISION
+    // =====================================
+    // Chỉ thay Player rect -> Player hitbox.
+    // Hitbox của Deer KHÔNG thay đổi.
     for (const Animal& animal :
         vehicleManager.GetAnimals())
     {
         if (CollisionManager::CheckCollision(
-            player.GetRect(),
+            player.GetHitbox(),
             animal.GetHitbox()))
         {
             player.Reset();
