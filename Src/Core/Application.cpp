@@ -1,6 +1,7 @@
 #include "Core/Application.h"
 
 #include "Managers/InputManager.h"
+#include "Config/GameConfig.h"
 
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -9,6 +10,7 @@
 #include <iostream>
 #include <filesystem>
 #include <fstream>
+
 
 bool Application::Initialize()
 {
@@ -41,6 +43,11 @@ bool Application::Initialize()
         << "=================================="
         << std::endl;
 
+
+    // =====================================
+    // SDL
+    // =====================================
+
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
     {
         std::cout
@@ -51,6 +58,11 @@ bool Application::Initialize()
         return false;
     }
 
+
+    // =====================================
+    // SDL TTF
+    // =====================================
+
     if (TTF_Init() != 0)
     {
         std::cout
@@ -59,8 +71,14 @@ bool Application::Initialize()
             << std::endl;
 
         SDL_Quit();
+
         return false;
     }
+
+
+    // =====================================
+    // SDL IMAGE
+    // =====================================
 
     if (!(IMG_Init(IMG_INIT_PNG) &
         IMG_INIT_PNG))
@@ -72,19 +90,31 @@ bool Application::Initialize()
 
         TTF_Quit();
         SDL_Quit();
+
         return false;
     }
 
+
+    // =====================================
+    // WINDOW
+    // =====================================
+
     if (!window.Create(
         "Crossing Road SDL",
-        1280,
-        720))
+        Config::WINDOW_WIDTH,
+        Config::WINDOW_HEIGHT))
     {
         IMG_Quit();
         TTF_Quit();
         SDL_Quit();
+
         return false;
     }
+
+
+    // =====================================
+    // FONT
+    // =====================================
 
     if (!fontManager.LoadFont(
         "default",
@@ -96,15 +126,18 @@ bool Application::Initialize()
             << std::endl;
 
         window.Destroy();
+
         IMG_Quit();
         TTF_Quit();
         SDL_Quit();
+
         return false;
     }
 
-    // ==============================
+
+    // =====================================
     // BACKGROUND
-    // ==============================
+    // =====================================
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -121,87 +154,114 @@ bool Application::Initialize()
 
         fontManager.Destroy();
         window.Destroy();
+
         IMG_Quit();
         TTF_Quit();
         SDL_Quit();
+
         return false;
     }
 
-    // ==============================
-    // VEHICLE TEXTURES
-    // ==============================
+
+    // =====================================
+    // VEHICLES
+    // =====================================
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "wagon_01",
         "Assets/Images/Vehicles/wagon_01.png"))
+    {
         return false;
+    }
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "wagon_02",
         "Assets/Images/Vehicles/wagon_02.png"))
+    {
         return false;
+    }
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "wagon_03",
         "Assets/Images/Vehicles/wagon_03.png"))
+    {
         return false;
+    }
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "wagon_04",
         "Assets/Images/Vehicles/wagon_04.png"))
+    {
         return false;
+    }
 
-    // ==============================
-    // ANIMAL TEXTURES
-    // ==============================
+
+    // =====================================
+    // ANIMALS
+    // =====================================
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "deer",
         "Assets/Images/Animals/deer.png"))
+    {
         return false;
+    }
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "squirrel",
         "Assets/Images/Animals/squirrel.png"))
+    {
         return false;
+    }
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "rabbit",
         "Assets/Images/Animals/rabbit.png"))
+    {
         return false;
+    }
 
-    // ==============================
-    // TRAFFIC LIGHT SPRITES
-    // ==============================
+
+    // =====================================
+    // LANTERNS
+    // =====================================
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "lantern_green",
         "Assets/Images/Lantern/lantern_green.png"))
+    {
         return false;
+    }
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "lantern_red",
         "Assets/Images/Lantern/lantern_red.png"))
+    {
         return false;
+    }
 
-    // ==============================
-    // PLAYER SPRITE
-    // ==============================
+
+    // =====================================
+    // PLAYER
+    // =====================================
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "player",
         "Assets/Images/Player/player_idle.png"))
+    {
         return false;
+    }
+
 
     std::cout
         << "All textures loaded successfully!"
@@ -209,6 +269,7 @@ bool Application::Initialize()
 
     return true;
 }
+
 
 void Application::Run()
 {
@@ -220,18 +281,31 @@ void Application::Run()
 
         InputManager::Update();
 
+
         if (InputManager::QuitRequested())
         {
             running = false;
         }
 
+
         game.Update();
 
+
+        // =====================================
+        // CLEAR
+        // =====================================
+
         window.Clear();
+
+
+        // =====================================
+        // DRAW BACKGROUND
+        // =====================================
 
         Texture* background =
             textureManager.GetTexture(
                 "background");
+
 
         if (background != nullptr &&
             background->GetTexture() != nullptr)
@@ -240,47 +314,25 @@ void Application::Run()
 
             destination.x = 0;
             destination.y = 0;
-            destination.w = 1280;
-            destination.h = 720;
+
+            destination.w =
+                Config::WINDOW_WIDTH;
+
+            destination.h =
+                Config::WINDOW_HEIGHT;
+
 
             SDL_RenderCopy(
                 window.GetRenderer(),
                 background->GetTexture(),
                 nullptr,
                 &destination);
-
-            // ==========================================
-            // REMOVE TOP GREEN BANNER FROM BACKGROUND
-            // ==========================================
-            //
-            // chapter1_background.png contains a 60px
-            // green banner at the very top.
-            //
-            // Replace that strip with the clean background
-            // immediately below it. This keeps all lane
-            // coordinates unchanged.
-            //
-
-            constexpr int TOP_BANNER_HEIGHT = 60;
-
-            SDL_Rect cleanSource;
-            cleanSource.x = 0;
-            cleanSource.y = TOP_BANNER_HEIGHT;
-            cleanSource.w = 1280;
-            cleanSource.h = TOP_BANNER_HEIGHT;
-
-            SDL_Rect cleanDestination;
-            cleanDestination.x = 0;
-            cleanDestination.y = 0;
-            cleanDestination.w = 1280;
-            cleanDestination.h = TOP_BANNER_HEIGHT;
-
-            SDL_RenderCopy(
-                window.GetRenderer(),
-                background->GetTexture(),
-                &cleanSource,
-                &cleanDestination);
         }
+
+
+        // =====================================
+        // DRAW GAME
+        // =====================================
 
         game.Render(
             window.GetRenderer(),
@@ -288,9 +340,11 @@ void Application::Run()
             fontManager,
             textureManager);
 
+
         window.Present();
     }
 }
+
 
 void Application::Shutdown()
 {

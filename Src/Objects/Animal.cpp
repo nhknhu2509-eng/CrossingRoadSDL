@@ -302,4 +302,5 @@ void Animal::UpdateHitbox()
         rect.h
         - hitboxTop
         - hitboxBottom;
+   
 }

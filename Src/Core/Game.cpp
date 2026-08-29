@@ -88,13 +88,7 @@ void Game::Render(
     {
     case GameState::Playing:
 
-        textRenderer.Draw(
-            renderer,
-            fontManager.GetFont("default"),
-            "Crossing Road SDL",
-            20,
-            20);
-
+       
         break;
 
     case GameState::GameOver:

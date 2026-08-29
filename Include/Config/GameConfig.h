@@ -18,7 +18,7 @@ namespace Config
     // ==============================
 
     constexpr int PLAYER_WIDTH = 70;
-    constexpr int PLAYER_HEIGHT = 70;
+    constexpr int PLAYER_HEIGHT = 55;
     constexpr int PLAYER_SPEED = 5;
 
     constexpr int PLAYER_START_X =
@@ -62,11 +62,11 @@ namespace Config
     constexpr int DEER_WIDTH = 120;
     constexpr int DEER_HEIGHT = 100;
 
-    constexpr int SQUIRREL_WIDTH = 70;
-    constexpr int SQUIRREL_HEIGHT = 70;
+    constexpr int SQUIRREL_WIDTH = 55;
+    constexpr int SQUIRREL_HEIGHT = 55;
 
-    constexpr int RABBIT_WIDTH = 75;
-    constexpr int RABBIT_HEIGHT = 75;
+    constexpr int RABBIT_WIDTH = 55;
+    constexpr int RABBIT_HEIGHT = 55;
 
 
     // ==============================
