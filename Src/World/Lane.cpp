@@ -10,8 +10,10 @@ Lane::Lane(
     int speed,
     int vehicleCount,
     const std::string& vehicleTexture,
-    const std::string& animalTexture)
-    : trafficLight(760, y)
+    const std::string& animalTexture,
+    int lightX,
+    int lightY)
+    : trafficLight(lightX, lightY)
 {
     if (!vehicleTexture.empty())
     {
@@ -88,10 +90,10 @@ Lane::Lane(
 
                 int sideOffset =
                     static_cast<int>(
-                        deerRect.w * SIDE_REDUCTION);
+                        deerRect.w * SIDE_REDUCTION) ;
 
                 int hitboxHeight =
-                    height / 2;
+                    height / 2 ;
 
                 int topMargin =
                     deerRect.h - hitboxHeight;
@@ -103,7 +105,7 @@ Lane::Lane(
                     sideOffset,
                     topMargin,
                     sideOffset,
-                    0);
+                    6);
             }
 
             animal.SetSpeed(speed);
@@ -113,6 +115,7 @@ Lane::Lane(
         }
     }
 }
+
 
 void Lane::Update()
 {
@@ -131,6 +134,7 @@ void Lane::Update()
         }
     }
 }
+
 
 void Lane::Draw(
     SDL_Renderer* renderer,
@@ -155,11 +159,13 @@ void Lane::Draw(
         textureManager);
 }
 
+
 const std::vector<Vehicle>&
 Lane::GetVehicles() const
 {
     return vehicles;
 }
+
 
 const std::vector<Animal>&
 Lane::GetAnimals() const

@@ -21,7 +21,9 @@ public:
         int speed,
         int vehicleCount,
         const std::string& vehicleTexture = "",
-        const std::string& animalTexture = "");
+        const std::string& animalTexture = "",
+        int lightX = 760,
+        int lightY = 0);
 
 
     void Update();

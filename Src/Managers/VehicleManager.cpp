@@ -10,13 +10,15 @@ VehicleManager::VehicleManager()
     // ==========================================
 
     lanes.emplace_back(
-        185,
+        185,        // Y của lane
         82,
         1,
         3,
         3,
         "wagon",
-        "");
+        "",
+        960,        // X của đèn 1
+        165);       // Y của đèn 1
 
 
     // ==========================================
@@ -24,34 +26,31 @@ VehicleManager::VehicleManager()
     // ==========================================
 
     lanes.emplace_back(
-        267,
+        267,        // Y của lane
         82,
         -1,
         4,
         3,
         "wagon",
-        "");
+        "",
+        320,        // X của đèn 2
+        255);       // Y của đèn 2
 
 
     // ==========================================
     // LANE 3 - DEER
     // ==========================================
-    //
-    // QUAN TRỌNG:
-    //
-    // Deer nằm ở animalTexture,
-    // KHÔNG nằm ở vehicleTexture.
-    //
-    // ==========================================
 
     lanes.emplace_back(
-        315,
+        315,        // Y của lane
         82,
         1,
         3,
         3,
         "",
-        "deer");
+        "deer",
+        960,        // X của đèn 3
+        340);       // Y của đèn 3
 
 
     // ==========================================
@@ -59,13 +58,15 @@ VehicleManager::VehicleManager()
     // ==========================================
 
     lanes.emplace_back(
-        410,
+        410,        // Y của lane
         82,
         -1,
         5,
         3,
         "",
-        "squirrel");
+        "squirrel",
+        320,        // X của đèn 4
+        430);       // Y của đèn 4
 
 
     // ==========================================
@@ -73,13 +74,15 @@ VehicleManager::VehicleManager()
     // ==========================================
 
     lanes.emplace_back(
-        505,
+        505,        // Y của lane
         82,
         1,
         4,
         3,
         "",
-        "rabbit");
+        "rabbit",
+        960,        // X của đèn 5
+        530);       // Y của đèn 5
 }
 
 
