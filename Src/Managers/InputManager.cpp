@@ -1,34 +1,116 @@
 #include "Managers/InputManager.h"
 
-const Uint8* InputManager::keyboardState = nullptr;
-bool InputManager::quit = false;
+#include <cstring>
 
-void InputManager::Update()
-{
-    SDL_Event event;
 
-    quit = false;
+const Uint8*
+InputManager::keyboardState =
+nullptr;
 
-    while (SDL_PollEvent(&event))
+
+Uint8
+InputManager::previousKeyboardState[
+    SDL_NUM_SCANCODES] = { 0 };
+
+
+    bool
+        InputManager::quit =
+        false;
+
+
+    // ==================================================
+    // UPDATE
+    // ==================================================
+
+    void InputManager::Update()
     {
-        if (event.type == SDL_QUIT)
+        // ==========================================
+        // LƯU TRẠNG THÁI FRAME TRƯỚC
+        // ==========================================
+
+        if (keyboardState != nullptr)
         {
-            quit = true;
+            std::memcpy(
+                previousKeyboardState,
+                keyboardState,
+                SDL_NUM_SCANCODES);
         }
+
+
+        // ==========================================
+        // SDL EVENTS
+        // ==========================================
+
+        SDL_Event event;
+
+
+        while (SDL_PollEvent(&event))
+        {
+            if (event.type ==
+                SDL_QUIT)
+            {
+                quit =
+                    true;
+            }
+        }
+
+
+        // ==========================================
+        // KEYBOARD STATE
+        // ==========================================
+
+        SDL_PumpEvents();
+
+
+        keyboardState =
+            SDL_GetKeyboardState(
+                nullptr);
     }
 
-    keyboardState = SDL_GetKeyboardState(nullptr);
-}
 
-bool InputManager::IsKeyDown(SDL_Scancode key)
-{
-    if (keyboardState == nullptr)
-        return false;
+    // ==================================================
+    // KEY DOWN
+    // ==================================================
 
-    return keyboardState[key];
-}
+    bool InputManager::IsKeyDown(
+        SDL_Scancode key)
+    {
+        if (keyboardState ==
+            nullptr)
+        {
+            return false;
+        }
 
-bool InputManager::QuitRequested()
-{
-    return quit;
-}
+
+        return keyboardState[key] != 0;
+    }
+
+
+    // ==================================================
+    // KEY PRESSED
+    // ==================================================
+
+    bool InputManager::IsKeyPressed(
+        SDL_Scancode key)
+    {
+        if (keyboardState ==
+            nullptr)
+        {
+            return false;
+        }
+
+
+        return
+            keyboardState[key] != 0 &&
+            previousKeyboardState[key] == 0;
+    }
+
+
+    // ==================================================
+    // QUIT
+    // ==================================================
+
+    bool InputManager::QuitRequested()
+    {
+        return quit;
+    }

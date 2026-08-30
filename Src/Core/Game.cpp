@@ -1,6 +1,7 @@
 #include "Core/Game.h"
 
 #include "Managers/CollisionManager.h"
+#include "Managers/InputManager.h"
 
 #include "Objects/Obstacle.h"
 
@@ -11,8 +12,9 @@
 
 Game::Game()
 {
+    // Game bắt đầu ở Menu
     state =
-        GameState::Playing;
+        GameState::Menu;
 }
 
 
@@ -23,7 +25,94 @@ Game::Game()
 void Game::Update()
 {
     // ==========================================
-    // STATE CHECK
+    // MENU
+    // ==========================================
+
+    if (state ==
+        GameState::Menu)
+    {
+        menu.Update();
+
+
+        if (
+            InputManager::IsKeyPressed(
+                SDL_SCANCODE_RETURN))
+        {
+            switch (
+                menu.GetSelectedIndex())
+            {
+                // ==================================
+                // NEW GAME
+                // ==================================
+
+            case 0:
+
+                player.Reset();
+
+                state =
+                    GameState::Playing;
+
+                break;
+
+
+                // ==================================
+                // LOAD GAME
+                // ==================================
+
+            case 1:
+
+                // Sẽ cài đặt ở bước Save / Load
+
+                break;
+
+
+                // ==================================
+                // LEADERBOARD
+                // ==================================
+
+            case 2:
+
+                // Sẽ cài đặt ở bước Leaderboard
+
+                break;
+
+
+                // ==================================
+                // SETTINGS
+                // ==================================
+
+            case 3:
+
+                // Sẽ cài đặt ở bước Settings
+
+                break;
+
+
+                // ==================================
+                // EXIT
+                // ==================================
+
+            case 4:
+
+                state =
+                    GameState::Exit;
+
+                break;
+
+
+            default:
+
+                break;
+            }
+        }
+
+
+        return;
+    }
+
+
+    // ==========================================
+    // NON-PLAYING STATES
     // ==========================================
 
     if (state !=
@@ -42,11 +131,6 @@ void Game::Update()
 
     // ==========================================
     // 2. GOAL CHECK
-    // ==========================================
-    //
-    // Goal vẫn kiểm tra Player rect.
-    // Không đổi sang hitbox.
-    //
     // ==========================================
 
     if (
@@ -104,7 +188,23 @@ void Game::Render(
     TextureManager& textureManager)
 {
     // ==========================================
-    // MAP
+    // MENU
+    // ==========================================
+
+    if (state ==
+        GameState::Menu)
+    {
+        menu.Draw(
+            renderer,
+            textRenderer,
+            fontManager);
+
+        return;
+    }
+
+
+    // ==========================================
+    // WORLD
     // ==========================================
 
     map.Draw(
