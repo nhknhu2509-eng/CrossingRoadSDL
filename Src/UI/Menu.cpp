@@ -19,8 +19,7 @@ Menu::Menu()
         "NEW GAME",
         "LOAD GAME",
         "LEADERBOARD",
-        "SETTINGS",
-        "EXIT"
+        "SETTINGS"
     };
 
 

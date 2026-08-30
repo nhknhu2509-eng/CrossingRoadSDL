@@ -12,7 +12,6 @@
 
 Game::Game()
 {
-    // Game bắt đầu ở Menu
     state =
         GameState::Menu;
 }
@@ -84,18 +83,6 @@ void Game::Update()
             case 3:
 
                 // Sẽ cài đặt ở bước Settings
-
-                break;
-
-
-                // ==================================
-                // EXIT
-                // ==================================
-
-            case 4:
-
-                state =
-                    GameState::Exit;
 
                 break;
 
