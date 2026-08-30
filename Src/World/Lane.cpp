@@ -262,3 +262,23 @@ const std::vector<
 {
     return obstacles;
 }
+// ==================================================
+// GET TRAFFIC LIGHT - READ ONLY
+// ==================================================
+
+const TrafficLight&
+Lane::GetTrafficLight() const
+{
+    return trafficLight;
+}
+
+
+// ==================================================
+// GET TRAFFIC LIGHT - MUTABLE
+// ==================================================
+
+TrafficLight&
+Lane::GetMutableTrafficLight()
+{
+    return trafficLight;
+}

@@ -25,36 +25,53 @@ TrafficLight::TrafficLight(
     // TRẠNG THÁI BAN ĐẦU
     // =====================================
 
-    state = LightState::Green;
+    state =
+        LightState::Green;
 
 
     // =====================================
     // THỜI GIAN RIÊNG CỦA TỪNG ĐÈN
     // =====================================
 
-    greenTime = greenDuration;
-    yellowTime = yellowDuration;
-    redTime = redDuration;
+    greenTime =
+        greenDuration;
+
+    yellowTime =
+        yellowDuration;
+
+    redTime =
+        redDuration;
 
 
-    lastSwitchTime = SDL_GetTicks();
+    lastSwitchTime =
+        SDL_GetTicks();
 }
 
 
+// ==================================================
+// UPDATE
+// ==================================================
+
 void TrafficLight::Update()
 {
-    Uint32 now = SDL_GetTicks();
+    Uint32 now =
+        SDL_GetTicks();
 
 
     switch (state)
     {
     case LightState::Green:
 
-        if (now - lastSwitchTime >= greenTime)
+        if (
+            now - lastSwitchTime >=
+            greenTime)
         {
-            state = LightState::Yellow;
+            state =
+                LightState::Yellow;
 
-            lastSwitchTime = now;
+
+            lastSwitchTime =
+                now;
         }
 
         break;
@@ -62,11 +79,16 @@ void TrafficLight::Update()
 
     case LightState::Yellow:
 
-        if (now - lastSwitchTime >= yellowTime)
+        if (
+            now - lastSwitchTime >=
+            yellowTime)
         {
-            state = LightState::Red;
+            state =
+                LightState::Red;
 
-            lastSwitchTime = now;
+
+            lastSwitchTime =
+                now;
         }
 
         break;
@@ -74,11 +96,16 @@ void TrafficLight::Update()
 
     case LightState::Red:
 
-        if (now - lastSwitchTime >= redTime)
+        if (
+            now - lastSwitchTime >=
+            redTime)
         {
-            state = LightState::Green;
+            state =
+                LightState::Green;
 
-            lastSwitchTime = now;
+
+            lastSwitchTime =
+                now;
         }
 
         break;
@@ -91,11 +118,145 @@ void TrafficLight::Update()
 }
 
 
+// ==================================================
+// CAN MOVE
+// ==================================================
+
 bool TrafficLight::CanMove() const
 {
-    return state != LightState::Red;
+    return
+        state !=
+        LightState::Red;
 }
 
+
+// ==================================================
+// GET SAVE STATE
+// ==================================================
+
+TrafficLightSaveState
+TrafficLight::GetSaveState() const
+{
+    TrafficLightSaveState
+        saveState;
+
+
+    saveState.state =
+        state;
+
+
+    saveState.elapsedTime =
+        SDL_GetTicks() -
+        lastSwitchTime;
+
+
+    return saveState;
+}
+
+
+// ==================================================
+// RESTORE SAVE STATE
+// ==================================================
+
+void TrafficLight::RestoreSaveState(
+    const TrafficLightSaveState& saveState)
+{
+    state =
+        saveState.state;
+
+
+    Uint32 maxElapsed =
+        0;
+
+
+    switch (state)
+    {
+    case LightState::Green:
+
+        maxElapsed =
+            greenTime;
+
+        break;
+
+
+    case LightState::Yellow:
+
+        maxElapsed =
+            yellowTime;
+
+        break;
+
+
+    case LightState::Red:
+
+        maxElapsed =
+            redTime;
+
+        break;
+
+
+    default:
+
+        state =
+            LightState::Green;
+
+        maxElapsed =
+            greenTime;
+
+        break;
+    }
+
+
+    // ==========================================
+    // KHÔNG CHO ELAPSED VƯỢT QUÁ DURATION
+    // ==========================================
+
+    Uint32 elapsed =
+        saveState.elapsedTime;
+
+
+    if (
+        elapsed >
+        maxElapsed)
+    {
+        elapsed =
+            maxElapsed;
+    }
+
+
+    // ==========================================
+    // TẠO LẠI MỐC THỜI GIAN
+    //
+    // Ví dụ:
+    //
+    // elapsed = 3000
+    //
+    // thì coi như trạng thái hiện tại
+    // đã bắt đầu cách đây 3000 ms.
+    // ==========================================
+
+    Uint32 now =
+        SDL_GetTicks();
+
+
+    if (
+        elapsed >
+        now)
+    {
+        elapsed =
+            now;
+    }
+
+
+    lastSwitchTime =
+        now -
+        elapsed;
+}
+
+
+// ==================================================
+// DRAW
+// ==================================================
 
 void TrafficLight::Draw(
     SDL_Renderer* renderer,
@@ -109,7 +270,9 @@ void TrafficLight::Draw(
     // CHỌN SPRITE THEO MÀU ĐÈN
     // =====================================
 
-    if (state == LightState::Red)
+    if (
+        state ==
+        LightState::Red)
     {
         textureId =
             "lantern_red";
@@ -122,10 +285,11 @@ void TrafficLight::Draw(
 
 
     // =====================================
-    // FALLBACK NẾU KHÔNG LOAD ĐƯỢC SPRITE
+    // FALLBACK
     // =====================================
 
-    if (texture == nullptr ||
+    if (
+        texture == nullptr ||
         texture->GetTexture() == nullptr)
     {
         switch (state)
@@ -176,26 +340,18 @@ void TrafficLight::Draw(
             renderer,
             &rect);
 
+
         return;
     }
 
 
     // =====================================
-    // ĐÈN VÀNG
-    // =====================================
-    //
-    // Hiện tại project có:
-    //
-    // lantern_green.png
-    // lantern_red.png
-    //
-    // Chưa có lantern_yellow.png
-    //
-    // Vì vậy khi vàng sẽ lấy sprite xanh
-    // rồi đổi màu thành vàng.
+    // YELLOW
     // =====================================
 
-    if (state == LightState::Yellow)
+    if (
+        state ==
+        LightState::Yellow)
     {
         SDL_SetTextureColorMod(
             texture->GetTexture(),
@@ -217,7 +373,7 @@ void TrafficLight::Draw(
 
 
     // =====================================
-    // RESET MÀU TEXTURE
+    // RESET TEXTURE COLOR
     // =====================================
 
     SDL_SetTextureColorMod(

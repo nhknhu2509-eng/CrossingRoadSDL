@@ -538,10 +538,11 @@ void Game::Update()
     // ==========================================
     // SAVE GAME
     //
-    // Chỉ save khi:
-    // - Paused
-    // - GameOver
-    // - LevelComplete
+    // Chỉ được Save khi:
+    //
+    // Paused
+    // GameOver
+    // LevelComplete
     // ==========================================
 
     if (
@@ -991,6 +992,15 @@ bool Game::SaveGame()
 
 
     // ==========================================
+    // TRAFFIC LIGHTS
+    // ==========================================
+
+    data.trafficLights =
+        map.GetLaneManager().
+        GetTrafficLightSaveStates();
+
+
+    // ==========================================
     // WRITE SAVE FILE
     // ==========================================
 
@@ -1081,14 +1091,25 @@ bool Game::LoadGame()
 
 
     // ==========================================
-    // RESTORE STATE
+    // TRAFFIC LIGHTS
+    // ==========================================
+
+    map.GetLaneManager().
+        RestoreTrafficLightSaveStates(
+            data.trafficLights);
+
+
+    // ==========================================
+    // RESTORE GAME STATE
     // ==========================================
 
     state =
         data.state;
 
 
-    // Khi Load không chạy intro lại.
+    // ==========================================
+    // KHÔNG PHÁT INTRO KHI LOAD
+    // ==========================================
 
     introRequested =
         false;

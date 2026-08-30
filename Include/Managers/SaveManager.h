@@ -7,6 +7,7 @@
 #include <SDL.h>
 
 #include "Core/GameState.h"
+#include "World/TrafficLight.h"
 
 
 struct SaveData
@@ -18,9 +19,14 @@ struct SaveData
     int playerX;
     int playerY;
 
-    std::vector<bool> pineConeCollected;
+    std::vector<bool>
+        pineConeCollected;
 
-    std::vector<SDL_Point> obstaclePositions;
+    std::vector<SDL_Point>
+        obstaclePositions;
+
+    std::vector<TrafficLightSaveState>
+        trafficLights;
 };
 
 
@@ -59,15 +65,17 @@ public:
         // VERSION
         // ======================================
 
-        file << "VERSION 1\n";
+        file << "VERSION 2\n";
 
 
         // ======================================
         // GAME STATE
         // ======================================
 
-        file << "STATE "
-            << StateToInt(data.state)
+        file
+            << "STATE "
+            << StateToInt(
+                data.state)
             << "\n";
 
 
@@ -75,7 +83,8 @@ public:
         // SCORE
         // ======================================
 
-        file << "SCORE "
+        file
+            << "SCORE "
             << data.score
             << "\n";
 
@@ -84,7 +93,8 @@ public:
         // PLAYER
         // ======================================
 
-        file << "PLAYER "
+        file
+            << "PLAYER "
             << data.playerX
             << " "
             << data.playerY
@@ -95,7 +105,8 @@ public:
         // PINE CONES
         // ======================================
 
-        file << "PINECONES "
+        file
+            << "PINECONES "
             << data.pineConeCollected.size()
             << "\n";
 
@@ -114,7 +125,8 @@ public:
         // OBSTACLES
         // ======================================
 
-        file << "OBSTACLES "
+        file
+            << "OBSTACLES "
             << data.obstaclePositions.size()
             << "\n";
 
@@ -127,6 +139,29 @@ public:
                 << position.x
                 << " "
                 << position.y
+                << "\n";
+        }
+
+
+        // ======================================
+        // TRAFFIC LIGHTS
+        // ======================================
+
+        file
+            << "LIGHTS "
+            << data.trafficLights.size()
+            << "\n";
+
+
+        for (
+            const TrafficLightSaveState& light :
+            data.trafficLights)
+        {
+            file
+                << LightStateToInt(
+                    light.state)
+                << " "
+                << light.elapsedTime
                 << "\n";
         }
 
@@ -157,6 +192,7 @@ public:
 
         std::string label;
 
+
         int version =
             0;
 
@@ -165,13 +201,14 @@ public:
         // VERSION
         // ======================================
 
-        file >> label
+        file
+            >> label
             >> version;
 
 
         if (
             label != "VERSION" ||
-            version != 1)
+            version != 2)
         {
             return false;
         }
@@ -185,7 +222,8 @@ public:
             0;
 
 
-        file >> label
+        file
+            >> label
             >> stateValue;
 
 
@@ -204,7 +242,8 @@ public:
         // SCORE
         // ======================================
 
-        file >> label
+        file
+            >> label
             >> data.score;
 
 
@@ -218,7 +257,8 @@ public:
         // PLAYER
         // ======================================
 
-        file >> label
+        file
+            >> label
             >> data.playerX
             >> data.playerY;
 
@@ -237,7 +277,8 @@ public:
             0;
 
 
-        file >> label
+        file
+            >> label
             >> pineConeCount;
 
 
@@ -283,7 +324,8 @@ public:
             0;
 
 
-        file >> label
+        file
+            >> label
             >> obstacleCount;
 
 
@@ -322,6 +364,72 @@ public:
         }
 
 
+        // ======================================
+        // TRAFFIC LIGHTS
+        // ======================================
+
+        int lightCount =
+            0;
+
+
+        file
+            >> label
+            >> lightCount;
+
+
+        if (
+            label != "LIGHTS" ||
+            lightCount < 0)
+        {
+            return false;
+        }
+
+
+        data.trafficLights.clear();
+
+
+        for (
+            int i = 0;
+            i < lightCount;
+            i++)
+        {
+            int stateValue =
+                0;
+
+
+            Uint32 elapsedTime =
+                0;
+
+
+            file
+                >> stateValue
+                >> elapsedTime;
+
+
+            if (!file)
+            {
+                return false;
+            }
+
+
+            TrafficLightSaveState
+                light;
+
+
+            light.state =
+                IntToLightState(
+                    stateValue);
+
+
+            light.elapsedTime =
+                elapsedTime;
+
+
+            data.trafficLights.push_back(
+                light);
+        }
+
+
         file.close();
 
 
@@ -346,7 +454,7 @@ public:
 private:
 
     // ==========================================
-    // STATE -> INT
+    // GAME STATE -> INT
     // ==========================================
 
     static int StateToInt(
@@ -357,11 +465,14 @@ private:
         case GameState::Paused:
             return 1;
 
+
         case GameState::GameOver:
             return 2;
 
+
         case GameState::LevelComplete:
             return 3;
+
 
         default:
             return 0;
@@ -370,7 +481,7 @@ private:
 
 
     // ==========================================
-    // INT -> STATE
+    // INT -> GAME STATE
     // ==========================================
 
     static GameState IntToState(
@@ -381,14 +492,71 @@ private:
         case 1:
             return GameState::Paused;
 
+
         case 2:
             return GameState::GameOver;
+
 
         case 3:
             return GameState::LevelComplete;
 
+
         default:
             return GameState::Paused;
+        }
+    }
+
+
+    // ==========================================
+    // LIGHT STATE -> INT
+    // ==========================================
+
+    static int LightStateToInt(
+        LightState state)
+    {
+        switch (state)
+        {
+        case LightState::Green:
+            return 0;
+
+
+        case LightState::Yellow:
+            return 1;
+
+
+        case LightState::Red:
+            return 2;
+
+
+        default:
+            return 0;
+        }
+    }
+
+
+    // ==========================================
+    // INT -> LIGHT STATE
+    // ==========================================
+
+    static LightState IntToLightState(
+        int value)
+    {
+        switch (value)
+        {
+        case 0:
+            return LightState::Green;
+
+
+        case 1:
+            return LightState::Yellow;
+
+
+        case 2:
+            return LightState::Red;
+
+
+        default:
+            return LightState::Green;
         }
     }
 };

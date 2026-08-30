@@ -39,9 +39,25 @@ public:
         TextureManager& textureManager);
 
 
+    // ==========================================
+    // OBSTACLES
+    // ==========================================
+
     const std::vector<
         std::unique_ptr<Obstacle>>&
         GetObstacles() const;
+
+
+    // ==========================================
+    // TRAFFIC LIGHT
+    // ==========================================
+
+    const TrafficLight&
+        GetTrafficLight() const;
+
+
+    TrafficLight&
+        GetMutableTrafficLight();
 
 
 private:

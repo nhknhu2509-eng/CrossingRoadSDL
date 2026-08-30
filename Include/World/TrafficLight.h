@@ -13,6 +13,18 @@ enum class LightState
 };
 
 
+// ==================================================
+// TRAFFIC LIGHT SAVE STATE
+// ==================================================
+
+struct TrafficLightSaveState
+{
+    LightState state;
+
+    Uint32 elapsedTime;
+};
+
+
 class TrafficLight
 {
 public:
@@ -36,17 +48,34 @@ public:
     bool CanMove() const;
 
 
+    // ==========================================
+    // SAVE / LOAD
+    // ==========================================
+
+    TrafficLightSaveState
+        GetSaveState() const;
+
+
+    void RestoreSaveState(
+        const TrafficLightSaveState& saveState);
+
+
 private:
 
     SDL_Rect rect;
 
+
     LightState state;
+
 
     Uint32 lastSwitchTime;
 
+
     Uint32 greenTime;
 
+
     Uint32 yellowTime;
+
 
     Uint32 redTime;
 };

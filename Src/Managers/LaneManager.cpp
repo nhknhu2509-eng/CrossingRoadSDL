@@ -3,6 +3,10 @@
 #include "Graphics/TextureManager.h"
 
 
+// ==================================================
+// CONSTRUCTOR
+// ==================================================
+
 LaneManager::LaneManager()
 {
     // ==========================================
@@ -17,10 +21,8 @@ LaneManager::LaneManager()
         3,
         "wagon",
         "",
-
         960,
         165,
-
         5000,
         1000,
         5000);
@@ -38,10 +40,8 @@ LaneManager::LaneManager()
         3,
         "wagon",
         "",
-
         320,
         255,
-
         6500,
         1200,
         4500);
@@ -59,10 +59,8 @@ LaneManager::LaneManager()
         3,
         "",
         "deer",
-
         960,
         340,
-
         4000,
         900,
         6000);
@@ -80,10 +78,8 @@ LaneManager::LaneManager()
         3,
         "",
         "squirrel",
-
         320,
         430,
-
         7500,
         1500,
         4000);
@@ -101,10 +97,8 @@ LaneManager::LaneManager()
         3,
         "",
         "rabbit",
-
         960,
         530,
-
         5500,
         1100,
         7000);
@@ -117,9 +111,7 @@ LaneManager::LaneManager()
 
 void LaneManager::Update()
 {
-    for (
-        Lane& lane :
-        lanes)
+    for (Lane& lane : lanes)
     {
         lane.Update();
     }
@@ -134,9 +126,7 @@ void LaneManager::Draw(
     SDL_Renderer* renderer,
     TextureManager& textureManager)
 {
-    for (
-        Lane& lane :
-        lanes)
+    for (Lane& lane : lanes)
     {
         lane.Draw(
             renderer,
@@ -152,17 +142,19 @@ void LaneManager::Draw(
 std::vector<const Obstacle*>
 LaneManager::GetObstacles() const
 {
-    std::vector<const Obstacle*>
-        result;
+    std::vector<const Obstacle*> result;
 
 
-    for (
-        const Lane& lane :
-        lanes)
+    for (const Lane& lane : lanes)
     {
+        const std::vector<std::unique_ptr<Obstacle>>&
+            laneObstacles =
+            lane.GetObstacles();
+
+
         for (
             const std::unique_ptr<Obstacle>& obstacle :
-            lane.GetObstacles())
+            laneObstacles)
         {
             result.push_back(
                 obstacle.get());
@@ -181,16 +173,12 @@ LaneManager::GetObstacles() const
 std::vector<Obstacle*>
 LaneManager::GetMutableObstacles()
 {
-    std::vector<Obstacle*>
-        result;
+    std::vector<Obstacle*> result;
 
 
-    for (
-        Lane& lane :
-        lanes)
+    for (Lane& lane : lanes)
     {
-        const std::vector<
-            std::unique_ptr<Obstacle>>&
+        const std::vector<std::unique_ptr<Obstacle>>&
             laneObstacles =
             lane.GetObstacles();
 
@@ -206,4 +194,57 @@ LaneManager::GetMutableObstacles()
 
 
     return result;
+}
+
+
+// ==================================================
+// GET TRAFFIC LIGHT SAVE STATES
+// ==================================================
+
+std::vector<TrafficLightSaveState>
+LaneManager::GetTrafficLightSaveStates() const
+{
+    std::vector<TrafficLightSaveState> result;
+
+
+    for (const Lane& lane : lanes)
+    {
+        result.push_back(
+            lane.GetTrafficLight().
+            GetSaveState());
+    }
+
+
+    return result;
+}
+
+
+// ==================================================
+// RESTORE TRAFFIC LIGHT SAVE STATES
+// ==================================================
+
+void LaneManager::RestoreTrafficLightSaveStates(
+    const std::vector<TrafficLightSaveState>& states)
+{
+    std::size_t count =
+        states.size();
+
+
+    if (count > lanes.size())
+    {
+        count =
+            lanes.size();
+    }
+
+
+    for (
+        std::size_t i = 0;
+        i < count;
+        ++i)
+    {
+        lanes[i].
+            GetMutableTrafficLight().
+            RestoreSaveState(
+                states[i]);
+    }
 }

@@ -24,24 +24,20 @@ public:
         TextureManager& textureManager);
 
 
-    // ==========================================
-    // READ-ONLY OBSTACLES
-    //
-    // Dùng cho collision.
-    // ==========================================
-
     std::vector<const Obstacle*>
         GetObstacles() const;
 
 
-    // ==========================================
-    // MUTABLE OBSTACLES
-    //
-    // Dùng khi restore Save Game.
-    // ==========================================
-
     std::vector<Obstacle*>
         GetMutableObstacles();
+
+
+    std::vector<TrafficLightSaveState>
+        GetTrafficLightSaveStates() const;
+
+
+    void RestoreTrafficLightSaveStates(
+        const std::vector<TrafficLightSaveState>& states);
 
 
 private:
