@@ -24,8 +24,10 @@ Obstacle::Obstacle()
 
     currentFrame = 0;
 
+
     lastFrameTime =
         SDL_GetTicks();
+
 
     frameDuration = 140;
 
@@ -48,7 +50,8 @@ Obstacle::Obstacle()
     };
 
 
-    debugHitbox = true;
+    // Không hiển thị viền hitbox.
+    debugHitbox = false;
 }
 
 
@@ -58,17 +61,13 @@ Obstacle::Obstacle()
 
 void Obstacle::Update()
 {
-    // Giữ nguyên công thức movement hiện tại
     rect.x +=
         speed * direction;
 
 
-    // Giữ nguyên:
-    // animation chỉ update khi obstacle Update()
     UpdateAnimation();
 
 
-    // Giữ nguyên wrap màn hình
     WrapScreen();
 
 
@@ -100,15 +99,18 @@ void Obstacle::Draw(
             currentTextureId);
 
 
-    if (texture != nullptr &&
+    if (
+        texture != nullptr &&
         texture->GetTexture() != nullptr)
     {
         SDL_RendererFlip flip =
             SDL_FLIP_NONE;
 
 
-        // Giữ nguyên:
-        // direction < 0 thì lật sprite
+        // ======================================
+        // FLIP SPRITE KHI ĐI SANG TRÁI
+        // ======================================
+
         if (direction < 0)
         {
             flip =
@@ -144,6 +146,12 @@ void Obstacle::Draw(
     // ==========================================
     // DEBUG HITBOX
     // ==========================================
+    //
+    // debugHitbox = false nên không xuất hiện
+    // đường viền trên màn hình.
+    //
+    // Hitbox vẫn tồn tại để collision.
+    // ==========================================
 
     if (debugHitbox)
     {
@@ -178,13 +186,15 @@ void Obstacle::UpdateAnimation()
         SDL_GetTicks();
 
 
-    if (now - lastFrameTime >=
+    if (
+        now - lastFrameTime >=
         frameDuration)
     {
         currentFrame++;
 
 
-        if (currentFrame >=
+        if (
+            currentFrame >=
             static_cast<int>(
                 animationFrames.size()))
         {
@@ -192,7 +202,8 @@ void Obstacle::UpdateAnimation()
         }
 
 
-        lastFrameTime = now;
+        lastFrameTime =
+            now;
     }
 }
 
@@ -203,7 +214,8 @@ void Obstacle::UpdateAnimation()
 
 void Obstacle::WrapScreen()
 {
-    if (rect.x >
+    if (
+        rect.x >
         Config::WINDOW_WIDTH)
     {
         rect.x =
@@ -211,7 +223,8 @@ void Obstacle::WrapScreen()
     }
 
 
-    if (rect.x + rect.w < 0)
+    if (
+        rect.x + rect.w < 0)
     {
         rect.x =
             Config::WINDOW_WIDTH;

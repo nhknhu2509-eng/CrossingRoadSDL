@@ -11,15 +11,6 @@
 
 Player::Player()
 {
-    // ==========================================
-    // RECT
-    // ==========================================
-    //
-    // rect được kế thừa từ GameObject.
-    //
-    // Giữ nguyên toàn bộ thông số hiện tại.
-    // ==========================================
-
     rect.x =
         Config::PLAYER_START_X;
 
@@ -57,16 +48,12 @@ Player::Player()
         SDL_GetTicks();
 
 
-    // Giữ nguyên:
-    // 130 ms / frame
     frameDuration = 130;
 
 
     moving = false;
 
-
     movingHorizontal = false;
-
 
     facingLeft = false;
 }
@@ -79,7 +66,6 @@ Player::Player()
 void Player::Update()
 {
     moving = false;
-
 
     movingHorizontal = false;
 
@@ -100,7 +86,6 @@ void Player::Update()
 
 
         moving = true;
-
 
         movingHorizontal = false;
     }
@@ -123,7 +108,6 @@ void Player::Update()
 
         moving = true;
 
-
         movingHorizontal = false;
     }
 
@@ -145,9 +129,7 @@ void Player::Update()
 
         moving = true;
 
-
         movingHorizontal = true;
-
 
         facingLeft = true;
     }
@@ -170,9 +152,7 @@ void Player::Update()
 
         moving = true;
 
-
         movingHorizontal = true;
-
 
         facingLeft = false;
     }
@@ -226,7 +206,6 @@ void Player::Update()
                     "player_walkright2";
             }
         }
-
 
         // ======================================
         // VERTICAL
@@ -321,7 +300,7 @@ void Player::Draw(
 
         // ======================================
         // LEFT FLIP
-        // ==========================================
+        // ======================================
 
         if (
             movingHorizontal
@@ -346,7 +325,7 @@ void Player::Draw(
     {
         // ======================================
         // FALLBACK
-        // ==========================================
+        // ======================================
 
         SDL_SetRenderDrawColor(
             renderer,
@@ -361,27 +340,8 @@ void Player::Draw(
             &rect);
     }
 
-
-    // ==========================================
-    // DEBUG HITBOX
-    // ==========================================
-
-    SDL_Rect hitbox =
-        GetHitbox();
-
-
-    // Giữ nguyên màu xanh hiện tại
-    SDL_SetRenderDrawColor(
-        renderer,
-        0,
-        0,
-        255,
-        255);
-
-
-    SDL_RenderDrawRect(
-        renderer,
-        &hitbox);
+    // Không vẽ debug hitbox.
+    // Hitbox vẫn tồn tại và vẫn được dùng để collision.
 }
 
 
@@ -391,8 +351,6 @@ void Player::Draw(
 
 void Player::Reset()
 {
-    // Giữ nguyên vị trí reset hiện tại
-
     rect.x =
         Config::PLAYER_START_X;
 
@@ -400,8 +358,6 @@ void Player::Reset()
     rect.y =
         Config::PLAYER_START_Y;
 
-
-    // Giữ nguyên animation reset
 
     currentTextureId =
         "player_idle";
@@ -419,13 +375,6 @@ void Player::SetPosition(
     int x,
     int y)
 {
-    // Dùng implementation chung của GameObject.
-    //
-    // Kết quả vẫn chính xác:
-    //
-    // rect.x = x;
-    // rect.y = y;
-
     GameObject::SetPosition(
         x,
         y);
@@ -443,7 +392,7 @@ Player::GetHitbox() const
 
 
     // ==========================================
-    // GIỮ NGUYÊN 100% HITBOX HIỆN TẠI
+    // GIỮ NGUYÊN HITBOX
     // ==========================================
 
     hitbox.x =
