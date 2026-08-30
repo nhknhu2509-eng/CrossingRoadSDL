@@ -10,7 +10,7 @@ LaneManager::LaneManager()
     // ==========================================
 
     lanes.emplace_back(
-        185,
+        180,
         82,
         1,
         3,

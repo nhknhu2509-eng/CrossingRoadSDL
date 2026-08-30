@@ -2,17 +2,25 @@
 
 #include <SDL.h>
 
+
 #include "Core/GameState.h"
+
 
 #include "Graphics/FontManager.h"
 #include "Graphics/TextRenderer.h"
 #include "Graphics/TextureManager.h"
 
+
 #include "Objects/Player.h"
+
 
 #include "World/Map.h"
 
+
 #include "UI/Menu.h"
+
+
+#include "Managers/PineConeManager.h"
 
 
 class Game
@@ -75,6 +83,21 @@ private:
     // ==========================================
 
     Map map;
+
+
+    // ==========================================
+    // PINE CONES
+    // ==========================================
+
+    PineConeManager
+        pineConeManager;
+
+
+    // ==========================================
+    // SCORE
+    // ==========================================
+
+    int score;
 
 
     // ==========================================
