@@ -7,6 +7,99 @@
 
 
 // ==================================================
+// HELPER - DRAW STATE OVERLAY
+// ==================================================
+
+namespace
+{
+    void DrawStateOverlay(
+        SDL_Renderer* renderer,
+        TextureManager& textureManager,
+        const std::string& textureName)
+    {
+        // ==========================================
+        // DARKEN GAME SCREEN
+        // ==========================================
+
+        SDL_SetRenderDrawBlendMode(
+            renderer,
+            SDL_BLENDMODE_BLEND);
+
+
+        SDL_SetRenderDrawColor(
+            renderer,
+            0,
+            0,
+            0,
+            140);
+
+
+        SDL_Rect darkOverlay =
+        {
+            0,
+            0,
+            1280,
+            720
+        };
+
+
+        SDL_RenderFillRect(
+            renderer,
+            &darkOverlay);
+
+
+        // ==========================================
+        // GET FRAME TEXTURE
+        // ==========================================
+
+        Texture* frame =
+            textureManager.GetTexture(
+                textureName);
+
+
+        if (
+            frame == nullptr ||
+            frame->GetTexture() == nullptr)
+        {
+            return;
+        }
+
+
+        // ==========================================
+        // FRAME POSITION
+        // ==========================================
+
+        const int frameWidth =
+            760;
+
+        const int frameHeight =
+            430;
+
+
+        SDL_Rect frameRect =
+        {
+            (1280 - frameWidth) / 2,
+            (720 - frameHeight) / 2,
+
+            frameWidth,
+            frameHeight
+        };
+
+
+        // ==========================================
+        // DRAW FRAME
+        // ==========================================
+
+        SDL_RenderCopy(
+            renderer,
+            frame->GetTexture(),
+            nullptr,
+            &frameRect);
+    }
+}
+
+
+// ==================================================
 // CONSTRUCTOR
 // ==================================================
 
@@ -31,7 +124,8 @@ void Game::Update()
     // MENU
     // ==========================================
 
-    if (state ==
+    if (
+        state ==
         GameState::Menu)
     {
         menu.Update();
@@ -67,7 +161,7 @@ void Game::Update()
 
             case 1:
 
-                // Sẽ cài đặt Save / Load sau
+                // Save / Load sẽ làm sau.
 
                 break;
 
@@ -78,7 +172,7 @@ void Game::Update()
 
             case 2:
 
-                // Sẽ cài đặt Leaderboard sau
+                // Leaderboard sẽ làm sau.
 
                 break;
 
@@ -95,10 +189,62 @@ void Game::Update()
 
 
     // ==========================================
+    // PAUSE
+    // ==========================================
+
+    if (
+        state ==
+        GameState::Playing &&
+        InputManager::IsKeyPressed(
+            SDL_SCANCODE_P))
+    {
+        state =
+            GameState::Paused;
+
+
+        return;
+    }
+
+
+    // ==========================================
+    // RESUME
+    // ==========================================
+
+    if (
+        state ==
+        GameState::Paused &&
+        InputManager::IsKeyPressed(
+            SDL_SCANCODE_P))
+    {
+        state =
+            GameState::Playing;
+
+
+        return;
+    }
+
+
+    // ==========================================
+    // PAUSED
+    //
+    // Không update Player / Map / Collision.
+    // Toàn bộ gameplay đứng yên.
+    // ==========================================
+
+    if (
+        state ==
+        GameState::Paused)
+    {
+        return;
+    }
+
+
+    // ==========================================
     // NON-PLAYING STATES
     // ==========================================
 
-    if (state !=
+    if (
+        state !=
         GameState::Playing)
     {
         return;
@@ -177,7 +323,8 @@ void Game::Render(
     // MENU
     // ==========================================
 
-    if (state ==
+    if (
+        state ==
         GameState::Menu)
     {
         menu.Draw(
@@ -208,58 +355,58 @@ void Game::Render(
 
 
     // ==========================================
-    // GAME STATE UI
+    // STATE UI
     // ==========================================
 
     switch (state)
     {
+        // ======================================
+        // NORMAL GAME
+        // ======================================
+
     case GameState::Playing:
 
         break;
 
 
-    case GameState::GameOver:
+        // ======================================
+        // PAUSE
+        // ======================================
 
-        textRenderer.Draw(
+    case GameState::Paused:
+
+        DrawStateOverlay(
             renderer,
-            fontManager.GetFont(
-                "default"),
-            "GAME OVER",
-            280,
-            220);
-
-
-        textRenderer.Draw(
-            renderer,
-            fontManager.GetFont(
-                "default"),
-            "Press ENTER to restart",
-            220,
-            270);
-
+            textureManager,
+            "pause_frame");
 
         break;
 
 
+        // ======================================
+        // LOSE
+        // ======================================
+
+    case GameState::GameOver:
+
+        DrawStateOverlay(
+            renderer,
+            textureManager,
+            "lose_frame");
+
+        break;
+
+
+        // ======================================
+        // WIN
+        // ======================================
+
     case GameState::LevelComplete:
 
-        textRenderer.Draw(
+        DrawStateOverlay(
             renderer,
-            fontManager.GetFont(
-                "default"),
-            "YOU WIN!",
-            300,
-            220);
-
-
-        textRenderer.Draw(
-            renderer,
-            fontManager.GetFont(
-                "default"),
-            "Press ENTER to continue",
-            210,
-            270);
-
+            textureManager,
+            "win_frame");
 
         break;
 
