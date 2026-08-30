@@ -17,5 +17,6 @@ public:
 
     bool Play(
         SDL_Renderer* renderer,
-        const std::string& videoPath);
+        const std::string& videoPath,
+        bool& quitRequested);
 };

@@ -174,10 +174,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_image.lib;avcodec.lib
-;avformat.lib
-;avutil.lib;
-swscale.lib;
-swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
+;avutil.lib;swscale.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\External\FFmpeg\lib;$(ProjectDir)..\..\External\SDL2-2.32.10\lib\x64;$(ProjectDir)..\..\External\SDL2_ttf-2.24.0\lib\x64;$(ProjectDir)..\..\External\SDL2_image-2.8.2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -201,10 +198,7 @@ swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_image.lib;avcodec.lib
-;avformat.lib
-;avutil.lib;
-swscale.lib;
-swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
+;avutil.lib;swscale.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\External\FFmpeg\lib;$(ProjectDir)..\..\External\SDL2-2.32.10\lib\x64;$(ProjectDir)..\..\External\SDL2_ttf-2.24.0\lib\x64;$(ProjectDir)..\..\External\SDL2_image-2.8.2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>

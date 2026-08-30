@@ -1,4 +1,4 @@
-FFmpeg 64-bit static Windows build from www.gyan.dev
+FFmpeg 64-bit shared Windows build from www.gyan.dev
 
 Version: 9.0.1-full_build-www.gyan.dev
 
@@ -39,8 +39,8 @@ debug symbols             yes
 strip symbols             yes
 optimize for size         no
 optimizations             yes
-static                    yes
-shared                    no
+static                    no
+shared                    yes
 network support           yes
 threading support         pthreads
 safe bitstream reader     yes

@@ -5,8 +5,6 @@
 
 #include "Objects/Obstacle.h"
 
-#include "Media/VideoPlayer.h"
-
 
 // ==================================================
 // CONSTRUCTOR
@@ -16,6 +14,10 @@ Game::Game()
 {
     state =
         GameState::Menu;
+
+
+    introRequested =
+        false;
 }
 
 
@@ -51,20 +53,8 @@ void Game::Update()
                 player.Reset();
 
 
-                // ==================================
-                // CHAPTER 1 INTRO VIDEO
-                // ==================================
-
-                VideoPlayer::Play(
-                    "Assets/Videos/chapter1_intro.mp4");
-
-
-                // ==================================
-                // START CHAPTER 1
-                // ==================================
-
-                state =
-                    GameState::Playing;
+                introRequested =
+                    true;
 
 
                 break;
@@ -133,6 +123,7 @@ void Game::Update()
         state =
             GameState::LevelComplete;
 
+
         return;
     }
 
@@ -161,8 +152,10 @@ void Game::Update()
         {
             player.Reset();
 
+
             state =
                 GameState::GameOver;
+
 
             return;
         }
@@ -190,6 +183,7 @@ void Game::Render(
         menu.Draw(
             renderer,
             textureManager);
+
 
         return;
     }
@@ -243,6 +237,7 @@ void Game::Render(
             220,
             270);
 
+
         break;
 
 
@@ -264,6 +259,7 @@ void Game::Render(
             "Press ENTER to continue",
             210,
             270);
+
 
         break;
 
@@ -295,4 +291,24 @@ GameState
 Game::GetState() const
 {
     return state;
+}
+
+
+// ==================================================
+// CONSUME INTRO REQUEST
+// ==================================================
+
+bool Game::ConsumeIntroRequest()
+{
+    if (!introRequested)
+    {
+        return false;
+    }
+
+
+    introRequested =
+        false;
+
+
+    return true;
 }

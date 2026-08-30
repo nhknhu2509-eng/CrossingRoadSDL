@@ -3,6 +3,8 @@
 #include "Managers/InputManager.h"
 #include "Config/GameConfig.h"
 
+#include "Media/VideoPlayer.h"
+
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <SDL_image.h>
@@ -87,8 +89,14 @@ bool Application::Initialize()
     // SDL IMAGE
     // ==================================================
 
-    if (!(IMG_Init(IMG_INIT_PNG) &
-        IMG_INIT_PNG))
+    const int imageFlags =
+        IMG_INIT_PNG |
+        IMG_INIT_JPG;
+
+
+    if (
+        (IMG_Init(imageFlags) & imageFlags)
+        != imageFlags)
     {
         std::cout
             << "IMG_Init Error: "
@@ -282,6 +290,7 @@ bool Application::Initialize()
         return false;
     }
 
+
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "wagon1_02",
@@ -289,6 +298,7 @@ bool Application::Initialize()
     {
         return false;
     }
+
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -311,6 +321,7 @@ bool Application::Initialize()
         return false;
     }
 
+
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "wagon2_02",
@@ -318,6 +329,7 @@ bool Application::Initialize()
     {
         return false;
     }
+
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -340,6 +352,7 @@ bool Application::Initialize()
         return false;
     }
 
+
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "wagon3_02",
@@ -347,6 +360,7 @@ bool Application::Initialize()
     {
         return false;
     }
+
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -369,6 +383,7 @@ bool Application::Initialize()
         return false;
     }
 
+
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "wagon4_02",
@@ -376,6 +391,7 @@ bool Application::Initialize()
     {
         return false;
     }
+
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -398,6 +414,7 @@ bool Application::Initialize()
         return false;
     }
 
+
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "deer_02",
@@ -405,6 +422,7 @@ bool Application::Initialize()
     {
         return false;
     }
+
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -414,6 +432,7 @@ bool Application::Initialize()
         return false;
     }
 
+
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "deer_04",
@@ -421,6 +440,7 @@ bool Application::Initialize()
     {
         return false;
     }
+
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -443,6 +463,7 @@ bool Application::Initialize()
         return false;
     }
 
+
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "squirrel_02",
@@ -451,6 +472,7 @@ bool Application::Initialize()
         return false;
     }
 
+
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "squirrel_03",
@@ -458,6 +480,7 @@ bool Application::Initialize()
     {
         return false;
     }
+
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -480,6 +503,7 @@ bool Application::Initialize()
         return false;
     }
 
+
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "rabbit_02",
@@ -487,6 +511,7 @@ bool Application::Initialize()
     {
         return false;
     }
+
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -600,7 +625,11 @@ bool Application::Initialize()
 
 void Application::Run()
 {
-    bool running = true;
+    bool running =
+        true;
+
+
+    VideoPlayer videoPlayer;
 
 
     while (running)
@@ -608,16 +637,85 @@ void Application::Run()
         timer.Tick();
 
 
+        // ==========================================
+        // INPUT
+        // ==========================================
+
         InputManager::Update();
 
 
-        if (InputManager::QuitRequested())
+        if (
+            InputManager::QuitRequested())
         {
-            running = false;
+            running =
+                false;
+
+            continue;
         }
 
 
+        // ==========================================
+        // GAME UPDATE
+        // ==========================================
+
         game.Update();
+
+
+        // ==========================================
+        // INTRO REQUEST
+        // ==========================================
+
+        if (
+            game.ConsumeIntroRequest())
+        {
+            bool quitRequested =
+                false;
+
+
+            bool videoPlayed =
+                videoPlayer.Play(
+                    window.GetRenderer(),
+                    "Assets/Videos/chapter1_intro.mp4",
+                    quitRequested);
+
+
+            // ======================================
+            // WINDOW CLOSED DURING VIDEO
+            // ======================================
+
+            if (quitRequested)
+            {
+                running =
+                    false;
+
+                continue;
+            }
+
+
+            // ======================================
+            // VIDEO FAILED
+            // ======================================
+
+            if (!videoPlayed)
+            {
+                std::cout
+                    << "Intro could not be played."
+                    << std::endl;
+
+
+                std::cout
+                    << "Starting Chapter 1 anyway."
+                    << std::endl;
+            }
+
+
+            // ======================================
+            // START CHAPTER 1
+            // ======================================
+
+            game.SetState(
+                GameState::Playing);
+        }
 
 
         // ==========================================
@@ -643,8 +741,12 @@ void Application::Run()
             SDL_Rect destination;
 
 
-            destination.x = 0;
-            destination.y = 0;
+            destination.x =
+                0;
+
+
+            destination.y =
+                0;
 
 
             destination.w =
@@ -673,6 +775,10 @@ void Application::Run()
             fontManager,
             textureManager);
 
+
+        // ==========================================
+        // PRESENT
+        // ==========================================
 
         window.Present();
     }
