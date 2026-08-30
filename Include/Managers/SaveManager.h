@@ -1,6 +1,9 @@
 #pragma once
 
+#include <algorithm>
+#include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -43,12 +46,12 @@ class SaveManager
 public:
 
     // ==========================================
-    // SAVE FILE PATH
+    // SAVE DIRECTORY
     // ==========================================
 
-    static const char* GetSavePath()
+    static const char* GetSaveDirectory()
     {
-        return "savegame.txt";
+        return "Saves";
     }
 
 
@@ -57,16 +60,72 @@ public:
     // ==========================================
 
     static bool Save(
-        const SaveData& data)
+        const SaveData& data,
+        const std::string& saveName)
     {
+        std::string safeName =
+            MakeSafeFileName(
+                saveName);
+
+
+        if (safeName.empty())
+        {
+            return false;
+        }
+
+
+        std::error_code error;
+
+
+        std::filesystem::create_directories(
+            GetSaveDirectory(),
+            error);
+
+
+        if (error)
+        {
+            std::cout
+                << "[SAVE DEBUG] Cannot create Saves directory: "
+                << error.message()
+                << std::endl;
+
+
+            return false;
+        }
+
+
+        std::filesystem::path path =
+            std::filesystem::path(
+                GetSaveDirectory()) /
+            (safeName + ".sav");
+
+
+        std::cout
+            << "[SAVE DEBUG] Working directory: "
+            << std::filesystem::current_path()
+            << std::endl;
+
+
+        std::cout
+            << "[SAVE DEBUG] Save path: "
+            << std::filesystem::absolute(
+                path)
+            << std::endl;
+
+
         std::ofstream file(
-            GetSavePath(),
+            path,
             std::ios::out |
             std::ios::trunc);
 
 
         if (!file.is_open())
         {
+            std::cout
+                << "[SAVE DEBUG] Cannot open save file."
+                << std::endl;
+
+
             return false;
         }
 
@@ -177,21 +236,25 @@ public:
         }
 
 
-        // ======================================
-        // CHECK WRITE RESULT
-        // ======================================
-
         file.flush();
 
 
-        bool writeSucceeded =
+        bool successful =
             file.good();
 
 
         file.close();
 
 
-        return writeSucceeded;
+        std::cout
+            << "[SAVE DEBUG] Write result: "
+            << (successful
+                ? "SUCCESS"
+                : "FAILED")
+            << std::endl;
+
+
+        return successful;
     }
 
 
@@ -200,10 +263,28 @@ public:
     // ==========================================
 
     static bool Load(
-        SaveData& data)
+        SaveData& data,
+        const std::string& saveName)
     {
+        std::string safeName =
+            MakeSafeFileName(
+                saveName);
+
+
+        if (safeName.empty())
+        {
+            return false;
+        }
+
+
+        std::filesystem::path path =
+            std::filesystem::path(
+                GetSaveDirectory()) /
+            (safeName + ".sav");
+
+
         std::ifstream file(
-            GetSavePath());
+            path);
 
 
         if (!file.is_open())
@@ -509,20 +590,119 @@ public:
 
 
     // ==========================================
-    // CHECK SAVE FILE
+    // GET SAVE NAMES
     // ==========================================
 
-    static bool HasSaveFile()
+    static std::vector<std::string>
+        GetSaveNames()
     {
-        std::ifstream file(
-            GetSavePath());
+        std::vector<std::string>
+            names;
 
 
-        return file.good();
+        std::error_code error;
+
+
+        if (
+            !std::filesystem::exists(
+                GetSaveDirectory(),
+                error))
+        {
+            return names;
+        }
+
+
+        if (error)
+        {
+            return names;
+        }
+
+
+        for (
+            const std::filesystem::directory_entry& entry :
+            std::filesystem::directory_iterator(
+                GetSaveDirectory(),
+                error))
+        {
+            if (error)
+            {
+                break;
+            }
+
+
+            if (!entry.is_regular_file())
+            {
+                continue;
+            }
+
+
+            if (
+                entry.path().extension() !=
+                ".sav")
+            {
+                continue;
+            }
+
+
+            names.push_back(
+                entry.path().
+                stem().
+                string());
+        }
+
+
+        std::sort(
+            names.begin(),
+            names.end());
+
+
+        return names;
     }
 
 
 private:
+
+    // ==========================================
+    // SAFE FILE NAME
+    // ==========================================
+
+    static std::string MakeSafeFileName(
+        const std::string& saveName)
+    {
+        std::string result;
+
+
+        for (
+            char character :
+        saveName)
+        {
+            bool isLetter =
+                (character >= 'A' &&
+                    character <= 'Z') ||
+                (character >= 'a' &&
+                    character <= 'z');
+
+
+            bool isNumber =
+                character >= '0' &&
+                character <= '9';
+
+
+            if (
+                isLetter ||
+                isNumber ||
+                character == '_' ||
+                character == '-')
+            {
+                result +=
+                    character;
+            }
+        }
+
+
+        return result;
+    }
+
 
     // ==========================================
     // VALID SAVE STATE

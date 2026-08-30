@@ -2,6 +2,9 @@
 
 #include <SDL.h>
 
+#include <string>
+#include <vector>
+
 
 #include "Core/GameState.h"
 
@@ -69,9 +72,15 @@ private:
     // SAVE / LOAD
     // ==========================================
 
-    bool SaveGame();
+    bool SaveGame(
+        const std::string& saveName);
 
-    bool LoadGame();
+
+    bool LoadGame(
+        const std::string& saveName);
+
+
+    void RefreshSaveFiles();
 
 
 private:
@@ -128,6 +137,27 @@ private:
     // ==========================================
 
     int stateMenuSelectedIndex;
+
+
+    // ==========================================
+    // SAVE NAME INPUT
+    // ==========================================
+
+    bool saveNameInputActive;
+
+    std::string saveNameBuffer;
+
+
+    // ==========================================
+    // LOAD GAME MENU
+    // ==========================================
+
+    bool loadMenuActive;
+
+    std::vector<std::string>
+        saveFiles;
+
+    int loadMenuSelectedIndex;
 
 
     // ==========================================

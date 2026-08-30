@@ -12,6 +12,7 @@
 
 
 #include <string>
+#include <vector>
 #include <iostream>
 
 
@@ -654,6 +655,519 @@ namespace
             scoreY,
             { 245, 225, 190, 255 });
     }
+
+
+    // ==================================================
+    // DRAW CENTERED TEXT
+    // ==================================================
+
+    void DrawCenteredText(
+        SDL_Renderer* renderer,
+        TextRenderer& textRenderer,
+        TTF_Font* font,
+        const std::string& text,
+        int centerX,
+        int y,
+        SDL_Color color)
+    {
+        if (font == nullptr)
+        {
+            return;
+        }
+
+
+        int textWidth =
+            0;
+
+
+        int textHeight =
+            0;
+
+
+        TTF_SizeUTF8(
+            font,
+            text.c_str(),
+            &textWidth,
+            &textHeight);
+
+
+        textRenderer.Draw(
+            renderer,
+            font,
+            text,
+            centerX - textWidth / 2,
+            y,
+            color);
+    }
+
+
+    // ==================================================
+    // DRAW SAVE NAME DIALOG
+    // ==================================================
+
+    void DrawSaveNameDialog(
+        SDL_Renderer* renderer,
+        TextRenderer& textRenderer,
+        FontManager& fontManager,
+        const std::string& saveName)
+    {
+        SDL_SetRenderDrawBlendMode(
+            renderer,
+            SDL_BLENDMODE_BLEND);
+
+
+        SDL_SetRenderDrawColor(
+            renderer,
+            0,
+            0,
+            0,
+            190);
+
+
+        SDL_Rect overlay =
+        {
+            0,
+            0,
+            1280,
+            720
+        };
+
+
+        SDL_RenderFillRect(
+            renderer,
+            &overlay);
+
+
+        SDL_Rect panel =
+        {
+            340,
+            205,
+            600,
+            310
+        };
+
+
+        SDL_SetRenderDrawColor(
+            renderer,
+            40,
+            33,
+            26,
+            245);
+
+
+        SDL_RenderFillRect(
+            renderer,
+            &panel);
+
+
+        SDL_SetRenderDrawColor(
+            renderer,
+            224,
+            194,
+            143,
+            255);
+
+
+        SDL_RenderDrawRect(
+            renderer,
+            &panel);
+
+
+        TTF_Font* font =
+            fontManager.GetFont(
+                "default");
+
+
+        if (font == nullptr)
+        {
+            return;
+        }
+
+
+        DrawCenteredText(
+            renderer,
+            textRenderer,
+            font,
+            "SAVE GAME",
+            640,
+            235,
+            { 245, 225, 190, 255 });
+
+
+        textRenderer.Draw(
+            renderer,
+            font,
+            "Save name:",
+            390,
+            315,
+            { 245, 225, 190, 255 });
+
+
+        SDL_Rect inputBox =
+        {
+            390,
+            360,
+            500,
+            55
+        };
+
+
+        SDL_SetRenderDrawColor(
+            renderer,
+            15,
+            15,
+            15,
+            220);
+
+
+        SDL_RenderFillRect(
+            renderer,
+            &inputBox);
+
+
+        SDL_SetRenderDrawColor(
+            renderer,
+            224,
+            194,
+            143,
+            255);
+
+
+        SDL_RenderDrawRect(
+            renderer,
+            &inputBox);
+
+
+        std::string shownName =
+            saveName;
+
+
+        if (shownName.empty())
+        {
+            shownName =
+                "_";
+        }
+        else
+        {
+            shownName +=
+                "_";
+        }
+
+
+        textRenderer.Draw(
+            renderer,
+            font,
+            shownName,
+            410,
+            371,
+            { 255, 255, 255, 255 });
+
+
+        DrawCenteredText(
+            renderer,
+            textRenderer,
+            font,
+            "ENTER: SAVE     ESC: CANCEL",
+            640,
+            445,
+            { 210, 210, 210, 255 });
+    }
+
+
+    // ==================================================
+    // DRAW LOAD GAME DIALOG
+    // ==================================================
+
+    void DrawLoadGameDialog(
+        SDL_Renderer* renderer,
+        TextRenderer& textRenderer,
+        FontManager& fontManager,
+        const std::vector<std::string>& saveNames,
+        int selectedIndex)
+    {
+        SDL_SetRenderDrawBlendMode(
+            renderer,
+            SDL_BLENDMODE_BLEND);
+
+
+        SDL_SetRenderDrawColor(
+            renderer,
+            0,
+            0,
+            0,
+            190);
+
+
+        SDL_Rect overlay =
+        {
+            0,
+            0,
+            1280,
+            720
+        };
+
+
+        SDL_RenderFillRect(
+            renderer,
+            &overlay);
+
+
+        SDL_Rect panel =
+        {
+            330,
+            120,
+            620,
+            480
+        };
+
+
+        SDL_SetRenderDrawColor(
+            renderer,
+            40,
+            33,
+            26,
+            245);
+
+
+        SDL_RenderFillRect(
+            renderer,
+            &panel);
+
+
+        SDL_SetRenderDrawColor(
+            renderer,
+            224,
+            194,
+            143,
+            255);
+
+
+        SDL_RenderDrawRect(
+            renderer,
+            &panel);
+
+
+        TTF_Font* font =
+            fontManager.GetFont(
+                "default");
+
+
+        if (font == nullptr)
+        {
+            return;
+        }
+
+
+        DrawCenteredText(
+            renderer,
+            textRenderer,
+            font,
+            "LOAD GAME",
+            640,
+            150,
+            { 245, 225, 190, 255 });
+
+
+        if (saveNames.empty())
+        {
+            DrawCenteredText(
+                renderer,
+                textRenderer,
+                font,
+                "No save files found.",
+                640,
+                300,
+                { 220, 220, 220, 255 });
+        }
+        else
+        {
+            const int firstY =
+                220;
+
+
+            const int rowHeight =
+                48;
+
+
+            const int maxVisible =
+                6;
+
+
+            int startIndex =
+                0;
+
+
+            if (
+                selectedIndex >=
+                maxVisible)
+            {
+                startIndex =
+                    selectedIndex -
+                    maxVisible +
+                    1;
+            }
+
+
+            int endIndex =
+                startIndex +
+                maxVisible;
+
+
+            if (
+                endIndex >
+                static_cast<int>(
+                    saveNames.size()))
+            {
+                endIndex =
+                    static_cast<int>(
+                        saveNames.size());
+            }
+
+
+            for (
+                int i = startIndex;
+                i < endIndex;
+                i++)
+            {
+                int row =
+                    i -
+                    startIndex;
+
+
+                int y =
+                    firstY +
+                    row * rowHeight;
+
+
+                if (
+                    i ==
+                    selectedIndex)
+                {
+                    SDL_Rect selectedRect =
+                    {
+                        380,
+                        y - 5,
+                        520,
+                        42
+                    };
+
+
+                    SDL_SetRenderDrawColor(
+                        renderer,
+                        90,
+                        72,
+                        48,
+                        230);
+
+
+                    SDL_RenderFillRect(
+                        renderer,
+                        &selectedRect);
+                }
+
+
+                std::string rowText =
+                    (i == selectedIndex
+                        ? "> "
+                        : "  ") +
+                    saveNames[i];
+
+
+                textRenderer.Draw(
+                    renderer,
+                    font,
+                    rowText,
+                    405,
+                    y,
+                    { 245, 225, 190, 255 });
+            }
+        }
+
+
+        DrawCenteredText(
+            renderer,
+            textRenderer,
+            font,
+            "UP/DOWN: SELECT   ENTER: LOAD   ESC: BACK",
+            640,
+            545,
+            { 210, 210, 210, 255 });
+    }
+
+
+    // ==================================================
+    // GET SAVE NAME CHARACTER
+    //
+    // Trả về '\0' nếu frame hiện tại không có ký tự
+    // hợp lệ vừa được nhấn.
+    // ==================================================
+
+    char GetSaveNameCharacter()
+    {
+        for (
+            int i = 0;
+            i < 26;
+            i++)
+        {
+            SDL_Scancode key =
+                static_cast<SDL_Scancode>(
+                    SDL_SCANCODE_A + i);
+
+
+            if (
+                InputManager::IsKeyPressed(
+                    key))
+            {
+                return
+                    static_cast<char>(
+                        'A' + i);
+            }
+        }
+
+
+        const SDL_Scancode numberKeys[10] =
+        {
+            SDL_SCANCODE_0,
+            SDL_SCANCODE_1,
+            SDL_SCANCODE_2,
+            SDL_SCANCODE_3,
+            SDL_SCANCODE_4,
+            SDL_SCANCODE_5,
+            SDL_SCANCODE_6,
+            SDL_SCANCODE_7,
+            SDL_SCANCODE_8,
+            SDL_SCANCODE_9
+        };
+
+
+        for (
+            int i = 0;
+            i < 10;
+            i++)
+        {
+            if (
+                InputManager::IsKeyPressed(
+                    numberKeys[i]))
+            {
+                return
+                    static_cast<char>(
+                        '0' + i);
+            }
+        }
+
+
+        if (
+            InputManager::IsKeyPressed(
+                SDL_SCANCODE_SPACE) ||
+            InputManager::IsKeyPressed(
+                SDL_SCANCODE_MINUS))
+        {
+            return '_';
+        }
+
+
+        return '\0';
+    }
 }
 
 
@@ -677,6 +1191,22 @@ Game::Game()
 
     stateMenuSelectedIndex =
         0;
+
+
+    saveNameInputActive =
+        false;
+
+
+    loadMenuActive =
+        false;
+
+
+    saveNameBuffer =
+        "";
+
+
+    loadMenuSelectedIndex =
+        0;
 }
 
 
@@ -686,6 +1216,236 @@ Game::Game()
 
 void Game::Update()
 {
+    // ==========================================
+    // SAVE NAME INPUT
+    // ==========================================
+
+    if (saveNameInputActive)
+    {
+        // ======================================
+        // CANCEL
+        // ======================================
+
+        if (
+            InputManager::IsKeyPressed(
+                SDL_SCANCODE_ESCAPE))
+        {
+            saveNameInputActive =
+                false;
+
+
+            saveNameBuffer.clear();
+
+
+            return;
+        }
+
+
+        // ======================================
+        // BACKSPACE
+        // ======================================
+
+        if (
+            InputManager::IsKeyPressed(
+                SDL_SCANCODE_BACKSPACE) &&
+            !saveNameBuffer.empty())
+        {
+            saveNameBuffer.pop_back();
+
+
+            return;
+        }
+
+
+        // ======================================
+        // SAVE
+        // ======================================
+
+        if (
+            InputManager::IsKeyPressed(
+                SDL_SCANCODE_RETURN))
+        {
+            std::cout
+                << "[SAVE DEBUG] ENTER in save dialog. Name = ["
+                << saveNameBuffer
+                << "]"
+                << std::endl;
+
+
+            if (!saveNameBuffer.empty())
+            {
+                if (
+                    SaveGame(
+                        saveNameBuffer))
+                {
+                    std::cout
+                        << "Game saved: "
+                        << saveNameBuffer
+                        << std::endl;
+
+
+                    saveNameInputActive =
+                        false;
+
+
+                    saveNameBuffer.clear();
+                }
+                else
+                {
+                    std::cout
+                        << "Cannot save game!"
+                        << std::endl;
+                }
+            }
+
+
+            return;
+        }
+
+
+        // ======================================
+        // TYPE NAME
+        // ======================================
+
+        if (
+            saveNameBuffer.size() <
+            18)
+        {
+            char character =
+                GetSaveNameCharacter();
+
+
+            if (
+                character !=
+                '\0')
+            {
+                saveNameBuffer +=
+                    character;
+            }
+        }
+
+
+        return;
+    }
+
+
+    // ==========================================
+    // LOAD MENU
+    // ==========================================
+
+    if (loadMenuActive)
+    {
+        // ======================================
+        // BACK
+        // ======================================
+
+        if (
+            InputManager::IsKeyPressed(
+                SDL_SCANCODE_ESCAPE))
+        {
+            loadMenuActive =
+                false;
+
+
+            return;
+        }
+
+
+        if (!saveFiles.empty())
+        {
+            // ==================================
+            // MOVE UP
+            // ==================================
+
+            if (
+                InputManager::IsKeyPressed(
+                    SDL_SCANCODE_UP) ||
+                InputManager::IsKeyPressed(
+                    SDL_SCANCODE_W))
+            {
+                loadMenuSelectedIndex--;
+
+
+                if (
+                    loadMenuSelectedIndex <
+                    0)
+                {
+                    loadMenuSelectedIndex =
+                        static_cast<int>(
+                            saveFiles.size()) -
+                        1;
+                }
+            }
+
+
+            // ==================================
+            // MOVE DOWN
+            // ==================================
+
+            if (
+                InputManager::IsKeyPressed(
+                    SDL_SCANCODE_DOWN) ||
+                InputManager::IsKeyPressed(
+                    SDL_SCANCODE_S))
+            {
+                loadMenuSelectedIndex++;
+
+
+                if (
+                    loadMenuSelectedIndex >=
+                    static_cast<int>(
+                        saveFiles.size()))
+                {
+                    loadMenuSelectedIndex =
+                        0;
+                }
+            }
+
+
+            // ==================================
+            // LOAD
+            // ==================================
+
+            if (
+                InputManager::IsKeyPressed(
+                    SDL_SCANCODE_RETURN))
+            {
+                std::string selectedSave =
+                    saveFiles[
+                        loadMenuSelectedIndex];
+
+
+                if (
+                    LoadGame(
+                        selectedSave))
+                {
+                    std::cout
+                        << "Loaded save: "
+                        << selectedSave
+                        << std::endl;
+
+
+                    loadMenuActive =
+                        false;
+                }
+                else
+                {
+                    std::cout
+                        << "Cannot load save: "
+                        << selectedSave
+                        << std::endl;
+
+
+                    RefreshSaveFiles();
+                }
+            }
+        }
+
+
+        return;
+    }
+
+
     // ==========================================
     // MENU
     // ==========================================
@@ -745,18 +1505,15 @@ void Game::Update()
 
             case 1:
             {
-                if (LoadGame())
-                {
-                    std::cout
-                        << "Load game successful!"
-                        << std::endl;
-                }
-                else
-                {
-                    std::cout
-                        << "No valid save game found."
-                        << std::endl;
-                }
+                RefreshSaveFiles();
+
+
+                loadMenuSelectedIndex =
+                    0;
+
+
+                loadMenuActive =
+                    true;
 
 
                 break;
@@ -938,18 +1695,21 @@ void Game::Update()
 
             case 1:
             {
-                if (SaveGame())
-                {
-                    std::cout
-                        << "Game saved successfully!"
-                        << std::endl;
-                }
-                else
-                {
-                    std::cout
-                        << "Cannot save game!"
-                        << std::endl;
-                }
+                std::cout
+                    << "[SAVE DEBUG] SAVE button entered."
+                    << std::endl;
+
+
+                saveNameBuffer.clear();
+
+
+                saveNameInputActive =
+                    true;
+
+
+                std::cout
+                    << "[SAVE DEBUG] saveNameInputActive = true"
+                    << std::endl;
 
 
                 break;
@@ -1107,6 +1867,17 @@ void Game::Render(
             textureManager);
 
 
+        if (loadMenuActive)
+        {
+            DrawLoadGameDialog(
+                renderer,
+                textRenderer,
+                fontManager,
+                saveFiles,
+                loadMenuSelectedIndex);
+        }
+
+
         return;
     }
 
@@ -1246,6 +2017,20 @@ void Game::Render(
 
         break;
     }
+
+
+    // ==========================================
+    // SAVE NAME DIALOG
+    // ==========================================
+
+    if (saveNameInputActive)
+    {
+        DrawSaveNameDialog(
+            renderer,
+            textRenderer,
+            fontManager,
+            saveNameBuffer);
+    }
 }
 
 
@@ -1306,7 +2091,8 @@ bool Game::ConsumeIntroRequest()
 // SAVE GAME
 // ==================================================
 
-bool Game::SaveGame()
+bool Game::SaveGame(
+    const std::string& saveName)
 {
     // ==========================================
     // ONLY VALID SAVE STATES
@@ -1412,7 +2198,40 @@ bool Game::SaveGame()
     // ==========================================
 
     return SaveManager::Save(
-        data);
+        data,
+        saveName);
+}
+
+
+// ==================================================
+// REFRESH SAVE FILES
+// ==================================================
+
+void Game::RefreshSaveFiles()
+{
+    saveFiles =
+        SaveManager::GetSaveNames();
+
+
+    if (saveFiles.empty())
+    {
+        loadMenuSelectedIndex =
+            0;
+
+
+        return;
+    }
+
+
+    if (
+        loadMenuSelectedIndex < 0 ||
+        loadMenuSelectedIndex >=
+        static_cast<int>(
+            saveFiles.size()))
+    {
+        loadMenuSelectedIndex =
+            0;
+    }
 }
 
 
@@ -1420,7 +2239,8 @@ bool Game::SaveGame()
 // LOAD GAME
 // ==================================================
 
-bool Game::LoadGame()
+bool Game::LoadGame(
+    const std::string& saveName)
 {
     SaveData data;
 
@@ -1431,7 +2251,8 @@ bool Game::LoadGame()
 
     if (
         !SaveManager::Load(
-            data))
+            data,
+            saveName))
     {
         return false;
     }
