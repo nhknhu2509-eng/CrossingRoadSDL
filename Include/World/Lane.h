@@ -8,7 +8,9 @@
 #include "Objects/Animal.h"
 #include "World/TrafficLight.h"
 
+
 class TextureManager;
+
 
 class Lane
 {
@@ -23,7 +25,10 @@ public:
         const std::string& vehicleTexture = "",
         const std::string& animalTexture = "",
         int lightX = 760,
-        int lightY = 0);
+        int lightY = 0,
+        Uint32 greenTime = 5000,
+        Uint32 yellowTime = 1000,
+        Uint32 redTime = 5000);
 
 
     void Update();

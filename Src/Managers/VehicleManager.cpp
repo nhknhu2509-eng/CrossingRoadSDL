@@ -10,15 +10,21 @@ VehicleManager::VehicleManager()
     // ==========================================
 
     lanes.emplace_back(
-        185,        // Y của lane
+        185,        // Y lane
         82,
         1,
         3,
         3,
         "wagon",
         "",
-        960,        // X của đèn 1
-        165);       // Y của đèn 1
+
+        960,        // X đèn
+        165,        // Y đèn
+
+        5000,       // Xanh: 5.0 giây
+        1000,       // Vàng: 1.0 giây
+        5000);      // Đỏ: 5.0 giây
+
 
 
     // ==========================================
@@ -26,15 +32,21 @@ VehicleManager::VehicleManager()
     // ==========================================
 
     lanes.emplace_back(
-        267,        // Y của lane
+        267,        // Y lane
         82,
         -1,
         4,
         3,
         "wagon",
         "",
-        320,        // X của đèn 2
-        255);       // Y của đèn 2
+
+        320,        // X đèn
+        255,        // Y đèn
+
+        6500,       // Xanh: 6.5 giây
+        1200,       // Vàng: 1.2 giây
+        4500);      // Đỏ: 4.5 giây
+
 
 
     // ==========================================
@@ -42,15 +54,21 @@ VehicleManager::VehicleManager()
     // ==========================================
 
     lanes.emplace_back(
-        315,        // Y của lane
+        315,        // Y lane
         82,
         1,
         3,
         3,
         "",
         "deer",
-        960,        // X của đèn 3
-        340);       // Y của đèn 3
+
+        960,        // X đèn
+        340,        // Y đèn
+
+        4000,       // Xanh: 4.0 giây
+        900,        // Vàng: 0.9 giây
+        6000);      // Đỏ: 6.0 giây
+
 
 
     // ==========================================
@@ -58,15 +76,21 @@ VehicleManager::VehicleManager()
     // ==========================================
 
     lanes.emplace_back(
-        410,        // Y của lane
+        410,        // Y lane
         82,
         -1,
-        5,
+        2,
         3,
         "",
         "squirrel",
-        320,        // X của đèn 4
-        430);       // Y của đèn 4
+
+        320,        // X đèn
+        430,        // Y đèn
+
+        7500,       // Xanh: 7.5 giây
+        1500,       // Vàng: 1.5 giây
+        4000);      // Đỏ: 4.0 giây
+
 
 
     // ==========================================
@@ -74,15 +98,20 @@ VehicleManager::VehicleManager()
     // ==========================================
 
     lanes.emplace_back(
-        505,        // Y của lane
+        505,        // Y lane
         82,
         1,
-        4,
+        2,
         3,
         "",
         "rabbit",
-        960,        // X của đèn 5
-        530);       // Y của đèn 5
+
+        960,        // X đèn
+        530,        // Y đèn
+
+        5500,       // Xanh: 5.5 giây
+        1100,       // Vàng: 1.1 giây
+        7000);      // Đỏ: 7.0 giây
 }
 
 
@@ -92,7 +121,8 @@ VehicleManager::VehicleManager()
 
 void VehicleManager::Update()
 {
-    for (Lane& lane : lanes)
+    for (Lane& lane :
+        lanes)
     {
         lane.Update();
     }
@@ -107,7 +137,8 @@ void VehicleManager::Draw(
     SDL_Renderer* renderer,
     TextureManager& textureManager)
 {
-    for (Lane& lane : lanes)
+    for (Lane& lane :
+        lanes)
     {
         lane.Draw(
             renderer,
@@ -126,7 +157,8 @@ VehicleManager::GetVehicles() const
     std::vector<Vehicle> result;
 
 
-    for (const Lane& lane : lanes)
+    for (const Lane& lane :
+        lanes)
     {
         for (const Vehicle& vehicle :
             lane.GetVehicles())
@@ -151,7 +183,8 @@ VehicleManager::GetAnimals() const
     std::vector<Animal> result;
 
 
-    for (const Lane& lane : lanes)
+    for (const Lane& lane :
+        lanes)
     {
         for (const Animal& animal :
             lane.GetAnimals())

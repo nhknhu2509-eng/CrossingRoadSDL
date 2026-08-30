@@ -4,6 +4,7 @@
 
 class TextureManager;
 
+
 enum class LightState
 {
     Green,
@@ -11,27 +12,41 @@ enum class LightState
     Red
 };
 
+
 class TrafficLight
 {
 public:
-    TrafficLight(int x, int y);
+
+    TrafficLight(
+        int x,
+        int y,
+        Uint32 greenDuration = 5000,
+        Uint32 yellowDuration = 1000,
+        Uint32 redDuration = 5000);
+
 
     void Update();
+
 
     void Draw(
         SDL_Renderer* renderer,
         TextureManager& textureManager);
 
+
     bool CanMove() const;
 
+
 private:
+
     SDL_Rect rect;
 
     LightState state;
 
     Uint32 lastSwitchTime;
 
-    Uint32 greenTime = 5000;
-    Uint32 yellowTime = 1000;
-    Uint32 redTime = 5000;
+    Uint32 greenTime;
+
+    Uint32 yellowTime;
+
+    Uint32 redTime;
 };
