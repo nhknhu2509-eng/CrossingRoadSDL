@@ -41,7 +41,7 @@ void Game::Update()
                 menu.GetSelectedIndex())
             {
                 // ==================================
-                // NEW GAME
+                // START GAME
                 // ==================================
 
             case 0:
@@ -60,7 +60,7 @@ void Game::Update()
 
             case 1:
 
-                // Sẽ cài đặt ở bước Save / Load
+                // Sẽ cài đặt Save / Load sau
 
                 break;
 
@@ -71,18 +71,7 @@ void Game::Update()
 
             case 2:
 
-                // Sẽ cài đặt ở bước Leaderboard
-
-                break;
-
-
-                // ==================================
-                // SETTINGS
-                // ==================================
-
-            case 3:
-
-                // Sẽ cài đặt ở bước Settings
+                // Sẽ cài đặt Leaderboard sau
 
                 break;
 
@@ -183,8 +172,7 @@ void Game::Render(
     {
         menu.Draw(
             renderer,
-            textRenderer,
-            fontManager);
+            textureManager);
 
         return;
     }

@@ -12,6 +12,10 @@
 #include <fstream>
 
 
+// ==================================================
+// INITIALIZE
+// ==================================================
+
 bool Application::Initialize()
 {
     std::cout
@@ -139,7 +143,7 @@ bool Application::Initialize()
 
 
     // ==================================================
-    // BACKGROUND
+    // GAME BACKGROUND
     // ==================================================
 
     if (!textureManager.LoadTexture(
@@ -162,6 +166,106 @@ bool Application::Initialize()
         TTF_Quit();
         SDL_Quit();
 
+        return false;
+    }
+
+
+    // ==================================================
+    // MAIN MENU BACKGROUND
+    // ==================================================
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "menu_background",
+        "Assets/Images/UI/Menu/menu_background.jpg"))
+    {
+        std::cout
+            << "Cannot load menu background!"
+            << std::endl;
+
+        return false;
+    }
+
+
+    // ==================================================
+    // MAIN MENU LOGO
+    // ==================================================
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "menu_logo",
+        "Assets/Images/UI/Menu/logo.png"))
+    {
+        std::cout
+            << "Cannot load menu logo!"
+            << std::endl;
+
+        return false;
+    }
+
+
+    // ==================================================
+    // START GAME BUTTON
+    // ==================================================
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "startgame_normal",
+        "Assets/Images/UI/Menu/Startgame_normal.png"))
+    {
+        return false;
+    }
+
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "startgame_choose",
+        "Assets/Images/UI/Menu/Startgame_choose.png"))
+    {
+        return false;
+    }
+
+
+    // ==================================================
+    // LOAD GAME BUTTON
+    // ==================================================
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "loadgame_normal",
+        "Assets/Images/UI/Menu/loadgame_normal.png"))
+    {
+        return false;
+    }
+
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "loadgame_choose",
+        "Assets/Images/UI/Menu/loadgame_choose.png"))
+    {
+        return false;
+    }
+
+
+    // ==================================================
+    // LEADERBOARD BUTTON
+    // ==================================================
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "leaderboard_normal",
+        "Assets/Images/UI/Menu/leaderboard_normal.png"))
+    {
+        return false;
+    }
+
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "leaderboard_choose",
+        "Assets/Images/UI/Menu/leaderboard_choose.png"))
+    {
         return false;
     }
 
@@ -415,9 +519,6 @@ bool Application::Initialize()
     }
 
 
-    // File trên GitHub hiện tên là "latern_yellow.png"
-    // (latern, không phải lantern)
-
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "lantern_yellow",
@@ -527,7 +628,7 @@ void Application::Run()
 
 
         // ==========================================
-        // BACKGROUND
+        // GAME BACKGROUND
         // ==========================================
 
         Texture* background =
@@ -535,7 +636,8 @@ void Application::Run()
                 "background");
 
 
-        if (background != nullptr &&
+        if (
+            background != nullptr &&
             background->GetTexture() != nullptr)
         {
             SDL_Rect destination;

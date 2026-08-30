@@ -2,12 +2,8 @@
 
 #include <SDL.h>
 
-#include <string>
-#include <vector>
 
-
-class TextRenderer;
-class FontManager;
+class TextureManager;
 
 
 class Menu
@@ -22,7 +18,6 @@ public:
     // ==========================================
 
     void Update();
-
 
     void MoveUp();
 
@@ -42,13 +37,30 @@ public:
 
     void Draw(
         SDL_Renderer* renderer,
-        TextRenderer& textRenderer,
-        FontManager& fontManager);
+        TextureManager& textureManager);
 
 
 private:
 
-    std::vector<std::string> items;
+    // ==========================================
+    // MENU INFORMATION
+    // ==========================================
+
+    static const int MENU_ITEM_COUNT = 3;
 
     int selectedIndex;
+
+
+    // ==========================================
+    // DRAW HELPERS
+    // ==========================================
+
+    void DrawTexture(
+        SDL_Renderer* renderer,
+        TextureManager& textureManager,
+        const char* textureId,
+        int x,
+        int y,
+        int width,
+        int height);
 };

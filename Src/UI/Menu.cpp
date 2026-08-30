@@ -2,8 +2,8 @@
 
 #include "Managers/InputManager.h"
 
-#include "Graphics/TextRenderer.h"
-#include "Graphics/FontManager.h"
+#include "Graphics/TextureManager.h"
+#include "Graphics/Texture.h"
 
 #include "Config/GameConfig.h"
 
@@ -14,17 +14,7 @@
 
 Menu::Menu()
 {
-    items =
-    {
-        "NEW GAME",
-        "LOAD GAME",
-        "LEADERBOARD",
-        "SETTINGS"
-    };
-
-
-    selectedIndex =
-        0;
+    selectedIndex = 0;
 }
 
 
@@ -75,8 +65,7 @@ void Menu::MoveUp()
     if (selectedIndex < 0)
     {
         selectedIndex =
-            static_cast<int>(
-                items.size()) - 1;
+            MENU_ITEM_COUNT - 1;
     }
 }
 
@@ -90,13 +79,10 @@ void Menu::MoveDown()
     selectedIndex++;
 
 
-    if (
-        selectedIndex >=
-        static_cast<int>(
-            items.size()))
+    if (selectedIndex >=
+        MENU_ITEM_COUNT)
     {
-        selectedIndex =
-            0;
+        selectedIndex = 0;
     }
 }
 
@@ -112,147 +98,149 @@ int Menu::GetSelectedIndex() const
 
 
 // ==================================================
-// DRAW
+// DRAW TEXTURE
 // ==================================================
 
-void Menu::Draw(
+void Menu::DrawTexture(
     SDL_Renderer* renderer,
-    TextRenderer& textRenderer,
-    FontManager& fontManager)
+    TextureManager& textureManager,
+    const char* textureId,
+    int x,
+    int y,
+    int width,
+    int height)
 {
-    TTF_Font* font =
-        fontManager.GetFont(
-            "default");
+    Texture* texture =
+        textureManager.GetTexture(
+            textureId);
 
 
-    if (font == nullptr)
+    if (
+        texture == nullptr ||
+        texture->GetTexture() == nullptr)
     {
         return;
     }
 
 
-    // ==========================================
-    // DARK OVERLAY
-    // ==========================================
-
-    SDL_SetRenderDrawBlendMode(
-        renderer,
-        SDL_BLENDMODE_BLEND);
-
-
-    SDL_SetRenderDrawColor(
-        renderer,
-        0,
-        0,
-        0,
-        150);
-
-
-    SDL_Rect overlay =
+    SDL_Rect destination =
     {
-        0,
-        0,
-        Config::WINDOW_WIDTH,
-        Config::WINDOW_HEIGHT
+        x,
+        y,
+        width,
+        height
     };
 
 
-    SDL_RenderFillRect(
+    SDL_RenderCopy(
         renderer,
-        &overlay);
-
-
-    // ==========================================
-    // TITLE
-    // ==========================================
-
-    textRenderer.Draw(
-        renderer,
-        font,
-        "CROSSING ROAD",
-        500,
-        130,
-        { 255, 255, 255, 255 });
-
-
-    // ==========================================
-    // MENU ITEMS
-    // ==========================================
-
-    const int startX =
-        520;
-
-    const int startY =
-        250;
-
-    const int spacing =
-        55;
-
-
-    for (
-        int i = 0;
-        i < static_cast<int>(
-            items.size());
-        i++)
-    {
-        SDL_Color color;
-
-
-        std::string text =
-            items[i];
-
-
-        if (i ==
-            selectedIndex)
-        {
-            color =
-            {
-                255,
-                220,
-                120,
-                255
-            };
-
-
-            text =
-                "> " + text;
-        }
-        else
-        {
-            color =
-            {
-                230,
-                230,
-                230,
-                255
-            };
-
-
-            text =
-                "  " + text;
-        }
-
-
-        textRenderer.Draw(
-            renderer,
-            font,
-            text,
-            startX,
-            startY +
-            i * spacing,
-            color);
-    }
-
-
-    // ==========================================
-    // CONTROL HINT
-    // ==========================================
-
-    textRenderer.Draw(
-        renderer,
-        font,
-        "W/S or Arrow Keys - ENTER to select",
-        390,
-        590,
-        { 200, 200, 200, 255 });
+        texture->GetTexture(),
+        nullptr,
+        &destination);
 }
+
+
+// ==================================================
+// DRAW
+// ==================================================
+
+void Menu::Draw(
+    SDL_Renderer* renderer,
+    TextureManager& textureManager)
+{
+    // ==========================================
+    // MENU BACKGROUND
+    // ==========================================
+
+    DrawTexture(
+        renderer,
+        textureManager,
+        "menu_background",
+        0,
+        0,
+        Config::WINDOW_WIDTH,
+        Config::WINDOW_HEIGHT);
+
+
+    // ==========================================
+    // LOGO
+    // ==========================================
+
+    const int logoX = 70;
+    const int logoY = 30;
+
+    const int logoWidth = 500;
+    const int logoHeight = 120;
+
+
+    DrawTexture(
+        renderer,
+        textureManager,
+        "menu_logo",
+        logoX,
+        logoY,
+        logoWidth,
+        logoHeight);
+
+
+    // ==========================================
+    // BUTTON CONFIGURATION
+    // ==========================================
+
+    const int buttonX = 100;
+
+    const int buttonWidth = 380;
+    const int buttonHeight = 60;
+
+    const int startY = 220;
+
+    const int spacing = 70;
+
+
+    // ==========================================
+    // START GAME
+    // ==========================================
+
+    DrawTexture(
+        renderer,
+        textureManager,
+        selectedIndex == 0
+        ? "startgame_choose"
+        : "startgame_normal",
+        buttonX,
+        startY,
+        buttonWidth,
+        buttonHeight);
+
+
+    // ==========================================
+    // LOAD GAME
+    // ==========================================
+
+    DrawTexture(
+        renderer,
+        textureManager,
+        selectedIndex == 1
+        ? "loadgame_choose"
+        : "loadgame_normal",
+        buttonX,
+        startY + spacing,
+        buttonWidth,
+        buttonHeight);
+
+
+    // ==========================================
+    // LEADERBOARD
+    // ==========================================
+
+    DrawTexture(
+        renderer,
+        textureManager,
+        selectedIndex == 2
+        ? "leaderboard_choose"
+        : "leaderboard_normal",
+        buttonX,
+        startY + spacing * 2,
+        buttonWidth,
+        buttonHeight);
+}   
