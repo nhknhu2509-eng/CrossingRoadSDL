@@ -1,67 +1,93 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#pragma once
 
 #include <SDL.h>
 #include <string>
+
+#include "Objects/GameObject.h"
 
 
 class TextureManager;
 
 
-class Player
+// ==================================================
+// PLAYER
+// ==================================================
+//
+// Player là một GameObject.
+//
+// Player kế thừa:
+// - rect
+// - GetRect()
+//
+// Player tự cài đặt:
+// - Update()
+// - Draw()
+// - GetHitbox()
+//
+// ==================================================
+
+class Player : public GameObject
 {
-private:
-
-    SDL_Rect rect;
-
-    int speed;
-
-
-    // ==============================
-    // Animation
-    // ==============================
-
-    std::string currentTextureId;
-
-    int currentFrame;
-
-    Uint32 lastFrameTime;
-
-    Uint32 frameDuration;
-
-    bool moving;
-
-    bool movingHorizontal;
-
-    bool facingLeft;
-
-
 public:
 
     Player();
 
+    virtual ~Player() = default;
 
-    void Update();
+
+    // ==========================================
+    // GAME OBJECT
+    // ==========================================
+
+    void Update() override;
 
 
     void Draw(
         SDL_Renderer* renderer,
-        TextureManager& textureManager);
+        TextureManager& textureManager) override;
 
 
-    const SDL_Rect& GetRect() const;
-
-
-    SDL_Rect GetHitbox() const;
-
-
-    void Reset();
+    SDL_Rect GetHitbox() const override;
 
 
     void SetPosition(
         int x,
-        int y);
+        int y) override;
+
+
+    // ==========================================
+    // PLAYER
+    // ==========================================
+
+    void Reset();
+
+
+private:
+
+    int speed;
+
+
+    // ==========================================
+    // ANIMATION
+    // ==========================================
+
+    std::string currentTextureId;
+
+
+    int currentFrame;
+
+
+    Uint32 lastFrameTime;
+
+
+    Uint32 frameDuration;
+
+
+    bool moving;
+
+
+    bool movingHorizontal;
+
+
+    bool facingLeft;
 };
-
-
-#endif
