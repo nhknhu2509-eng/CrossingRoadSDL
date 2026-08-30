@@ -4,10 +4,6 @@
 #include "Config/GameConfig.h"
 
 
-// ==================================================
-// DEBUG HITBOX
-// ==================================================
-
 constexpr bool DEBUG_HITBOX = true;
 
 
@@ -17,10 +13,6 @@ constexpr bool DEBUG_HITBOX = true;
 
 Vehicle::Vehicle()
 {
-    // ==========================================
-    // SPRITE
-    // ==========================================
-
     rect.x = 0;
     rect.y = 0;
 
@@ -28,37 +20,41 @@ Vehicle::Vehicle()
     rect.h = Config::VEHICLE_HEIGHT;
 
 
-    // ==========================================
-    // HITBOX
-    // ==========================================
-
     hitbox.x = 0;
     hitbox.y = 0;
     hitbox.w = 0;
     hitbox.h = 0;
 
 
-    // ==========================================
-    // MOVEMENT
-    // ==========================================
-
     speed = Config::VEHICLE_SPEED;
 
     direction = 1;
 
 
-    // ==========================================
-    // TEXTURE
-    // ==========================================
-
-    textureId = "wagon_01";
-
-
-    // ==========================================
-    // LANE
-    // ==========================================
-
     laneHeight = Config::LANE_HEIGHT;
+
+
+    textureId = "wagon1";
+
+
+    // ==============================
+    // Animation
+    // ==============================
+
+    animationFrames =
+    {
+        "wagon1_01",
+        "wagon1_02",
+        "wagon1_03"
+    };
+
+
+    currentFrame = 0;
+
+    lastFrameTime = SDL_GetTicks();
+
+    // 130 ms / frame
+    frameDuration = 130;
 
 
     UpdateHitbox();
@@ -74,9 +70,12 @@ void Vehicle::Update()
     rect.x += speed * direction;
 
 
-    // ==========================================
+    UpdateAnimation();
+
+
+    // ==============================
     // WRAP RIGHT
-    // ==========================================
+    // ==============================
 
     if (rect.x > Config::WINDOW_WIDTH)
     {
@@ -84,9 +83,9 @@ void Vehicle::Update()
     }
 
 
-    // ==========================================
+    // ==============================
     // WRAP LEFT
-    // ==========================================
+    // ==============================
 
     if (rect.x + rect.w < 0)
     {
@@ -94,11 +93,40 @@ void Vehicle::Update()
     }
 
 
-    // ==========================================
-    // UPDATE HITBOX
-    // ==========================================
-
     UpdateHitbox();
+}
+
+
+// ==================================================
+// ANIMATION
+// ==================================================
+
+void Vehicle::UpdateAnimation()
+{
+    if (animationFrames.empty())
+    {
+        return;
+    }
+
+
+    Uint32 now =
+        SDL_GetTicks();
+
+
+    if (now - lastFrameTime >= frameDuration)
+    {
+        currentFrame++;
+
+
+        if (currentFrame >=
+            static_cast<int>(animationFrames.size()))
+        {
+            currentFrame = 0;
+        }
+
+
+        lastFrameTime = now;
+    }
 }
 
 
@@ -110,36 +138,43 @@ void Vehicle::Draw(
     SDL_Renderer* renderer,
     TextureManager& textureManager)
 {
+    if (animationFrames.empty())
+    {
+        return;
+    }
+
+
+    const std::string& currentTextureId =
+        animationFrames[currentFrame];
+
+
     Texture* texture =
-        textureManager.GetTexture(textureId);
+        textureManager.GetTexture(
+            currentTextureId);
 
-
-    // ==========================================
-    // DRAW SPRITE
-    // ==========================================
 
     if (texture != nullptr &&
         texture->GetTexture() != nullptr)
     {
-        if (direction > 0)
+        SDL_RendererFlip flip =
+            SDL_FLIP_NONE;
+
+
+        if (direction < 0)
         {
-            SDL_RenderCopy(
-                renderer,
-                texture->GetTexture(),
-                nullptr,
-                &rect);
+            flip =
+                SDL_FLIP_HORIZONTAL;
         }
-        else
-        {
-            SDL_RenderCopyEx(
-                renderer,
-                texture->GetTexture(),
-                nullptr,
-                &rect,
-                0.0,
-                nullptr,
-                SDL_FLIP_HORIZONTAL);
-        }
+
+
+        SDL_RenderCopyEx(
+            renderer,
+            texture->GetTexture(),
+            nullptr,
+            &rect,
+            0.0,
+            nullptr,
+            flip);
     }
     else
     {
@@ -150,15 +185,16 @@ void Vehicle::Draw(
             Config::VEHICLE_COLOR.b,
             Config::VEHICLE_COLOR.a);
 
+
         SDL_RenderFillRect(
             renderer,
             &rect);
     }
 
 
-    // ==========================================
+    // ==============================
     // DEBUG HITBOX
-    // ==========================================
+    // ==============================
 
     if (DEBUG_HITBOX)
     {
@@ -168,6 +204,7 @@ void Vehicle::Draw(
             0,
             0,
             255);
+
 
         SDL_RenderDrawRect(
             renderer,
@@ -212,7 +249,7 @@ void Vehicle::SetPosition(
 
 
 // ==================================================
-// SET LANE HEIGHT
+// LANE HEIGHT
 // ==================================================
 
 void Vehicle::SetLaneHeight(
@@ -225,18 +262,65 @@ void Vehicle::SetLaneHeight(
 
 
 // ==================================================
-// SET TEXTURE
+// SET WAGON TYPE
 // ==================================================
 
 void Vehicle::SetTexture(
     const std::string& id)
 {
     textureId = id;
+
+    animationFrames.clear();
+
+    currentFrame = 0;
+
+    lastFrameTime = SDL_GetTicks();
+
+
+    if (textureId == "wagon1")
+    {
+        animationFrames =
+        {
+            "wagon1_01",
+            "wagon1_02",
+            "wagon1_03"
+        };
+    }
+
+    else if (textureId == "wagon2")
+    {
+        animationFrames =
+        {
+            "wagon2_01",
+            "wagon2_02",
+            "wagon2_03"
+        };
+    }
+
+    else if (textureId == "wagon3")
+    {
+        animationFrames =
+        {
+            "wagon3_01",
+            "wagon3_02",
+            "wagon3_03"
+        };
+    }
+
+    else if (textureId == "wagon4")
+    {
+        animationFrames =
+        {
+            "wagon4_01",
+            "wagon4_02",
+            "wagon4_03"
+        };
+    }
 }
 
 
 // ==================================================
-// SET SPRITE SIZE
+// SPRITE SIZE
 // ==================================================
 
 void Vehicle::SetSpriteSize(
@@ -273,56 +357,31 @@ SDL_Rect Vehicle::GetHitbox() const
 // ==================================================
 // UPDATE HITBOX
 // ==================================================
-//
-// Đây là công thức hitbox cũ của WAGON.
-//
-// Deer cũng là Vehicle nên sẽ dùng chính xác
-// công thức này.
-//
-// 1. Chừa 5% mỗi bên.
-// 2. Hitbox chỉ lấy phần dưới.
-// 3. Chiều cao hitbox = 1/2 chiều cao lane.
-// 4. Đáy hitbox trùng đáy sprite.
-//
-// ==================================================
 
 void Vehicle::UpdateHitbox()
 {
-    // ==========================================
-    // CHIỀU NGANG
-    // ==========================================
+    constexpr float SIDE_REDUCTION =
+        0.05f;
 
-    constexpr float SIDE_REDUCTION = 0.05f;
 
     int sideOffset =
         static_cast<int>(
             rect.w * SIDE_REDUCTION);
 
+
     hitbox.x =
         rect.x + sideOffset;
+
 
     hitbox.w =
         rect.w - (sideOffset * 2);
 
 
-    // ==========================================
-    // CHIỀU DỌC
-    // ==========================================
-
-    // Cạnh dưới của sprite
     int spriteBottom =
         rect.y + rect.h;
 
 
-    // ==================================================
-    // QUAN TRỌNG:
-    //
-    // Đây là CÔNG THỨC CHÍNH XÁC của bản
-    // "Fix hitbox okay".
-    //
-    // Không đổi thứ tự 3 dòng dưới.
-    // ==================================================
-
+    // Giữ nguyên công thức hitbox hiện tại
     hitbox.h =
         laneHeight;
 
@@ -335,14 +394,11 @@ void Vehicle::UpdateHitbox()
         laneHeight / 2;
 
 
-    // ==========================================
-    // SAFETY
-    // ==========================================
-
     if (hitbox.w < 0)
     {
         hitbox.w = 0;
     }
+
 
     if (hitbox.h < 0)
     {

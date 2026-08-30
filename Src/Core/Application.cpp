@@ -23,8 +23,10 @@ bool Application::Initialize()
         << std::filesystem::current_path()
         << std::endl;
 
+
     std::ifstream file(
         "Assets/Fonts/NotoSans-VariableFont_wdth,wght.ttf");
+
 
     if (file.is_open())
     {
@@ -39,14 +41,15 @@ bool Application::Initialize()
             << std::endl;
     }
 
+
     std::cout
         << "=================================="
         << std::endl;
 
 
-    // =====================================
+    // ==================================================
     // SDL
-    // =====================================
+    // ==================================================
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
     {
@@ -59,9 +62,9 @@ bool Application::Initialize()
     }
 
 
-    // =====================================
+    // ==================================================
     // SDL TTF
-    // =====================================
+    // ==================================================
 
     if (TTF_Init() != 0)
     {
@@ -76,9 +79,9 @@ bool Application::Initialize()
     }
 
 
-    // =====================================
+    // ==================================================
     // SDL IMAGE
-    // =====================================
+    // ==================================================
 
     if (!(IMG_Init(IMG_INIT_PNG) &
         IMG_INIT_PNG))
@@ -95,9 +98,9 @@ bool Application::Initialize()
     }
 
 
-    // =====================================
+    // ==================================================
     // WINDOW
-    // =====================================
+    // ==================================================
 
     if (!window.Create(
         "Crossing Road SDL",
@@ -112,9 +115,9 @@ bool Application::Initialize()
     }
 
 
-    // =====================================
+    // ==================================================
     // FONT
-    // =====================================
+    // ==================================================
 
     if (!fontManager.LoadFont(
         "default",
@@ -135,9 +138,9 @@ bool Application::Initialize()
     }
 
 
-    // =====================================
+    // ==================================================
     // BACKGROUND
-    // =====================================
+    // ==================================================
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -163,75 +166,236 @@ bool Application::Initialize()
     }
 
 
-    // =====================================
-    // VEHICLES
-    // =====================================
+    // ==================================================
+    // WAGON 1 ANIMATION
+    // ==================================================
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
-        "wagon_01",
-        "Assets/Images/Vehicles/wagon_01.png"))
+        "wagon1_01",
+        "Assets/Images/Vehicles/wagon1_01.png"))
     {
         return false;
     }
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
-        "wagon_02",
-        "Assets/Images/Vehicles/wagon_02.png"))
+        "wagon1_02",
+        "Assets/Images/Vehicles/wagon1_02.png"))
     {
         return false;
     }
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
-        "wagon_03",
-        "Assets/Images/Vehicles/wagon_03.png"))
+        "wagon1_03",
+        "Assets/Images/Vehicles/wagon1_03.png"))
+    {
+        return false;
+    }
+
+
+    // ==================================================
+    // WAGON 2 ANIMATION
+    // ==================================================
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "wagon2_01",
+        "Assets/Images/Vehicles/wagon2_01.png"))
     {
         return false;
     }
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
-        "wagon_04",
-        "Assets/Images/Vehicles/wagon_04.png"))
-    {
-        return false;
-    }
-
-
-    // =====================================
-    // ANIMALS
-    // =====================================
-
-    if (!textureManager.LoadTexture(
-        window.GetRenderer(),
-        "deer",
-        "Assets/Images/Animals/deer.png"))
+        "wagon2_02",
+        "Assets/Images/Vehicles/wagon2_02.png"))
     {
         return false;
     }
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
-        "squirrel",
-        "Assets/Images/Animals/squirrel.png"))
+        "wagon2_03",
+        "Assets/Images/Vehicles/wagon2_03.png"))
+    {
+        return false;
+    }
+
+
+    // ==================================================
+    // WAGON 3 ANIMATION
+    // ==================================================
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "wagon3_01",
+        "Assets/Images/Vehicles/wagon3_01.png"))
     {
         return false;
     }
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
-        "rabbit",
-        "Assets/Images/Animals/rabbit.png"))
+        "wagon3_02",
+        "Assets/Images/Vehicles/wagon3_02.png"))
+    {
+        return false;
+    }
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "wagon3_03",
+        "Assets/Images/Vehicles/wagon3_03.png"))
     {
         return false;
     }
 
 
-    // =====================================
+    // ==================================================
+    // WAGON 4 ANIMATION
+    // ==================================================
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "wagon4_01",
+        "Assets/Images/Vehicles/wagon4_01.png"))
+    {
+        return false;
+    }
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "wagon4_02",
+        "Assets/Images/Vehicles/wagon4_02.png"))
+    {
+        return false;
+    }
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "wagon4_03",
+        "Assets/Images/Vehicles/wagon4_03.png"))
+    {
+        return false;
+    }
+
+
+    // ==================================================
+    // DEER ANIMATION
+    // ==================================================
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "deer_01",
+        "Assets/Images/Animals/deer_01.png"))
+    {
+        return false;
+    }
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "deer_02",
+        "Assets/Images/Animals/deer_02.png"))
+    {
+        return false;
+    }
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "deer_03",
+        "Assets/Images/Animals/deer_03.png"))
+    {
+        return false;
+    }
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "deer_04",
+        "Assets/Images/Animals/deer_04.png"))
+    {
+        return false;
+    }
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "deer_05",
+        "Assets/Images/Animals/deer_05.png"))
+    {
+        return false;
+    }
+
+
+    // ==================================================
+    // SQUIRREL ANIMATION
+    // ==================================================
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "squirrel_01",
+        "Assets/Images/Animals/squirrel_01.png"))
+    {
+        return false;
+    }
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "squirrel_02",
+        "Assets/Images/Animals/squirrel_02.png"))
+    {
+        return false;
+    }
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "squirrel_03",
+        "Assets/Images/Animals/squirrel_03.png"))
+    {
+        return false;
+    }
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "squirrel_04",
+        "Assets/Images/Animals/squirrel_04.png"))
+    {
+        return false;
+    }
+
+
+    // ==================================================
+    // RABBIT ANIMATION
+    // ==================================================
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "rabbit_01",
+        "Assets/Images/Animals/rabbit_01.png"))
+    {
+        return false;
+    }
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "rabbit_02",
+        "Assets/Images/Animals/rabbit_02.png"))
+    {
+        return false;
+    }
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "rabbit_03",
+        "Assets/Images/Animals/rabbit_03.png"))
+    {
+        return false;
+    }
+
+
+    // ==================================================
     // LANTERNS
-    // =====================================
+    // ==================================================
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -240,6 +404,7 @@ bool Application::Initialize()
     {
         return false;
     }
+
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -250,14 +415,70 @@ bool Application::Initialize()
     }
 
 
-    // =====================================
-    // PLAYER
-    // =====================================
+    // File trên GitHub hiện tên là "latern_yellow.png"
+    // (latern, không phải lantern)
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
-        "player",
+        "lantern_yellow",
+        "Assets/Images/Lantern/latern_yellow.png"))
+    {
+        return false;
+    }
+
+
+    // ==================================================
+    // PLAYER IDLE
+    // ==================================================
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "player_idle",
         "Assets/Images/Player/player_idle.png"))
+    {
+        return false;
+    }
+
+
+    // ==================================================
+    // PLAYER WALK LEFT / RIGHT
+    // ==================================================
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "player_walkright1",
+        "Assets/Images/Player/player_walkright1.png"))
+    {
+        return false;
+    }
+
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "player_walkright2",
+        "Assets/Images/Player/player_walkright2.png"))
+    {
+        return false;
+    }
+
+
+    // ==================================================
+    // PLAYER WALK UP / DOWN
+    // ==================================================
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "player_walkupdown1",
+        "Assets/Images/Player/player_walkupdown1.png"))
+    {
+        return false;
+    }
+
+
+    if (!textureManager.LoadTexture(
+        window.GetRenderer(),
+        "player_walkupdown2",
+        "Assets/Images/Player/player_walkupdown2.png"))
     {
         return false;
     }
@@ -267,17 +488,24 @@ bool Application::Initialize()
         << "All textures loaded successfully!"
         << std::endl;
 
+
     return true;
 }
 
+
+// ==================================================
+// RUN
+// ==================================================
 
 void Application::Run()
 {
     bool running = true;
 
+
     while (running)
     {
         timer.Tick();
+
 
         InputManager::Update();
 
@@ -291,16 +519,16 @@ void Application::Run()
         game.Update();
 
 
-        // =====================================
+        // ==========================================
         // CLEAR
-        // =====================================
+        // ==========================================
 
         window.Clear();
 
 
-        // =====================================
-        // DRAW BACKGROUND
-        // =====================================
+        // ==========================================
+        // BACKGROUND
+        // ==========================================
 
         Texture* background =
             textureManager.GetTexture(
@@ -312,11 +540,14 @@ void Application::Run()
         {
             SDL_Rect destination;
 
+
             destination.x = 0;
             destination.y = 0;
 
+
             destination.w =
                 Config::WINDOW_WIDTH;
+
 
             destination.h =
                 Config::WINDOW_HEIGHT;
@@ -330,9 +561,9 @@ void Application::Run()
         }
 
 
-        // =====================================
-        // DRAW GAME
-        // =====================================
+        // ==========================================
+        // GAME
+        // ==========================================
 
         game.Render(
             window.GetRenderer(),
@@ -345,6 +576,10 @@ void Application::Run()
     }
 }
 
+
+// ==================================================
+// SHUTDOWN
+// ==================================================
 
 void Application::Shutdown()
 {

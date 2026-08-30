@@ -25,7 +25,7 @@ Lane::Lane(
         redTime)
 {
     // ==========================================
-    // VEHICLE
+    // VEHICLES
     // ==========================================
 
     if (!vehicleTexture.empty())
@@ -33,9 +33,7 @@ Lane::Lane(
         int spacing = 250;
 
 
-        for (int i = 0;
-            i < vehicleCount;
-            i++)
+        for (int i = 0; i < vehicleCount; i++)
         {
             Vehicle vehicle;
 
@@ -63,12 +61,27 @@ Lane::Lane(
                 direction);
 
 
+            // ==================================
+            // CHỌN LOẠI WAGON
+            // ==================================
+            //
+            // Mỗi loại wagon có 3 frame:
+            //
+            // wagon1_01 -> wagon1_03
+            // wagon2_01 -> wagon2_03
+            // wagon3_01 -> wagon3_03
+            // wagon4_01 -> wagon4_03
+            //
+            // Vehicle::SetTexture()
+            // sẽ tự thiết lập các frame.
+            // ==================================
+
             switch (i % 4)
             {
             case 0:
 
                 vehicle.SetTexture(
-                    "wagon_01");
+                    "wagon1");
 
                 break;
 
@@ -76,7 +89,7 @@ Lane::Lane(
             case 1:
 
                 vehicle.SetTexture(
-                    "wagon_02");
+                    "wagon2");
 
                 break;
 
@@ -84,7 +97,7 @@ Lane::Lane(
             case 2:
 
                 vehicle.SetTexture(
-                    "wagon_03");
+                    "wagon3");
 
                 break;
 
@@ -92,7 +105,7 @@ Lane::Lane(
             case 3:
 
                 vehicle.SetTexture(
-                    "wagon_04");
+                    "wagon4");
 
                 break;
 
@@ -110,7 +123,7 @@ Lane::Lane(
 
 
     // ==========================================
-    // ANIMAL
+    // ANIMALS
     // ==========================================
 
     if (!animalTexture.empty())
@@ -118,12 +131,27 @@ Lane::Lane(
         int spacing = 250;
 
 
-        for (int i = 0;
-            i < vehicleCount;
-            i++)
+        for (int i = 0; i < vehicleCount; i++)
         {
             Animal animal;
 
+
+            // ==================================
+            // CHỌN LOẠI ANIMAL
+            // ==================================
+            //
+            // deer:
+            // deer_01 -> deer_05
+            //
+            // squirrel:
+            // squirrel_01 -> squirrel_04
+            //
+            // rabbit:
+            // rabbit_01 -> rabbit_03
+            //
+            // Animal::SetTexture()
+            // sẽ tự thiết lập animation.
+            // ==================================
 
             animal.SetTexture(
                 animalTexture);
@@ -146,6 +174,10 @@ Lane::Lane(
 
             // ==================================
             // DEER HITBOX
+            // ==================================
+            //
+            // Giữ nguyên hitbox nai
+            // mà bạn đã căn trước đó.
             // ==================================
 
             if (animalTexture == "deer")
@@ -208,20 +240,21 @@ Lane::Lane(
 
 void Lane::Update()
 {
+    // Đèn của mỗi lane tự update
     trafficLight.Update();
 
 
+    // Chỉ cho vehicle / animal chạy
+    // khi đèn cho phép
     if (trafficLight.CanMove())
     {
-        for (Vehicle& vehicle :
-            vehicles)
+        for (Vehicle& vehicle : vehicles)
         {
             vehicle.Update();
         }
 
 
-        for (Animal& animal :
-            animals)
+        for (Animal& animal : animals)
         {
             animal.Update();
         }
@@ -237,8 +270,11 @@ void Lane::Draw(
     SDL_Renderer* renderer,
     TextureManager& textureManager)
 {
-    for (Vehicle& vehicle :
-        vehicles)
+    // ==========================================
+    // VEHICLES
+    // ==========================================
+
+    for (Vehicle& vehicle : vehicles)
     {
         vehicle.Draw(
             renderer,
@@ -246,14 +282,21 @@ void Lane::Draw(
     }
 
 
-    for (Animal& animal :
-        animals)
+    // ==========================================
+    // ANIMALS
+    // ==========================================
+
+    for (Animal& animal : animals)
     {
         animal.Draw(
             renderer,
             textureManager);
     }
 
+
+    // ==========================================
+    // TRAFFIC LIGHT
+    // ==========================================
 
     trafficLight.Draw(
         renderer,

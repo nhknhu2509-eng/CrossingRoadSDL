@@ -2,14 +2,17 @@
 
 #include <SDL.h>
 #include <string>
+#include <vector>
 
 #include "Objects/GameObject.h"
 
 class TextureManager;
 
+
 class Animal : public GameObject
 {
 public:
+
     Animal();
 
     void Update();
@@ -29,8 +32,6 @@ public:
     void SetTexture(
         const std::string& textureId);
 
-    // Thiết lập phần transparent cần bỏ
-    // ở 4 phía của sprite
     void SetHitboxMargins(
         int left,
         int top,
@@ -41,10 +42,16 @@ public:
 
     SDL_Rect GetHitbox() const;
 
-private:
-    void UpdateHitbox();
 
 private:
+
+    void UpdateHitbox();
+
+    void UpdateAnimation();
+
+
+private:
+
     // ==============================
     // Sprite
     // ==============================
@@ -53,7 +60,7 @@ private:
 
 
     // ==============================
-    // Collision hitbox
+    // Collision
     // ==============================
 
     SDL_Rect hitbox;
@@ -69,14 +76,27 @@ private:
 
 
     // ==============================
-    // Texture
+    // Animal type
     // ==============================
 
     std::string textureId;
 
 
     // ==============================
-    // Transparent margins
+    // Animation
+    // ==============================
+
+    std::vector<std::string> animationFrames;
+
+    int currentFrame;
+
+    Uint32 lastFrameTime;
+
+    Uint32 frameDuration;
+
+
+    // ==============================
+    // Hitbox margins
     // ==============================
 
     int hitboxLeft;

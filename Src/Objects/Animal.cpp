@@ -4,35 +4,21 @@
 #include "Config/GameConfig.h"
 
 
-// ==========================================
-// DEBUG HITBOX
-// ==========================================
-//
-// true  -> hiện hitbox màu xanh
-// false -> ẩn hitbox
-//
-
 constexpr bool DEBUG_ANIMAL_HITBOX = true;
 
 
+// ==================================================
+// CONSTRUCTOR
+// ==================================================
+
 Animal::Animal()
 {
-    // ==============================
-    // SPRITE
-    // ==============================
-
     rect.x = 0;
     rect.y = 0;
 
-    // Kích thước mặc định.
-    // Sẽ được thay đổi khi SetTexture().
     rect.w = Config::SQUIRREL_WIDTH;
     rect.h = Config::SQUIRREL_HEIGHT;
 
-
-    // ==============================
-    // HITBOX
-    // ==============================
 
     hitbox.x = 0;
     hitbox.y = 0;
@@ -40,25 +26,12 @@ Animal::Animal()
     hitbox.h = 0;
 
 
-    // ==============================
-    // MOVEMENT
-    // ==============================
-
     speed = Config::ANIMAL_SPEED;
-
     direction = 1;
 
 
-    // ==============================
-    // TEXTURE
-    // ==============================
-
     textureId = "deer";
 
-
-    // ==============================
-    // DEFAULT HITBOX
-    // ==============================
 
     hitboxLeft = 5;
     hitboxTop = 8;
@@ -66,17 +39,45 @@ Animal::Animal()
     hitboxBottom = 8;
 
 
+    // ==============================
+    // Animation
+    // ==============================
+
+    currentFrame = 0;
+
+    lastFrameTime = SDL_GetTicks();
+
+    // 140 ms / frame
+    // Số càng lớn -> animation càng chậm
+    frameDuration = 140;
+
+
+    animationFrames =
+    {
+        "deer_01",
+        "deer_02",
+        "deer_03",
+        "deer_04",
+        "deer_05"
+    };
+
+
     UpdateHitbox();
 }
 
 
-// ==========================================
+// ==================================================
 // UPDATE
-// ==========================================
+// ==================================================
 
 void Animal::Update()
 {
+    // Di chuyển
     rect.x += speed * direction;
+
+
+    // Animation chỉ chạy khi Animal Update
+    UpdateAnimation();
 
 
     // ==============================
@@ -99,29 +100,81 @@ void Animal::Update()
 }
 
 
-// ==========================================
+// ==================================================
+// UPDATE ANIMATION
+// ==================================================
+
+void Animal::UpdateAnimation()
+{
+    if (animationFrames.empty())
+    {
+        return;
+    }
+
+
+    Uint32 now = SDL_GetTicks();
+
+
+    if (now - lastFrameTime >= frameDuration)
+    {
+        currentFrame++;
+
+
+        if (currentFrame >=
+            static_cast<int>(animationFrames.size()))
+        {
+            currentFrame = 0;
+        }
+
+
+        lastFrameTime = now;
+    }
+}
+
+
+// ==================================================
 // DRAW
-// ==========================================
+// ==================================================
 
 void Animal::Draw(
     SDL_Renderer* renderer,
     TextureManager& textureManager)
 {
+    if (animationFrames.empty())
+    {
+        return;
+    }
+
+
+    const std::string& currentTextureId =
+        animationFrames[currentFrame];
+
+
     Texture* texture =
-        textureManager.GetTexture(textureId);
+        textureManager.GetTexture(
+            currentTextureId);
 
 
     if (texture != nullptr &&
         texture->GetTexture() != nullptr)
     {
-        SDL_RendererFlip flip = SDL_FLIP_NONE;
+        SDL_RendererFlip flip =
+            SDL_FLIP_NONE;
 
-        // Chỉ lật Squirrel.
-        // Deer và Rabbit giữ nguyên hướng sprite.
-        if (textureId == "squirrel")
+
+        // ==========================================
+        // HƯỚNG DI CHUYỂN
+        // ==========================================
+        //
+        // Các sprite gốc được giữ nguyên.
+        // Lane đi hướng ngược lại sẽ flip.
+        // ==========================================
+
+        if (direction < 0)
         {
             flip = SDL_FLIP_HORIZONTAL;
         }
+
 
         SDL_RenderCopyEx(
             renderer,
@@ -167,9 +220,9 @@ void Animal::Draw(
 }
 
 
-// ==========================================
+// ==================================================
 // SPEED
-// ==========================================
+// ==================================================
 
 void Animal::SetSpeed(int value)
 {
@@ -177,9 +230,9 @@ void Animal::SetSpeed(int value)
 }
 
 
-// ==========================================
+// ==================================================
 // DIRECTION
-// ==========================================
+// ==================================================
 
 void Animal::SetDirection(int value)
 {
@@ -187,9 +240,9 @@ void Animal::SetDirection(int value)
 }
 
 
-// ==========================================
+// ==================================================
 // POSITION
-// ==========================================
+// ==================================================
 
 void Animal::SetPosition(
     int x,
@@ -202,46 +255,89 @@ void Animal::SetPosition(
 }
 
 
-// ==========================================
-// TEXTURE
-// ==========================================
+// ==================================================
+// SET TEXTURE / ANIMAL TYPE
+// ==================================================
 
 void Animal::SetTexture(
     const std::string& id)
 {
     textureId = id;
 
+    animationFrames.clear();
+
+    currentFrame = 0;
+
+    lastFrameTime = SDL_GetTicks();
+
 
     // ==========================================
-    // KÍCH THƯỚC RIÊNG CHO TỪNG SPRITE
+    // DEER
     // ==========================================
 
     if (textureId == "deer")
     {
         rect.w = Config::DEER_WIDTH;
         rect.h = Config::DEER_HEIGHT;
+
+
+        animationFrames =
+        {
+            "deer_01",
+            "deer_02",
+            "deer_03",
+            "deer_04",
+            "deer_05"
+        };
     }
+
+
+    // ==========================================
+    // SQUIRREL
+    // ==========================================
+
     else if (textureId == "squirrel")
     {
         rect.w = Config::SQUIRREL_WIDTH;
         rect.h = Config::SQUIRREL_HEIGHT;
+
+
+        animationFrames =
+        {
+            "squirrel_01",
+            "squirrel_02",
+            "squirrel_03",
+            "squirrel_04"
+        };
     }
+
+
+    // ==========================================
+    // RABBIT
+    // ==========================================
+
     else if (textureId == "rabbit")
     {
         rect.w = Config::RABBIT_WIDTH;
         rect.h = Config::RABBIT_HEIGHT;
+
+
+        animationFrames =
+        {
+            "rabbit_01",
+            "rabbit_02",
+            "rabbit_03"
+        };
     }
 
 
-    // Kích thước thay đổi
-    // nên phải cập nhật hitbox.
     UpdateHitbox();
 }
 
 
-// ==========================================
+// ==================================================
 // HITBOX MARGINS
-// ==========================================
+// ==================================================
 
 void Animal::SetHitboxMargins(
     int left,
@@ -258,9 +354,9 @@ void Animal::SetHitboxMargins(
 }
 
 
-// ==========================================
+// ==================================================
 // GET RECT
-// ==========================================
+// ==================================================
 
 SDL_Rect Animal::GetRect() const
 {
@@ -268,9 +364,9 @@ SDL_Rect Animal::GetRect() const
 }
 
 
-// ==========================================
+// ==================================================
 // GET HITBOX
-// ==========================================
+// ==================================================
 
 SDL_Rect Animal::GetHitbox() const
 {
@@ -278,9 +374,9 @@ SDL_Rect Animal::GetHitbox() const
 }
 
 
-// ==========================================
+// ==================================================
 // UPDATE HITBOX
-// ==========================================
+// ==================================================
 
 void Animal::UpdateHitbox()
 {
@@ -302,5 +398,16 @@ void Animal::UpdateHitbox()
         rect.h
         - hitboxTop
         - hitboxBottom;
-   
+
+
+    if (hitbox.w < 0)
+    {
+        hitbox.w = 0;
+    }
+
+
+    if (hitbox.h < 0)
+    {
+        hitbox.h = 0;
+    }
 }
