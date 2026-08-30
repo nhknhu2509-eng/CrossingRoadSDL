@@ -8,6 +8,9 @@
 #include "Objects/Obstacle.h"
 
 
+#include "Graphics/Texture.h"
+
+
 #include <string>
 #include <iostream>
 
@@ -19,8 +22,15 @@
 namespace
 {
 
+    const int STATE_MENU_ITEM_COUNT =
+        3;
+
+
     // ==================================================
     // STATE FRAME RECT
+    //
+    // Frame được đưa lên phía trên một chút để chừa
+    // đủ chỗ cho 3 button nằm hoàn toàn bên dưới.
     // ==================================================
 
     SDL_Rect GetStateFrameRect()
@@ -33,10 +43,14 @@ namespace
             430;
 
 
+        const int frameY =
+            45;
+
+
         SDL_Rect frameRect =
         {
             (1280 - frameWidth) / 2,
-            (720 - frameHeight) / 2,
+            frameY,
 
             frameWidth,
             frameHeight
@@ -170,6 +184,247 @@ namespace
                 "pause_hint",
                 "Assets/Images/UI/HUD/pause_hint.png");
         }
+    }
+
+
+    // ==================================================
+    // LOAD STATE BUTTON TEXTURES
+    // ==================================================
+
+    void EnsureStateButtonTexturesLoaded(
+        SDL_Renderer* renderer,
+        TextureManager& textureManager)
+    {
+        static bool loadAttempted =
+            false;
+
+
+        if (loadAttempted)
+        {
+            return;
+        }
+
+
+        loadAttempted =
+            true;
+
+
+        // ==========================================
+        // PLAY AGAIN
+        // ==========================================
+
+        if (
+            textureManager.GetTexture(
+                "state_play_again") == nullptr)
+        {
+            textureManager.LoadTexture(
+                renderer,
+                "state_play_again",
+                "Assets/Images/UI/State/Playagian_button.png");
+        }
+
+
+        if (
+            textureManager.GetTexture(
+                "state_play_again_choose") == nullptr)
+        {
+            textureManager.LoadTexture(
+                renderer,
+                "state_play_again_choose",
+                "Assets/Images/UI/State/Playagian_button_choose.png");
+        }
+
+
+        // ==========================================
+        // SAVE
+        // ==========================================
+
+        if (
+            textureManager.GetTexture(
+                "state_save") == nullptr)
+        {
+            textureManager.LoadTexture(
+                renderer,
+                "state_save",
+                "Assets/Images/UI/State/Save_button.png");
+        }
+
+
+        if (
+            textureManager.GetTexture(
+                "state_save_choose") == nullptr)
+        {
+            textureManager.LoadTexture(
+                renderer,
+                "state_save_choose",
+                "Assets/Images/UI/State/Save_button_choose.png");
+        }
+
+
+        // ==========================================
+        // MENU
+        // ==========================================
+
+        if (
+            textureManager.GetTexture(
+                "state_menu") == nullptr)
+        {
+            textureManager.LoadTexture(
+                renderer,
+                "state_menu",
+                "Assets/Images/UI/State/Menu_button.png");
+        }
+
+
+        if (
+            textureManager.GetTexture(
+                "state_menu_choose") == nullptr)
+        {
+            textureManager.LoadTexture(
+                renderer,
+                "state_menu_choose",
+                "Assets/Images/UI/State/Menu_button_choose.png");
+        }
+    }
+
+
+    // ==================================================
+    // DRAW ONE STATE BUTTON
+    // ==================================================
+
+    void DrawStateButton(
+        SDL_Renderer* renderer,
+        TextureManager& textureManager,
+        const char* textureId,
+        int x,
+        int y,
+        int width,
+        int height)
+    {
+        Texture* texture =
+            textureManager.GetTexture(
+                textureId);
+
+
+        if (
+            texture == nullptr ||
+            texture->GetTexture() == nullptr)
+        {
+            return;
+        }
+
+
+        SDL_Rect destination =
+        {
+            x,
+            y,
+            width,
+            height
+        };
+
+
+        SDL_RenderCopy(
+            renderer,
+            texture->GetTexture(),
+            nullptr,
+            &destination);
+    }
+
+
+    // ==================================================
+    // DRAW STATE BUTTONS
+    // ==================================================
+
+    void DrawStateButtons(
+        SDL_Renderer* renderer,
+        TextureManager& textureManager,
+        int selectedIndex)
+    {
+        EnsureStateButtonTexturesLoaded(
+            renderer,
+            textureManager);
+
+
+        // Asset gốc của bạn là 300 x 53.
+        const int buttonWidth =
+            300;
+
+
+        const int buttonHeight =
+            53;
+
+
+        const int buttonX =
+            (1280 - buttonWidth) / 2;
+
+
+        SDL_Rect frameRect =
+            GetStateFrameRect();
+
+
+        const int gapFromFrame =
+            15;
+
+
+        const int buttonSpacing =
+            10;
+
+
+        const int firstButtonY =
+            frameRect.y +
+            frameRect.h +
+            gapFromFrame;
+
+
+        // ==========================================
+        // PLAY AGAIN
+        // ==========================================
+
+        DrawStateButton(
+            renderer,
+            textureManager,
+            selectedIndex == 0
+            ? "state_play_again_choose"
+            : "state_play_again",
+            buttonX,
+            firstButtonY,
+            buttonWidth,
+            buttonHeight);
+
+
+        // ==========================================
+        // SAVE
+        // ==========================================
+
+        DrawStateButton(
+            renderer,
+            textureManager,
+            selectedIndex == 1
+            ? "state_save_choose"
+            : "state_save",
+            buttonX,
+            firstButtonY +
+            buttonHeight +
+            buttonSpacing,
+            buttonWidth,
+            buttonHeight);
+
+
+        // ==========================================
+        // MENU
+        // ==========================================
+
+        DrawStateButton(
+            renderer,
+            textureManager,
+            selectedIndex == 2
+            ? "state_menu_choose"
+            : "state_menu",
+            buttonX,
+            firstButtonY +
+            (buttonHeight + buttonSpacing) * 2,
+            buttonWidth,
+            buttonHeight);
     }
 
 
@@ -382,10 +637,6 @@ namespace
             GetStateFrameRect();
 
 
-        // ==========================================
-        // CENTER SCORE ON STATE FRAME
-        // ==========================================
-
         int scoreX =
             frameRect.x +
             (frameRect.w - textWidth) / 2;
@@ -422,6 +673,10 @@ Game::Game()
 
     score =
         0;
+
+
+    stateMenuSelectedIndex =
+        0;
 }
 
 
@@ -455,32 +710,27 @@ void Game::Update()
 
             case 0:
             {
-                // ==================================
-                // RESET PLAYER
-                // ==================================
-
                 player.Reset();
 
-
-                // ==================================
-                // RESET SCORE
-                // ==================================
 
                 score =
                     0;
 
 
-                // ==================================
-                // RESET PINE CONES
-                // ==================================
-
                 pineConeManager.Reset();
 
 
-                // ==================================
-                // INTRO
-                // ==================================
+                // Tạo lại Map để obstacle và traffic light
+                // bắt đầu lại từ trạng thái ban đầu.
+                map =
+                    Map();
 
+
+                stateMenuSelectedIndex =
+                    0;
+
+
+                // Chỉ START GAME từ menu mới chạy intro.
                 introRequested =
                     true;
 
@@ -536,41 +786,6 @@ void Game::Update()
 
 
     // ==========================================
-    // SAVE GAME
-    //
-    // Chỉ được Save khi:
-    //
-    // Paused
-    // GameOver
-    // LevelComplete
-    // ==========================================
-
-    if (
-        InputManager::IsKeyPressed(
-            SDL_SCANCODE_S))
-    {
-        if (
-            state == GameState::Paused ||
-            state == GameState::GameOver ||
-            state == GameState::LevelComplete)
-        {
-            if (SaveGame())
-            {
-                std::cout
-                    << "Game saved successfully!"
-                    << std::endl;
-            }
-            else
-            {
-                std::cout
-                    << "Cannot save game!"
-                    << std::endl;
-            }
-        }
-    }
-
-
-    // ==========================================
     // PAUSE
     // ==========================================
 
@@ -584,12 +799,19 @@ void Game::Update()
             GameState::Paused;
 
 
+        stateMenuSelectedIndex =
+            0;
+
+
         return;
     }
 
 
     // ==========================================
     // RESUME
+    //
+    // Không cần Continue button.
+    // Nhấn P lần nữa để tiếp tục.
     // ==========================================
 
     if (
@@ -607,13 +829,162 @@ void Game::Update()
 
 
     // ==========================================
-    // PAUSED
+    // PAUSE / LOSE / WIN ACTION MENU
     // ==========================================
 
     if (
-        state ==
-        GameState::Paused)
+        state == GameState::Paused ||
+        state == GameState::GameOver ||
+        state == GameState::LevelComplete)
     {
+        // ======================================
+        // MOVE UP
+        // ======================================
+
+        if (
+            InputManager::IsKeyPressed(
+                SDL_SCANCODE_UP) ||
+            InputManager::IsKeyPressed(
+                SDL_SCANCODE_W))
+        {
+            stateMenuSelectedIndex--;
+
+
+            if (
+                stateMenuSelectedIndex < 0)
+            {
+                stateMenuSelectedIndex =
+                    STATE_MENU_ITEM_COUNT - 1;
+            }
+        }
+
+
+        // ======================================
+        // MOVE DOWN
+        // ======================================
+
+        if (
+            InputManager::IsKeyPressed(
+                SDL_SCANCODE_DOWN) ||
+            InputManager::IsKeyPressed(
+                SDL_SCANCODE_S))
+        {
+            stateMenuSelectedIndex++;
+
+
+            if (
+                stateMenuSelectedIndex >=
+                STATE_MENU_ITEM_COUNT)
+            {
+                stateMenuSelectedIndex =
+                    0;
+            }
+        }
+
+
+        // ======================================
+        // SELECT
+        // ======================================
+
+        if (
+            InputManager::IsKeyPressed(
+                SDL_SCANCODE_RETURN))
+        {
+            switch (
+                stateMenuSelectedIndex)
+            {
+                // ==================================
+                // PLAY AGAIN
+                // ==================================
+
+            case 0:
+            {
+                player.Reset();
+
+
+                score =
+                    0;
+
+
+                pineConeManager.Reset();
+
+
+                map =
+                    Map();
+
+
+                // Rất quan trọng:
+                // Play Again đi thẳng vào gameplay,
+                // KHÔNG phát intro lần nữa.
+                introRequested =
+                    false;
+
+
+                state =
+                    GameState::Playing;
+
+
+                stateMenuSelectedIndex =
+                    0;
+
+
+                break;
+            }
+
+
+            // ==================================
+            // SAVE
+            // ==================================
+
+            case 1:
+            {
+                if (SaveGame())
+                {
+                    std::cout
+                        << "Game saved successfully!"
+                        << std::endl;
+                }
+                else
+                {
+                    std::cout
+                        << "Cannot save game!"
+                        << std::endl;
+                }
+
+
+                break;
+            }
+
+
+            // ==================================
+            // MENU
+            // ==================================
+
+            case 2:
+            {
+                introRequested =
+                    false;
+
+
+                state =
+                    GameState::Menu;
+
+
+                stateMenuSelectedIndex =
+                    0;
+
+
+                break;
+            }
+
+
+            default:
+
+                break;
+            }
+        }
+
+
         return;
     }
 
@@ -666,6 +1037,10 @@ void Game::Update()
             GameState::LevelComplete;
 
 
+        stateMenuSelectedIndex =
+            0;
+
+
         return;
     }
 
@@ -697,6 +1072,10 @@ void Game::Update()
 
             state =
                 GameState::GameOver;
+
+
+            stateMenuSelectedIndex =
+                0;
 
 
             return;
@@ -798,6 +1177,12 @@ void Game::Render(
             "pause_frame");
 
 
+        DrawStateButtons(
+            renderer,
+            textureManager,
+            stateMenuSelectedIndex);
+
+
         break;
 
 
@@ -818,6 +1203,12 @@ void Game::Render(
             textRenderer,
             fontManager,
             score);
+
+
+        DrawStateButtons(
+            renderer,
+            textureManager,
+            stateMenuSelectedIndex);
 
 
         break;
@@ -842,6 +1233,12 @@ void Game::Render(
             score);
 
 
+        DrawStateButtons(
+            renderer,
+            textureManager,
+            stateMenuSelectedIndex);
+
+
         break;
 
 
@@ -861,6 +1258,16 @@ void Game::SetState(
 {
     state =
         newState;
+
+
+    if (
+        state == GameState::Paused ||
+        state == GameState::GameOver ||
+        state == GameState::LevelComplete)
+    {
+        stateMenuSelectedIndex =
+            0;
+    }
 }
 
 
@@ -1105,6 +1512,10 @@ bool Game::LoadGame()
 
     state =
         data.state;
+
+
+    stateMenuSelectedIndex =
+        0;
 
 
     // ==========================================
