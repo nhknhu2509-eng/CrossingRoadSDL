@@ -227,20 +227,4 @@ void Menu::Draw(
         startY + spacing,
         buttonWidth,
         buttonHeight);
-
-
-    // ==========================================
-    // LEADERBOARD
-    // ==========================================
-
-    DrawTexture(
-        renderer,
-        textureManager,
-        selectedIndex == 2
-        ? "leaderboard_choose"
-        : "leaderboard_normal",
-        buttonX,
-        startY + spacing * 2,
-        buttonWidth,
-        buttonHeight);
-}   
+}

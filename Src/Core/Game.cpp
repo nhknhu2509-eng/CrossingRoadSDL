@@ -1520,16 +1520,6 @@ void Game::Update()
             }
 
 
-            // ==================================
-            // LEADERBOARD
-            // ==================================
-
-            case 2:
-
-                // Leaderboard sẽ làm sau.
-
-                break;
-
 
             default:
 

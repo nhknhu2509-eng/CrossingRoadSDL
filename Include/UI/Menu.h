@@ -46,7 +46,7 @@ private:
     // MENU INFORMATION
     // ==========================================
 
-    static const int MENU_ITEM_COUNT = 3;
+    static const int MENU_ITEM_COUNT = 2;
 
     int selectedIndex;
 

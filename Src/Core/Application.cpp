@@ -4,6 +4,7 @@
 #include "Config/GameConfig.h"
 
 #include "Media/VideoPlayer.h"
+#include "Media/MusicPlayer.h"
 
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -630,6 +631,27 @@ void Application::Run()
     VideoPlayer videoPlayer;
 
 
+    // ==================================================
+    // BACKGROUND MUSIC
+    // ==================================================
+
+    MusicPlayer musicPlayer;
+
+
+    if (
+        musicPlayer.Load(
+            "Assets/Audio/background_music.mp3"))
+    {
+        musicPlayer.Play();
+    }
+    else
+    {
+        std::cout
+            << "Background music could not be loaded."
+            << std::endl;
+    }
+
+
     while (running)
     {
         timer.Tick();
@@ -670,11 +692,25 @@ void Application::Run()
                 false;
 
 
+            // ==========================================
+            // PAUSE BACKGROUND MUSIC DURING INTRO
+            // ==========================================
+
+            musicPlayer.Pause();
+
+
             bool videoPlayed =
                 videoPlayer.Play(
                     window.GetRenderer(),
                     "Assets/Videos/chapter1_intro.mp4",
                     quitRequested);
+
+
+            // ==========================================
+            // RESUME BACKGROUND MUSIC AFTER INTRO
+            // ==========================================
+
+            musicPlayer.Resume();
 
 
             if (quitRequested)

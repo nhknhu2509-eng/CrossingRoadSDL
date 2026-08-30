@@ -33,6 +33,7 @@
     <ClInclude Include="..\..\Include\Managers\LaneManager.h" />
     <ClInclude Include="..\..\Include\Managers\PineConeManager.h" />
     <ClInclude Include="..\..\Include\Managers\SaveManager.h" />
+    <ClInclude Include="..\..\Include\Media\MusicPlayer.h" />
     <ClInclude Include="..\..\Include\Media\VideoPlayer.h" />
     <ClInclude Include="..\..\Include\Objects\Animal.h" />
     <ClInclude Include="..\..\Include\Objects\Deer.h" />
@@ -64,6 +65,7 @@
     <ClCompile Include="..\..\Src\Managers\CollisionManager.cpp" />
     <ClCompile Include="..\..\Src\Managers\InputManager.cpp" />
     <ClCompile Include="..\..\Src\Managers\LaneManager.cpp" />
+    <ClCompile Include="..\..\Src\Media\MusicPlayer.cpp" />
     <ClCompile Include="..\..\Src\Media\VideoPlayer.cpp" />
     <ClCompile Include="..\..\Src\Objects\Animal.cpp" />
     <ClCompile Include="..\..\Src\Objects\Deer.cpp" />
