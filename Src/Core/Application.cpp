@@ -57,7 +57,10 @@ bool Application::Initialize()
     // SDL
     // ==================================================
 
-    if (SDL_Init(SDL_INIT_VIDEO) != 0)
+    if (
+        SDL_Init(
+            SDL_INIT_VIDEO |
+            SDL_INIT_AUDIO) != 0)
     {
         std::cout
             << "SDL_Init Error: "
@@ -83,6 +86,12 @@ bool Application::Initialize()
 
         return false;
     }
+
+
+    std::cout
+        << "TTF initialized: "
+        << TTF_WasInit()
+        << std::endl;
 
 
     // ==================================================
@@ -163,23 +172,12 @@ bool Application::Initialize()
             << "Cannot load background texture!"
             << std::endl;
 
-        std::cout
-            << IMG_GetError()
-            << std::endl;
-
-        fontManager.Destroy();
-        window.Destroy();
-
-        IMG_Quit();
-        TTF_Quit();
-        SDL_Quit();
-
         return false;
     }
 
 
     // ==================================================
-    // MAIN MENU BACKGROUND
+    // MENU
     // ==================================================
 
     if (!textureManager.LoadTexture(
@@ -187,34 +185,18 @@ bool Application::Initialize()
         "menu_background",
         "Assets/Images/UI/Menu/menu_background.jpg"))
     {
-        std::cout
-            << "Cannot load menu background!"
-            << std::endl;
-
         return false;
     }
 
-
-    // ==================================================
-    // MAIN MENU LOGO
-    // ==================================================
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "menu_logo",
         "Assets/Images/UI/Menu/logo.png"))
     {
-        std::cout
-            << "Cannot load menu logo!"
-            << std::endl;
-
         return false;
     }
 
-
-    // ==================================================
-    // START GAME BUTTON
-    // ==================================================
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -234,10 +216,6 @@ bool Application::Initialize()
     }
 
 
-    // ==================================================
-    // LOAD GAME BUTTON
-    // ==================================================
-
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "loadgame_normal",
@@ -255,10 +233,6 @@ bool Application::Initialize()
         return false;
     }
 
-
-    // ==================================================
-    // LEADERBOARD BUTTON
-    // ==================================================
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -279,7 +253,7 @@ bool Application::Initialize()
 
 
     // ==================================================
-    // WAGON 1 ANIMATION
+    // WAGON 1
     // ==================================================
 
     if (!textureManager.LoadTexture(
@@ -290,7 +264,6 @@ bool Application::Initialize()
         return false;
     }
 
-
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "wagon1_02",
@@ -298,7 +271,6 @@ bool Application::Initialize()
     {
         return false;
     }
-
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -310,7 +282,7 @@ bool Application::Initialize()
 
 
     // ==================================================
-    // WAGON 2 ANIMATION
+    // WAGON 2
     // ==================================================
 
     if (!textureManager.LoadTexture(
@@ -321,7 +293,6 @@ bool Application::Initialize()
         return false;
     }
 
-
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "wagon2_02",
@@ -329,7 +300,6 @@ bool Application::Initialize()
     {
         return false;
     }
-
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -341,7 +311,7 @@ bool Application::Initialize()
 
 
     // ==================================================
-    // WAGON 3 ANIMATION
+    // WAGON 3
     // ==================================================
 
     if (!textureManager.LoadTexture(
@@ -352,7 +322,6 @@ bool Application::Initialize()
         return false;
     }
 
-
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "wagon3_02",
@@ -360,7 +329,6 @@ bool Application::Initialize()
     {
         return false;
     }
-
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -372,7 +340,7 @@ bool Application::Initialize()
 
 
     // ==================================================
-    // WAGON 4 ANIMATION
+    // WAGON 4
     // ==================================================
 
     if (!textureManager.LoadTexture(
@@ -383,7 +351,6 @@ bool Application::Initialize()
         return false;
     }
 
-
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "wagon4_02",
@@ -391,7 +358,6 @@ bool Application::Initialize()
     {
         return false;
     }
-
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -403,7 +369,7 @@ bool Application::Initialize()
 
 
     // ==================================================
-    // DEER ANIMATION
+    // DEER
     // ==================================================
 
     if (!textureManager.LoadTexture(
@@ -414,7 +380,6 @@ bool Application::Initialize()
         return false;
     }
 
-
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "deer_02",
@@ -422,7 +387,6 @@ bool Application::Initialize()
     {
         return false;
     }
-
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -432,7 +396,6 @@ bool Application::Initialize()
         return false;
     }
 
-
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "deer_04",
@@ -440,7 +403,6 @@ bool Application::Initialize()
     {
         return false;
     }
-
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -452,7 +414,7 @@ bool Application::Initialize()
 
 
     // ==================================================
-    // SQUIRREL ANIMATION
+    // SQUIRREL
     // ==================================================
 
     if (!textureManager.LoadTexture(
@@ -463,7 +425,6 @@ bool Application::Initialize()
         return false;
     }
 
-
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "squirrel_02",
@@ -472,7 +433,6 @@ bool Application::Initialize()
         return false;
     }
 
-
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "squirrel_03",
@@ -480,7 +440,6 @@ bool Application::Initialize()
     {
         return false;
     }
-
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -492,7 +451,7 @@ bool Application::Initialize()
 
 
     // ==================================================
-    // RABBIT ANIMATION
+    // RABBIT
     // ==================================================
 
     if (!textureManager.LoadTexture(
@@ -503,7 +462,6 @@ bool Application::Initialize()
         return false;
     }
 
-
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "rabbit_02",
@@ -511,7 +469,6 @@ bool Application::Initialize()
     {
         return false;
     }
-
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -523,7 +480,7 @@ bool Application::Initialize()
 
 
     // ==================================================
-    // LANTERNS
+    // LANTERN
     // ==================================================
 
     if (!textureManager.LoadTexture(
@@ -534,7 +491,6 @@ bool Application::Initialize()
         return false;
     }
 
-
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
         "lantern_red",
@@ -542,7 +498,6 @@ bool Application::Initialize()
     {
         return false;
     }
-
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -554,7 +509,7 @@ bool Application::Initialize()
 
 
     // ==================================================
-    // PLAYER IDLE
+    // PLAYER
     // ==================================================
 
     if (!textureManager.LoadTexture(
@@ -565,10 +520,6 @@ bool Application::Initialize()
         return false;
     }
 
-
-    // ==================================================
-    // PLAYER WALK LEFT / RIGHT
-    // ==================================================
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -587,10 +538,6 @@ bool Application::Initialize()
         return false;
     }
 
-
-    // ==================================================
-    // PLAYER WALK UP / DOWN
-    // ==================================================
 
     if (!textureManager.LoadTexture(
         window.GetRenderer(),
@@ -611,7 +558,15 @@ bool Application::Initialize()
 
 
     std::cout
+        << "=================================="
+        << std::endl;
+
+    std::cout
         << "All textures loaded successfully!"
+        << std::endl;
+
+    std::cout
+        << "=================================="
         << std::endl;
 
 
@@ -662,7 +617,7 @@ void Application::Run()
 
 
         // ==========================================
-        // INTRO REQUEST
+        // INTRO VIDEO
         // ==========================================
 
         if (
@@ -679,10 +634,6 @@ void Application::Run()
                     quitRequested);
 
 
-            // ======================================
-            // WINDOW CLOSED DURING VIDEO
-            // ======================================
-
             if (quitRequested)
             {
                 running =
@@ -692,26 +643,17 @@ void Application::Run()
             }
 
 
-            // ======================================
-            // VIDEO FAILED
-            // ======================================
-
             if (!videoPlayed)
             {
                 std::cout
                     << "Intro could not be played."
                     << std::endl;
 
-
                 std::cout
                     << "Starting Chapter 1 anyway."
                     << std::endl;
             }
 
-
-            // ======================================
-            // START CHAPTER 1
-            // ======================================
 
             game.SetState(
                 GameState::Playing);
@@ -726,7 +668,7 @@ void Application::Run()
 
 
         // ==========================================
-        // GAME BACKGROUND
+        // BACKGROUND
         // ==========================================
 
         Texture* background =
@@ -738,23 +680,13 @@ void Application::Run()
             background != nullptr &&
             background->GetTexture() != nullptr)
         {
-            SDL_Rect destination;
-
-
-            destination.x =
-                0;
-
-
-            destination.y =
-                0;
-
-
-            destination.w =
-                Config::WINDOW_WIDTH;
-
-
-            destination.h =
-                Config::WINDOW_HEIGHT;
+            SDL_Rect destination =
+            {
+                0,
+                0,
+                Config::WINDOW_WIDTH,
+                Config::WINDOW_HEIGHT
+            };
 
 
             SDL_RenderCopy(
