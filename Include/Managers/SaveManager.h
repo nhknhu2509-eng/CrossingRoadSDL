@@ -10,6 +10,10 @@
 #include "World/TrafficLight.h"
 
 
+// ==================================================
+// SAVE DATA
+// ==================================================
+
 struct SaveData
 {
     GameState state;
@@ -29,6 +33,10 @@ struct SaveData
         trafficLights;
 };
 
+
+// ==================================================
+// SAVE MANAGER
+// ==================================================
 
 class SaveManager
 {
@@ -52,7 +60,9 @@ public:
         const SaveData& data)
     {
         std::ofstream file(
-            GetSavePath());
+            GetSavePath(),
+            std::ios::out |
+            std::ios::trunc);
 
 
         if (!file.is_open())
@@ -65,7 +75,8 @@ public:
         // VERSION
         // ======================================
 
-        file << "VERSION 2\n";
+        file
+            << "VERSION 2\n";
 
 
         // ======================================
@@ -166,10 +177,21 @@ public:
         }
 
 
+        // ======================================
+        // CHECK WRITE RESULT
+        // ======================================
+
+        file.flush();
+
+
+        bool writeSucceeded =
+            file.good();
+
+
         file.close();
 
 
-        return true;
+        return writeSucceeded;
     }
 
 
@@ -201,9 +223,13 @@ public:
         // VERSION
         // ======================================
 
-        file
+        if (!(
+            file
             >> label
-            >> version;
+            >> version))
+        {
+            return false;
+        }
 
 
         if (
@@ -222,12 +248,19 @@ public:
             0;
 
 
-        file
+        if (!(
+            file
             >> label
-            >> stateValue;
+            >> stateValue))
+        {
+            return false;
+        }
 
 
-        if (label != "STATE")
+        if (
+            label != "STATE" ||
+            !IsValidStateValue(
+                stateValue))
         {
             return false;
         }
@@ -242,12 +275,18 @@ public:
         // SCORE
         // ======================================
 
-        file
+        if (!(
+            file
             >> label
-            >> data.score;
+            >> data.score))
+        {
+            return false;
+        }
 
 
-        if (label != "SCORE")
+        if (
+            label != "SCORE" ||
+            data.score < 0)
         {
             return false;
         }
@@ -257,10 +296,14 @@ public:
         // PLAYER
         // ======================================
 
-        file
+        if (!(
+            file
             >> label
             >> data.playerX
-            >> data.playerY;
+            >> data.playerY))
+        {
+            return false;
+        }
 
 
         if (label != "PLAYER")
@@ -277,14 +320,19 @@ public:
             0;
 
 
-        file
+        if (!(
+            file
             >> label
-            >> pineConeCount;
+            >> pineConeCount))
+        {
+            return false;
+        }
 
 
         if (
             label != "PINECONES" ||
-            pineConeCount < 0)
+            pineConeCount < 0 ||
+            pineConeCount > 1000)
         {
             return false;
         }
@@ -302,17 +350,22 @@ public:
                 0;
 
 
-            file >> collected;
+            if (!(file >> collected))
+            {
+                return false;
+            }
 
 
-            if (!file)
+            if (
+                collected != 0 &&
+                collected != 1)
             {
                 return false;
             }
 
 
             data.pineConeCollected.push_back(
-                collected != 0);
+                collected == 1);
         }
 
 
@@ -324,14 +377,19 @@ public:
             0;
 
 
-        file
+        if (!(
+            file
             >> label
-            >> obstacleCount;
+            >> obstacleCount))
+        {
+            return false;
+        }
 
 
         if (
             label != "OBSTACLES" ||
-            obstacleCount < 0)
+            obstacleCount < 0 ||
+            obstacleCount > 10000)
         {
             return false;
         }
@@ -345,15 +403,17 @@ public:
             i < obstacleCount;
             i++)
         {
-            SDL_Point position;
+            SDL_Point position =
+            {
+                0,
+                0
+            };
 
 
-            file
+            if (!(
+                file
                 >> position.x
-                >> position.y;
-
-
-            if (!file)
+                >> position.y))
             {
                 return false;
             }
@@ -372,14 +432,19 @@ public:
             0;
 
 
-        file
+        if (!(
+            file
             >> label
-            >> lightCount;
+            >> lightCount))
+        {
+            return false;
+        }
 
 
         if (
             label != "LIGHTS" ||
-            lightCount < 0)
+            lightCount < 0 ||
+            lightCount > 1000)
         {
             return false;
         }
@@ -393,7 +458,7 @@ public:
             i < lightCount;
             i++)
         {
-            int stateValue =
+            int lightStateValue =
                 0;
 
 
@@ -401,12 +466,18 @@ public:
                 0;
 
 
-            file
-                >> stateValue
-                >> elapsedTime;
+            if (!(
+                file
+                >> lightStateValue
+                >> elapsedTime))
+            {
+                return false;
+            }
 
 
-            if (!file)
+            if (
+                lightStateValue < 0 ||
+                lightStateValue > 2)
             {
                 return false;
             }
@@ -418,7 +489,7 @@ public:
 
             light.state =
                 IntToLightState(
-                    stateValue);
+                    lightStateValue);
 
 
             light.elapsedTime =
@@ -454,6 +525,20 @@ public:
 private:
 
     // ==========================================
+    // VALID SAVE STATE
+    // ==========================================
+
+    static bool IsValidStateValue(
+        int value)
+    {
+        return
+            value == 1 ||
+            value == 2 ||
+            value == 3;
+    }
+
+
+    // ==========================================
     // GAME STATE -> INT
     // ==========================================
 
@@ -475,7 +560,7 @@ private:
 
 
         default:
-            return 0;
+            return 1;
         }
     }
 
