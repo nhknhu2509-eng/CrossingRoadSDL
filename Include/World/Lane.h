@@ -1,11 +1,11 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 #include <string>
 #include <SDL.h>
 
-#include "Objects/Vehicle.h"
-#include "Objects/Animal.h"
+#include "Objects/Obstacle.h"
 #include "World/TrafficLight.h"
 
 
@@ -39,19 +39,17 @@ public:
         TextureManager& textureManager);
 
 
-    const std::vector<Vehicle>&
-        GetVehicles() const;
-
-
-    const std::vector<Animal>&
-        GetAnimals() const;
+    const std::vector<
+        std::unique_ptr<Obstacle>>&
+        GetObstacles() const;
 
 
 private:
 
-    std::vector<Vehicle> vehicles;
+    std::vector<
+        std::unique_ptr<Obstacle>>
+        obstacles;
 
-    std::vector<Animal> animals;
 
     TrafficLight trafficLight;
 };

@@ -32,8 +32,12 @@
     <ClInclude Include="..\..\Include\Managers\InputManager.h" />
     <ClInclude Include="..\..\Include\Managers\VehicleManager.h" />
     <ClInclude Include="..\..\Include\Objects\Animal.h" />
+    <ClInclude Include="..\..\Include\Objects\Deer.h" />
     <ClInclude Include="..\..\Include\Objects\GameObject.h" />
+    <ClInclude Include="..\..\Include\Objects\Obstacle.h" />
     <ClInclude Include="..\..\Include\Objects\Player.h" />
+    <ClInclude Include="..\..\Include\Objects\Rabbit.h" />
+    <ClInclude Include="..\..\Include\Objects\Squirrel.h" />
     <ClInclude Include="..\..\Include\Objects\Vehicle.h" />
     <ClInclude Include="..\..\Include\UI\Menu.h" />
     <ClInclude Include="..\..\Include\Utils\Timer.h" />
@@ -57,8 +61,12 @@
     <ClCompile Include="..\..\Src\Managers\InputManager.cpp" />
     <ClCompile Include="..\..\Src\Managers\VehicleManager.cpp" />
     <ClCompile Include="..\..\Src\Objects\Animal.cpp" />
+    <ClCompile Include="..\..\Src\Objects\Deer.cpp" />
     <ClCompile Include="..\..\Src\Objects\GameObject.cpp" />
+    <ClCompile Include="..\..\Src\Objects\Obstacle.cpp" />
     <ClCompile Include="..\..\Src\Objects\Player.cpp" />
+    <ClCompile Include="..\..\Src\Objects\Rabbit.cpp" />
+    <ClCompile Include="..\..\Src\Objects\Squirrel.cpp" />
     <ClCompile Include="..\..\Src\Objects\Vehicle.cpp" />
     <ClCompile Include="..\..\Src\UI\Menu.cpp" />
     <ClCompile Include="..\..\Src\Utils\Timer.cpp" />

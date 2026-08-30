@@ -1,36 +1,20 @@
 #pragma once
 
 #include <SDL.h>
-#include <string>
-#include <vector>
 
-#include "Objects/GameObject.h"
-
-class TextureManager;
+#include "Objects/Obstacle.h"
 
 
-class Animal : public GameObject
+class Animal : public Obstacle
 {
 public:
 
-    Animal();
+    virtual ~Animal() = default;
 
-    void Update();
 
-    void Draw(
-        SDL_Renderer* renderer,
-        TextureManager& textureManager);
-
-    void SetSpeed(int value);
-
-    void SetDirection(int value);
-
-    void SetPosition(
-        int x,
-        int y);
-
-    void SetTexture(
-        const std::string& textureId);
+    // ==========================================
+    // HITBOX
+    // ==========================================
 
     void SetHitboxMargins(
         int left,
@@ -38,66 +22,22 @@ public:
         int right,
         int bottom);
 
-    SDL_Rect GetRect() const;
 
-    SDL_Rect GetHitbox() const;
-
-
-private:
-
-    void UpdateHitbox();
-
-    void UpdateAnimation();
+    // Mặc định Animal không cần lane height.
+    // Deer sẽ override hàm này.
+    virtual void SetLaneHeight(
+        int height);
 
 
-private:
+protected:
 
-    // ==============================
-    // Sprite
-    // ==============================
-
-    SDL_Rect rect;
+    Animal();
 
 
-    // ==============================
-    // Collision
-    // ==============================
-
-    SDL_Rect hitbox;
+    void UpdateHitbox() override;
 
 
-    // ==============================
-    // Movement
-    // ==============================
-
-    int speed;
-
-    int direction;
-
-
-    // ==============================
-    // Animal type
-    // ==============================
-
-    std::string textureId;
-
-
-    // ==============================
-    // Animation
-    // ==============================
-
-    std::vector<std::string> animationFrames;
-
-    int currentFrame;
-
-    Uint32 lastFrameTime;
-
-    Uint32 frameDuration;
-
-
-    // ==============================
-    // Hitbox margins
-    // ==============================
+protected:
 
     int hitboxLeft;
 

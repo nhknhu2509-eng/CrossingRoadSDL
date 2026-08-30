@@ -19,7 +19,7 @@ namespace Config
 
     constexpr int PLAYER_WIDTH = 70;
     constexpr int PLAYER_HEIGHT = 50;
-    constexpr int PLAYER_SPEED = 3;
+    constexpr int PLAYER_SPEED = 2;
 
     constexpr int PLAYER_START_X =
         WINDOW_WIDTH / 2

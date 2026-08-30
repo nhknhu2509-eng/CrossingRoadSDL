@@ -24,12 +24,8 @@ public:
         TextureManager& textureManager);
 
 
-    std::vector<Vehicle>
-        GetVehicles() const;
-
-
-    std::vector<Animal>
-        GetAnimals() const;
+    std::vector<const Obstacle*>
+        GetObstacles() const;
 
 
 private:

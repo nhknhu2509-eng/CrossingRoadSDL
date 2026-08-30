@@ -2,30 +2,51 @@
 
 #include <SDL.h>
 
+
+class TextureManager;
+
+
 class GameObject
 {
 public:
+
     GameObject();
-    GameObject(float x, float y, int width, int height);
 
     virtual ~GameObject() = default;
 
-    virtual void Update(float deltaTime);
 
-    virtual void Render(SDL_Renderer* renderer);
+    // ==========================================
+    // POLYMORPHIC INTERFACE
+    // ==========================================
 
-    void SetPosition(float x, float y);
+    virtual void Update() = 0;
 
-    float GetX() const;
-    float GetY() const;
 
-    int GetWidth() const;
-    int GetHeight() const;
+    virtual void Draw(
+        SDL_Renderer* renderer,
+        TextureManager& textureManager) = 0;
+
+
+    virtual SDL_Rect GetHitbox() const = 0;
+
+
+    // ==========================================
+    // POSITION
+    // ==========================================
+
+    virtual void SetPosition(
+        int x,
+        int y);
+
+
+    // ==========================================
+    // RECT
+    // ==========================================
+
+    const SDL_Rect& GetRect() const;
+
 
 protected:
-    float x;
-    float y;
 
-    int width;
-    int height;
+    SDL_Rect rect;
 };

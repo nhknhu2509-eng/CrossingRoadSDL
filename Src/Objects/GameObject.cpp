@@ -1,55 +1,39 @@
 #include "Objects/GameObject.h"
 
+
+// ==================================================
+// CONSTRUCTOR
+// ==================================================
+
 GameObject::GameObject()
 {
-    x = 0.0f;
-    y = 0.0f;
+    rect.x = 0;
+    rect.y = 0;
 
-    width = 0;
-    height = 0;
+    rect.w = 0;
+    rect.h = 0;
 }
 
-GameObject::GameObject(float x, float y, int width, int height)
-{
-    this->x = x;
-    this->y = y;
 
-    this->width = width;
-    this->height = height;
+// ==================================================
+// SET POSITION
+// ==================================================
+
+void GameObject::SetPosition(
+    int x,
+    int y)
+{
+    rect.x = x;
+    rect.y = y;
 }
 
-void GameObject::Update(float deltaTime)
+
+// ==================================================
+// GET RECT
+// ==================================================
+
+const SDL_Rect&
+GameObject::GetRect() const
 {
-
-}
-
-void GameObject::Render(SDL_Renderer* renderer)
-{
-
-}
-
-void GameObject::SetPosition(float x, float y)
-{
-    this->x = x;
-    this->y = y;
-}
-
-float GameObject::GetX() const
-{
-    return x;
-}
-
-float GameObject::GetY() const
-{
-    return y;
-}
-
-int GameObject::GetWidth() const
-{
-    return width;
-}
-
-int GameObject::GetHeight() const
-{
-    return height;
+    return rect;
 }

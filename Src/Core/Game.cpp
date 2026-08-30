@@ -1,72 +1,79 @@
 #include "Core/Game.h"
 
 #include "Managers/CollisionManager.h"
-#include "Objects/Vehicle.h"
-#include "Objects/Animal.h"
+#include "Objects/Obstacle.h"
+
 
 Game::Game()
 {
-    state = GameState::Playing;
+    state =
+        GameState::Playing;
 }
+
+
+// ==================================================
+// UPDATE
+// ==================================================
 
 void Game::Update()
 {
-    if (state != GameState::Playing)
+    if (state !=
+        GameState::Playing)
     {
         return;
     }
+
 
     player.Update();
 
-    // =====================================
+
+    // ==========================================
     // GOAL CHECK
-    // =====================================
-    // Vẫn dùng rect của Player cho Goal.
+    // ==========================================
+
+    // Giữ nguyên:
+    // Goal vẫn dùng Player rect,
+    // KHÔNG đổi sang hitbox.
     if (goal.Reached(
         player.GetRect()))
     {
-        state = GameState::LevelComplete;
+        state =
+            GameState::LevelComplete;
+
         return;
     }
 
+
     vehicleManager.Update();
 
-    // =====================================
-    // WAGON COLLISION
-    // =====================================
-    // Chỉ thay Player rect -> Player hitbox.
-    // Hitbox của Wagon KHÔNG thay đổi.
-    for (const Vehicle& vehicle :
-        vehicleManager.GetVehicles())
-    {
-        if (CollisionManager::CheckCollision(
-            player.GetHitbox(),
-            vehicle.GetHitbox()))
-        {
-            player.Reset();
-            state = GameState::GameOver;
-            return;
-        }
-    }
 
-    // =====================================
-    // DEER COLLISION
-    // =====================================
-    // Chỉ thay Player rect -> Player hitbox.
-    // Hitbox của Deer KHÔNG thay đổi.
-    for (const Animal& animal :
-        vehicleManager.GetAnimals())
+    // ==========================================
+    // POLYMORPHIC COLLISION
+    // ==========================================
+
+    for (
+        const Obstacle* obstacle :
+        vehicleManager.GetObstacles())
     {
-        if (CollisionManager::CheckCollision(
-            player.GetHitbox(),
-            animal.GetHitbox()))
+        if (
+            CollisionManager::CheckCollision(
+                player.GetHitbox(),
+                obstacle->GetHitbox()))
         {
             player.Reset();
-            state = GameState::GameOver;
+
+            state =
+                GameState::GameOver;
+
             return;
         }
     }
 }
+
+
+// ==================================================
+// RENDER
+// ==================================================
 
 void Game::Render(
     SDL_Renderer* renderer,
@@ -74,71 +81,92 @@ void Game::Render(
     FontManager& fontManager,
     TextureManager& textureManager)
 {
-    goal.Draw(renderer);
+    goal.Draw(
+        renderer);
+
 
     vehicleManager.Draw(
         renderer,
         textureManager);
 
+
     player.Draw(
         renderer,
         textureManager);
+
 
     switch (state)
     {
     case GameState::Playing:
 
-       
         break;
+
 
     case GameState::GameOver:
 
         textRenderer.Draw(
             renderer,
-            fontManager.GetFont("default"),
+            fontManager.GetFont(
+                "default"),
             "GAME OVER",
             280,
             220);
 
+
         textRenderer.Draw(
             renderer,
-            fontManager.GetFont("default"),
+            fontManager.GetFont(
+                "default"),
             "Press ENTER to restart",
             220,
             270);
 
         break;
 
+
     case GameState::LevelComplete:
 
         textRenderer.Draw(
             renderer,
-            fontManager.GetFont("default"),
+            fontManager.GetFont(
+                "default"),
             "YOU WIN!",
             300,
             220);
 
+
         textRenderer.Draw(
             renderer,
-            fontManager.GetFont("default"),
+            fontManager.GetFont(
+                "default"),
             "Press ENTER to continue",
             210,
             270);
 
         break;
 
+
     default:
+
         break;
     }
 }
 
+
+// ==================================================
+// STATE
+// ==================================================
+
 void Game::SetState(
     GameState newState)
 {
-    state = newState;
+    state =
+        newState;
 }
 
-GameState Game::GetState() const
+
+GameState
+Game::GetState() const
 {
     return state;
 }

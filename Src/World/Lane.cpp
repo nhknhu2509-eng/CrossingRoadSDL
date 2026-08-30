@@ -1,7 +1,14 @@
 #include "World/Lane.h"
 
 #include "Graphics/TextureManager.h"
+
 #include "Config/GameConfig.h"
+
+#include "Objects/Vehicle.h"
+#include "Objects/Animal.h"
+#include "Objects/Deer.h"
+#include "Objects/Squirrel.h"
+#include "Objects/Rabbit.h"
 
 
 Lane::Lane(
@@ -33,9 +40,13 @@ Lane::Lane(
         int spacing = 250;
 
 
-        for (int i = 0; i < vehicleCount; i++)
+        for (int i = 0;
+            i < vehicleCount;
+            i++)
         {
-            Vehicle vehicle;
+            std::unique_ptr<Vehicle>
+                vehicle =
+                std::make_unique<Vehicle>();
 
 
             int vehicleY =
@@ -44,43 +55,29 @@ Lane::Lane(
                 - Config::VEHICLE_HEIGHT;
 
 
-            vehicle.SetPosition(
+            vehicle->SetPosition(
                 i * spacing,
                 vehicleY);
 
 
-            vehicle.SetLaneHeight(
+            vehicle->SetLaneHeight(
                 height);
 
 
-            vehicle.SetSpeed(
+            vehicle->SetSpeed(
                 speed);
 
 
-            vehicle.SetDirection(
+            vehicle->SetDirection(
                 direction);
 
 
-            // ==================================
-            // CHỌN LOẠI WAGON
-            // ==================================
-            //
-            // Mỗi loại wagon có 3 frame:
-            //
-            // wagon1_01 -> wagon1_03
-            // wagon2_01 -> wagon2_03
-            // wagon3_01 -> wagon3_03
-            // wagon4_01 -> wagon4_03
-            //
-            // Vehicle::SetTexture()
-            // sẽ tự thiết lập các frame.
-            // ==================================
-
+            // Giữ nguyên thứ tự wagon hiện tại
             switch (i % 4)
             {
             case 0:
 
-                vehicle.SetTexture(
+                vehicle->SetTexture(
                     "wagon1");
 
                 break;
@@ -88,7 +85,7 @@ Lane::Lane(
 
             case 1:
 
-                vehicle.SetTexture(
+                vehicle->SetTexture(
                     "wagon2");
 
                 break;
@@ -96,7 +93,7 @@ Lane::Lane(
 
             case 2:
 
-                vehicle.SetTexture(
+                vehicle->SetTexture(
                     "wagon3");
 
                 break;
@@ -104,7 +101,7 @@ Lane::Lane(
 
             case 3:
 
-                vehicle.SetTexture(
+                vehicle->SetTexture(
                     "wagon4");
 
                 break;
@@ -116,8 +113,8 @@ Lane::Lane(
             }
 
 
-            vehicles.push_back(
-                vehicle);
+            obstacles.push_back(
+                std::move(vehicle));
         }
     }
 
@@ -131,34 +128,49 @@ Lane::Lane(
         int spacing = 250;
 
 
-        for (int i = 0; i < vehicleCount; i++)
+        for (int i = 0;
+            i < vehicleCount;
+            i++)
         {
-            Animal animal;
+            std::unique_ptr<Animal>
+                animal;
 
 
             // ==================================
-            // CHỌN LOẠI ANIMAL
-            // ==================================
-            //
-            // deer:
-            // deer_01 -> deer_05
-            //
-            // squirrel:
-            // squirrel_01 -> squirrel_04
-            //
-            // rabbit:
-            // rabbit_01 -> rabbit_03
-            //
-            // Animal::SetTexture()
-            // sẽ tự thiết lập animation.
+            // FACTORY LOGIC
             // ==================================
 
-            animal.SetTexture(
-                animalTexture);
+            if (animalTexture == "deer")
+            {
+                animal =
+                    std::make_unique<Deer>();
+            }
+
+            else if (
+                animalTexture ==
+                "squirrel")
+            {
+                animal =
+                    std::make_unique<Squirrel>();
+            }
+
+            else if (
+                animalTexture ==
+                "rabbit")
+            {
+                animal =
+                    std::make_unique<Rabbit>();
+            }
+
+
+            if (animal == nullptr)
+            {
+                continue;
+            }
 
 
             SDL_Rect animalRect =
-                animal.GetRect();
+                animal->GetRect();
 
 
             int animalY =
@@ -167,68 +179,27 @@ Lane::Lane(
                 - animalRect.h;
 
 
-            animal.SetPosition(
+            animal->SetPosition(
                 i * spacing,
                 animalY);
 
 
-            // ==================================
-            // DEER HITBOX
-            // ==================================
-            //
-            // Giữ nguyên hitbox nai
-            // mà bạn đã căn trước đó.
-            // ==================================
-
-            if (animalTexture == "deer")
-            {
-                SDL_Rect deerRect =
-                    animal.GetRect();
+            // Deer dùng hàm override.
+            // Squirrel/Rabbit không làm gì.
+            animal->SetLaneHeight(
+                height);
 
 
-                constexpr float SIDE_REDUCTION =
-                    0.05f;
-
-
-                int sideOffset =
-                    static_cast<int>(
-                        deerRect.w
-                        * SIDE_REDUCTION);
-
-
-                int hitboxHeight =
-                    height / 2;
-
-
-                int topMargin =
-                    deerRect.h
-                    - hitboxHeight;
-
-
-                if (topMargin < 0)
-                {
-                    topMargin = 0;
-                }
-
-
-                animal.SetHitboxMargins(
-                    sideOffset,
-                    topMargin,
-                    sideOffset,
-                    6);
-            }
-
-
-            animal.SetSpeed(
+            animal->SetSpeed(
                 speed);
 
 
-            animal.SetDirection(
+            animal->SetDirection(
                 direction);
 
 
-            animals.push_back(
-                animal);
+            obstacles.push_back(
+                std::move(animal));
         }
     }
 }
@@ -240,23 +211,18 @@ Lane::Lane(
 
 void Lane::Update()
 {
-    // Đèn của mỗi lane tự update
     trafficLight.Update();
 
 
-    // Chỉ cho vehicle / animal chạy
-    // khi đèn cho phép
+    // Logic đèn giữ nguyên:
+    // Red -> không Update obstacle
     if (trafficLight.CanMove())
     {
-        for (Vehicle& vehicle : vehicles)
+        for (
+            std::unique_ptr<Obstacle>& obstacle :
+            obstacles)
         {
-            vehicle.Update();
-        }
-
-
-        for (Animal& animal : animals)
-        {
-            animal.Update();
+            obstacle->Update();
         }
     }
 }
@@ -270,33 +236,15 @@ void Lane::Draw(
     SDL_Renderer* renderer,
     TextureManager& textureManager)
 {
-    // ==========================================
-    // VEHICLES
-    // ==========================================
-
-    for (Vehicle& vehicle : vehicles)
+    for (
+        std::unique_ptr<Obstacle>& obstacle :
+        obstacles)
     {
-        vehicle.Draw(
+        obstacle->Draw(
             renderer,
             textureManager);
     }
 
-
-    // ==========================================
-    // ANIMALS
-    // ==========================================
-
-    for (Animal& animal : animals)
-    {
-        animal.Draw(
-            renderer,
-            textureManager);
-    }
-
-
-    // ==========================================
-    // TRAFFIC LIGHT
-    // ==========================================
 
     trafficLight.Draw(
         renderer,
@@ -305,22 +253,12 @@ void Lane::Draw(
 
 
 // ==================================================
-// GET VEHICLES
+// GET OBSTACLES
 // ==================================================
 
-const std::vector<Vehicle>&
-Lane::GetVehicles() const
+const std::vector<
+    std::unique_ptr<Obstacle>>&
+    Lane::GetObstacles() const
 {
-    return vehicles;
-}
-
-
-// ==================================================
-// GET ANIMALS
-// ==================================================
-
-const std::vector<Animal>&
-Lane::GetAnimals() const
-{
-    return animals;
+    return obstacles;
 }
