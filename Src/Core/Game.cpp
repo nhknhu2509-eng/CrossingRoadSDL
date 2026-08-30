@@ -9,6 +9,7 @@
 
 
 #include <string>
+#include <iostream>
 
 
 // ==================================================
@@ -299,9 +300,6 @@ namespace
 
         // ==========================================
         // SCORE TEXT POSITION
-        //
-        // Phần tròn bên trái chứa icon quả thông.
-        // Vì vậy chỉ center text trong phần bảng gỗ.
         // ==========================================
 
         const int iconAreaWidth =
@@ -392,11 +390,6 @@ namespace
             frameRect.x +
             (frameRect.w - textWidth) / 2;
 
-
-        // Điểm nằm ở phần trên của frame kết thúc.
-        //
-        // Nếu asset của bạn cần thấp/cao hơn,
-        // chỉ cần thay số 90 này.
 
         int scoreY =
             frameRect.y + 250;
@@ -501,15 +494,28 @@ void Game::Update()
             // ==================================
 
             case 1:
+            {
+                if (LoadGame())
+                {
+                    std::cout
+                        << "Load game successful!"
+                        << std::endl;
+                }
+                else
+                {
+                    std::cout
+                        << "No valid save game found."
+                        << std::endl;
+                }
 
-                // Save / Load sẽ làm sau.
 
                 break;
+            }
 
 
-                // ==================================
-                // LEADERBOARD
-                // ==================================
+            // ==================================
+            // LEADERBOARD
+            // ==================================
 
             case 2:
 
@@ -526,6 +532,40 @@ void Game::Update()
 
 
         return;
+    }
+
+
+    // ==========================================
+    // SAVE GAME
+    //
+    // Chỉ save khi:
+    // - Paused
+    // - GameOver
+    // - LevelComplete
+    // ==========================================
+
+    if (
+        InputManager::IsKeyPressed(
+            SDL_SCANCODE_S))
+    {
+        if (
+            state == GameState::Paused ||
+            state == GameState::GameOver ||
+            state == GameState::LevelComplete)
+        {
+            if (SaveGame())
+            {
+                std::cout
+                    << "Game saved successfully!"
+                    << std::endl;
+            }
+            else
+            {
+                std::cout
+                    << "Cannot save game!"
+                    << std::endl;
+            }
+        }
     }
 
 
@@ -567,9 +607,6 @@ void Game::Update()
 
     // ==========================================
     // PAUSED
-    //
-    // Player / Map / Collision / PineCone
-    // đều không update.
     // ==========================================
 
     if (
@@ -723,10 +760,6 @@ void Game::Render(
 
     // ==========================================
     // GAMEPLAY HUD
-    //
-    // Hiện:
-    // - Score frame
-    // - Pause hint
     // ==========================================
 
     DrawGameplayHud(
@@ -779,9 +812,6 @@ void Game::Render(
             "lose_frame");
 
 
-        // Điểm được vẽ SAU frame,
-        // vì vậy sẽ nằm trên frame.
-
         DrawFinalScore(
             renderer,
             textRenderer,
@@ -803,9 +833,6 @@ void Game::Render(
             textureManager,
             "win_frame");
 
-
-        // Điểm được vẽ SAU frame,
-        // vì vậy sẽ nằm trên frame.
 
         DrawFinalScore(
             renderer,
@@ -858,6 +885,210 @@ bool Game::ConsumeIntroRequest()
         return false;
     }
 
+
+    introRequested =
+        false;
+
+
+    return true;
+}
+
+
+// ==================================================
+// SAVE GAME
+// ==================================================
+
+bool Game::SaveGame()
+{
+    // ==========================================
+    // ONLY VALID SAVE STATES
+    // ==========================================
+
+    if (
+        state != GameState::Paused &&
+        state != GameState::GameOver &&
+        state != GameState::LevelComplete)
+    {
+        return false;
+    }
+
+
+    SaveData data;
+
+
+    // ==========================================
+    // GAME STATE
+    // ==========================================
+
+    data.state =
+        state;
+
+
+    // ==========================================
+    // SCORE
+    // ==========================================
+
+    data.score =
+        score;
+
+
+    // ==========================================
+    // PLAYER POSITION
+    // ==========================================
+
+    const SDL_Rect& playerRect =
+        player.GetRect();
+
+
+    data.playerX =
+        playerRect.x;
+
+
+    data.playerY =
+        playerRect.y;
+
+
+    // ==========================================
+    // PINE CONES
+    // ==========================================
+
+    data.pineConeCollected =
+        pineConeManager.
+        GetCollectedStates();
+
+
+    // ==========================================
+    // OBSTACLES
+    // ==========================================
+
+    std::vector<const Obstacle*>
+        obstacles =
+        map.GetLaneManager().
+        GetObstacles();
+
+
+    data.obstaclePositions.clear();
+
+
+    for (
+        const Obstacle* obstacle :
+        obstacles)
+    {
+        const SDL_Rect& obstacleRect =
+            obstacle->GetRect();
+
+
+        SDL_Point position =
+        {
+            obstacleRect.x,
+            obstacleRect.y
+        };
+
+
+        data.obstaclePositions.push_back(
+            position);
+    }
+
+
+    // ==========================================
+    // WRITE SAVE FILE
+    // ==========================================
+
+    return SaveManager::Save(
+        data);
+}
+
+
+// ==================================================
+// LOAD GAME
+// ==================================================
+
+bool Game::LoadGame()
+{
+    SaveData data;
+
+
+    // ==========================================
+    // READ SAVE FILE
+    // ==========================================
+
+    if (
+        !SaveManager::Load(
+            data))
+    {
+        return false;
+    }
+
+
+    // ==========================================
+    // PLAYER
+    // ==========================================
+
+    player.SetPosition(
+        data.playerX,
+        data.playerY);
+
+
+    // ==========================================
+    // SCORE
+    // ==========================================
+
+    score =
+        data.score;
+
+
+    // ==========================================
+    // PINE CONES
+    // ==========================================
+
+    pineConeManager.
+        SetCollectedStates(
+            data.pineConeCollected);
+
+
+    // ==========================================
+    // OBSTACLES
+    // ==========================================
+
+    std::vector<Obstacle*>
+        obstacles =
+        map.GetLaneManager().
+        GetMutableObstacles();
+
+
+    size_t obstacleCount =
+        data.obstaclePositions.size();
+
+
+    if (
+        obstacleCount >
+        obstacles.size())
+    {
+        obstacleCount =
+            obstacles.size();
+    }
+
+
+    for (
+        size_t i = 0;
+        i < obstacleCount;
+        i++)
+    {
+        obstacles[i]->SetPosition(
+            data.obstaclePositions[i].x,
+            data.obstaclePositions[i].y);
+    }
+
+
+    // ==========================================
+    // RESTORE STATE
+    // ==========================================
+
+    state =
+        data.state;
+
+
+    // Khi Load không chạy intro lại.
 
     introRequested =
         false;

@@ -63,8 +63,6 @@ public:
         }
         else
         {
-            // Fallback nếu chưa load được ảnh quả thông.
-
             SDL_SetRenderDrawColor(
                 renderer,
                 130,
@@ -168,6 +166,18 @@ public:
     bool IsCollected() const
     {
         return collected;
+    }
+
+
+    // ==========================================
+    // RESTORE COLLECTED STATE
+    // ==========================================
+
+    void SetCollected(
+        bool value)
+    {
+        collected =
+            value;
     }
 
 

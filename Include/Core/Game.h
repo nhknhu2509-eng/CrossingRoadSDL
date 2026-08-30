@@ -21,6 +21,7 @@
 
 
 #include "Managers/PineConeManager.h"
+#include "Managers/SaveManager.h"
 
 
 class Game
@@ -60,6 +61,17 @@ public:
     // ==========================================
 
     bool ConsumeIntroRequest();
+
+
+private:
+
+    // ==========================================
+    // SAVE / LOAD
+    // ==========================================
+
+    bool SaveGame();
+
+    bool LoadGame();
 
 
 private:

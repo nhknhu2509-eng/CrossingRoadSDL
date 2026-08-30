@@ -21,13 +21,6 @@ public:
         // ==========================================
         // PINE CONE POSITIONS
         // ==========================================
-        //
-        // Có thể thay đổi các tọa độ này sau.
-        //
-        // Mỗi quả thông = 100 điểm.
-        //
-        // ==========================================
-
 
         pineCones.emplace_back(
             160,
@@ -69,13 +62,6 @@ public:
     // ==========================================
     // CHECK COLLECTION
     // ==========================================
-    //
-    // Trả về số điểm vừa nhặt được.
-    //
-    // Nếu không nhặt được gì:
-    // return 0.
-    //
-    // ==========================================
 
     int CheckCollection(
         const SDL_Rect& playerHitbox)
@@ -110,13 +96,6 @@ public:
         SDL_Renderer* renderer,
         TextureManager& textureManager)
     {
-        // ======================================
-        // LOAD TEXTURE
-        //
-        // Chỉ thử load 1 lần.
-        // Không cần sửa Application.cpp.
-        // ======================================
-
         if (!textureLoadAttempted)
         {
             textureLoadAttempted =
@@ -134,10 +113,6 @@ public:
             }
         }
 
-
-        // ======================================
-        // DRAW ALL AVAILABLE PINE CONES
-        // ======================================
 
         for (
             PineCone& pineCone :
@@ -161,6 +136,61 @@ public:
             pineCones)
         {
             pineCone.Reset();
+        }
+    }
+
+
+    // ==========================================
+    // GET COLLECTED STATES
+    // ==========================================
+
+    std::vector<bool>
+        GetCollectedStates() const
+    {
+        std::vector<bool>
+            states;
+
+
+        for (
+            const PineCone& pineCone :
+            pineCones)
+        {
+            states.push_back(
+                pineCone.IsCollected());
+        }
+
+
+        return states;
+    }
+
+
+    // ==========================================
+    // RESTORE COLLECTED STATES
+    // ==========================================
+
+    void SetCollectedStates(
+        const std::vector<bool>& states)
+    {
+        size_t count =
+            states.size();
+
+ 
+        if (
+            count >
+            pineCones.size())
+        {
+            count =
+                pineCones.size();
+        }
+
+
+        for (
+            size_t i = 0;
+            i < count;
+            i++)
+        {
+            pineCones[i].SetCollected(
+                states[i]);
         }
     }
 

@@ -117,7 +117,8 @@ LaneManager::LaneManager()
 
 void LaneManager::Update()
 {
-    for (Lane& lane :
+    for (
+        Lane& lane :
         lanes)
     {
         lane.Update();
@@ -133,7 +134,8 @@ void LaneManager::Draw(
     SDL_Renderer* renderer,
     TextureManager& textureManager)
 {
-    for (Lane& lane :
+    for (
+        Lane& lane :
         lanes)
     {
         lane.Draw(
@@ -144,7 +146,7 @@ void LaneManager::Draw(
 
 
 // ==================================================
-// GET OBSTACLES
+// GET OBSTACLES - READ ONLY
 // ==================================================
 
 std::vector<const Obstacle*>
@@ -154,12 +156,48 @@ LaneManager::GetObstacles() const
         result;
 
 
-    for (const Lane& lane :
+    for (
+        const Lane& lane :
         lanes)
     {
         for (
             const std::unique_ptr<Obstacle>& obstacle :
             lane.GetObstacles())
+        {
+            result.push_back(
+                obstacle.get());
+        }
+    }
+
+
+    return result;
+}
+
+
+// ==================================================
+// GET OBSTACLES - MUTABLE
+// ==================================================
+
+std::vector<Obstacle*>
+LaneManager::GetMutableObstacles()
+{
+    std::vector<Obstacle*>
+        result;
+
+
+    for (
+        Lane& lane :
+        lanes)
+    {
+        const std::vector<
+            std::unique_ptr<Obstacle>>&
+            laneObstacles =
+            lane.GetObstacles();
+
+
+        for (
+            const std::unique_ptr<Obstacle>& obstacle :
+            laneObstacles)
         {
             result.push_back(
                 obstacle.get());

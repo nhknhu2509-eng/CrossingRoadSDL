@@ -32,6 +32,7 @@
     <ClInclude Include="..\..\Include\Managers\InputManager.h" />
     <ClInclude Include="..\..\Include\Managers\LaneManager.h" />
     <ClInclude Include="..\..\Include\Managers\PineConeManager.h" />
+    <ClInclude Include="..\..\Include\Managers\SaveManager.h" />
     <ClInclude Include="..\..\Include\Media\VideoPlayer.h" />
     <ClInclude Include="..\..\Include\Objects\Animal.h" />
     <ClInclude Include="..\..\Include\Objects\Deer.h" />
