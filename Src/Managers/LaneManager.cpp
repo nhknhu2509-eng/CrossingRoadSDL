@@ -3,7 +3,7 @@
 #include "Graphics/TextureManager.h"
 
 
-VehicleManager::VehicleManager()
+LaneManager::LaneManager()
 {
     // ==========================================
     // LANE 1 - WAGON
@@ -115,7 +115,7 @@ VehicleManager::VehicleManager()
 // UPDATE
 // ==================================================
 
-void VehicleManager::Update()
+void LaneManager::Update()
 {
     for (Lane& lane :
         lanes)
@@ -129,7 +129,7 @@ void VehicleManager::Update()
 // DRAW
 // ==================================================
 
-void VehicleManager::Draw(
+void LaneManager::Draw(
     SDL_Renderer* renderer,
     TextureManager& textureManager)
 {
@@ -148,7 +148,7 @@ void VehicleManager::Draw(
 // ==================================================
 
 std::vector<const Obstacle*>
-VehicleManager::GetObstacles() const
+LaneManager::GetObstacles() const
 {
     std::vector<const Obstacle*>
         result;

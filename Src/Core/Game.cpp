@@ -44,14 +44,8 @@ void Game::Update()
     // 2. GOAL CHECK
     // ==========================================
     //
-    // Giữ nguyên logic hiện tại:
-    //
-    // Goal vẫn kiểm tra PLAYER RECT,
-    // KHÔNG dùng player hitbox.
-    //
-    // Quan trọng:
-    // Goal vẫn được kiểm tra TRƯỚC khi
-    // obstacle được Update.
+    // Goal vẫn kiểm tra Player rect.
+    // Không đổi sang hitbox.
     //
     // ==========================================
 
@@ -69,16 +63,6 @@ void Game::Update()
     // ==========================================
     // 3. MAP UPDATE
     // ==========================================
-    //
-    // Tương đương chính xác với:
-    //
-    // vehicleManager.Update();
-    //
-    // vì Map::Update() gọi:
-    //
-    // vehicleManager.Update();
-    //
-    // ==========================================
 
     map.Update();
 
@@ -89,7 +73,7 @@ void Game::Update()
 
     for (
         const Obstacle* obstacle :
-        map.GetVehicleManager().
+        map.GetLaneManager().
         GetObstacles())
     {
         if (
@@ -122,13 +106,6 @@ void Game::Render(
     // ==========================================
     // MAP
     // ==========================================
-    //
-    // Map::Draw() giữ nguyên thứ tự:
-    //
-    // Goal
-    // Vehicle / Animal / TrafficLight
-    //
-    // ==========================================
 
     map.Draw(
         renderer,
@@ -137,12 +114,6 @@ void Game::Render(
 
     // ==========================================
     // PLAYER
-    // ==========================================
-    //
-    // Player vẫn được vẽ SAU map.
-    //
-    // Vì vậy render order không thay đổi.
-    //
     // ==========================================
 
     player.Draw(

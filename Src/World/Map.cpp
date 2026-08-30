@@ -18,7 +18,7 @@ Map::Map()
 
 void Map::Update()
 {
-    vehicleManager.Update();
+    laneManager.Update();
 }
 
 
@@ -34,7 +34,7 @@ void Map::Draw(
         renderer);
 
 
-    vehicleManager.Draw(
+    laneManager.Draw(
         renderer,
         textureManager);
 }
@@ -59,18 +59,18 @@ Map::GetGoal() const
 
 
 // ==================================================
-// GET VEHICLE MANAGER
+// GET LANE MANAGER
 // ==================================================
 
-VehicleManager&
-Map::GetVehicleManager()
+LaneManager&
+Map::GetLaneManager()
 {
-    return vehicleManager;
+    return laneManager;
 }
 
 
-const VehicleManager&
-Map::GetVehicleManager() const
+const LaneManager&
+Map::GetLaneManager() const
 {
-    return vehicleManager;
+    return laneManager;
 }

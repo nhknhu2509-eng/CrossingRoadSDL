@@ -9,11 +9,11 @@
 class TextureManager;
 
 
-class VehicleManager
+class LaneManager
 {
 public:
 
-    VehicleManager();
+    LaneManager();
 
 
     void Update();

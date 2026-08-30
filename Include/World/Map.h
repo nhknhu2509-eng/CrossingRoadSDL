@@ -16,9 +16,9 @@ class TextureManager;
 // Map quản lý các thành phần thuộc thế giới game:
 //
 // - Goal
-// - VehicleManager
+// - LaneManager
 //
-// Game sẽ không trực tiếp sở hữu các thành phần này nữa.
+// Game không trực tiếp sở hữu các thành phần này.
 //
 // ==================================================
 
@@ -55,18 +55,18 @@ public:
 
 
     // ==========================================
-    // OBSTACLES
+    // LANE MANAGER
     // ==========================================
 
-    VehicleManager& GetVehicleManager();
+    LaneManager& GetLaneManager();
 
-    const VehicleManager&
-        GetVehicleManager() const;
+    const LaneManager&
+        GetLaneManager() const;
 
 
 private:
 
     Goal goal;
 
-    VehicleManager vehicleManager;
+    LaneManager laneManager;
 };
