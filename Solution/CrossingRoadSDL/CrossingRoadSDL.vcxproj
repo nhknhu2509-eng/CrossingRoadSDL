@@ -30,7 +30,7 @@
     <ClInclude Include="..\..\Include\Graphics\Window.h" />
     <ClInclude Include="..\..\Include\Managers\CollisionManager.h" />
     <ClInclude Include="..\..\Include\Managers\InputManager.h" />
-    <ClInclude Include="..\..\Include\Managers\VehicleManager.h" />
+    <ClInclude Include="..\..\Include\Managers\LaneManager.h" />
     <ClInclude Include="..\..\Include\Objects\Animal.h" />
     <ClInclude Include="..\..\Include\Objects\Deer.h" />
     <ClInclude Include="..\..\Include\Objects\GameObject.h" />
@@ -59,7 +59,7 @@
     <ClCompile Include="..\..\Src\main.cpp" />
     <ClCompile Include="..\..\Src\Managers\CollisionManager.cpp" />
     <ClCompile Include="..\..\Src\Managers\InputManager.cpp" />
-    <ClCompile Include="..\..\Src\Managers\VehicleManager.cpp" />
+    <ClCompile Include="..\..\Src\Managers\LaneManager.cpp" />
     <ClCompile Include="..\..\Src\Objects\Animal.cpp" />
     <ClCompile Include="..\..\Src\Objects\Deer.cpp" />
     <ClCompile Include="..\..\Src\Objects\GameObject.cpp" />

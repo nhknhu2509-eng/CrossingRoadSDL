@@ -39,7 +39,7 @@
     <ClInclude Include="..\..\Include\Objects\Vehicle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\Managers\VehicleManager.h">
+    <ClInclude Include="..\..\Include\Managers\LaneManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\Config\GameConfig.h">
@@ -128,7 +128,7 @@
     <ClCompile Include="..\..\Src\Managers\InputManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\Managers\VehicleManager.cpp">
+    <ClCompile Include="..\..\Src\Managers\LaneManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\Managers\CollisionManager.cpp">

@@ -42,7 +42,7 @@ namespace Config
     // Animal
     // ==============================
 
-    constexpr int ANIMAL_SPEED = 0.01;
+    constexpr int ANIMAL_SPEED = 1;
 
 
     // ==============================

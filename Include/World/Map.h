@@ -3,7 +3,7 @@
 #include <SDL.h>
 
 #include "World/Goal.h"
-#include "Managers/VehicleManager.h"
+#include "Managers/LaneManager.h"
 
 
 class TextureManager;
